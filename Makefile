@@ -1,6 +1,6 @@
 #### The petsc environment can also be fixed in the makefile
-# PETSC_DIR = 
-# PETSC_ARCH = 
+PETSC_DIR = /home/ludcila/petsc-3.5.4
+PETSC_ARCH = arch-linux2-c-debug
 include ${PETSC_DIR}/conf/variables
 
 # default gnu compiler (currently not used)
@@ -24,6 +24,7 @@ NSOBJ = FlowField.o LinearSolver.o Meshsize.o\
 stencils/MaxUStencil.o stencils/MovingWallStencils.o stencils/PeriodicBoundaryStencils.o\
 stencils/FGHStencil.o solvers/SORSolver.o solvers/PetscSolver.o \
 stencils/RHSStencil.o stencils/VelocityStencil.o \
+stencils/VTKStencil.o \
 parallelManagers/PetscParallelConfiguration.o\
 GlobalBoundaryFactory.o\
 stencils/BFStepInitStencil.o stencils/NeumannBoundaryStencils.o stencils/BFInputStencils.o stencils/ObstacleStencil.o\
