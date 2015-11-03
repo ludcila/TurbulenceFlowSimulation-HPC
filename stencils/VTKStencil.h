@@ -15,6 +15,10 @@
  */
 class VTKStencil : public FieldStencil<FlowField> {
 
+	protected:
+	
+		std::ofstream *_outputFile;
+
     public:
 
         /** Constructor

@@ -142,9 +142,8 @@ class Simulation {
     virtual void plotVTK(int timeStep){
       // TODO WS1: create VTKStencil and respective iterator; iterate stencil
       //           over _flowField and write flow field information to vtk file
-      VTKStencil vtkStencil(_parameters);;
-      FieldIterator<FlowField> vtkIt(_flowField, _parameters, vtkStencil);
-      vtkIt.iterate();
+      VTKStencil vtkStencil(_parameters);
+      vtkStencil.write(_flowField, timeStep);
     }
 
   protected:
