@@ -20,7 +20,11 @@ void VTKStencil::apply ( FlowField & flowField, int i, int j ) {
 	FLOAT velocity[2];
 	flowField.getPressureAndVelocity(pressure, velocity, i, j);
 	if(obstacle & OBSTACLE_SELF) {
-		*this->_outputFile << "0" << std::endl;
+		if(this->_outputPressure) {
+			*this->_outputFile << "0.0" << std::endl;
+		} else {
+			*this->_outputFile << "0.0 0.0 0.0" << std::endl;
+		}
 	} else {
 		if(this->_outputPressure) {
 			*this->_outputFile << pressure << std::endl;
@@ -37,7 +41,11 @@ void VTKStencil::apply ( FlowField & flowField, int i, int j, int k ) {
 	FLOAT velocity[3];
 	flowField.getPressureAndVelocity(pressure, velocity, i, j, k);
 	if(obstacle & OBSTACLE_SELF) {
-		*this->_outputFile << "0" << std::endl;
+		if(this->_outputPressure) {
+			*this->_outputFile << "0.0" << std::endl;
+		} else {
+			*this->_outputFile << "0.0 0.0 0.0" << std::endl;
+		}
 	} else {
 		if(this->_outputPressure) {
 			*this->_outputFile << pressure << std::endl;
