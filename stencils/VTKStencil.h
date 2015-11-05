@@ -27,6 +27,7 @@ class VTKStencil : public FieldStencil<FlowField> {
          * @param prefix String with the prefix of the name of the VTK files
          */
         VTKStencil ( const Parameters & parameters );
+		~VTKStencil ();
 
         /** 2D operation for one position
          *

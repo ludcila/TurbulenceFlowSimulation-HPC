@@ -10,7 +10,11 @@
 #include <iomanip>
 
 VTKStencil::VTKStencil ( const Parameters & parameters ) : FieldStencil<FlowField> ( parameters ) {
+	this->_outputFile = new std::ofstream;
+}
 
+VTKStencil::~VTKStencil () {
+	delete this->_outputFile;
 }
 
 void VTKStencil::apply ( FlowField & flowField, int i, int j ) {
@@ -67,23 +71,21 @@ void VTKStencil::write ( FlowField & flowField, int timeStep ) {
 	std::cout << filename.str() << std::endl;
 	
 	// Open the file
-	std::ofstream vtkFile;
-	vtkFile.open(filename.str().c_str());
-	vtkFile << std::fixed << std::setprecision(8);
-	this->_outputFile = &vtkFile;
+	this->_outputFile->open(filename.str().c_str());
+	*this->_outputFile << std::fixed << std::setprecision(8);
 	
 	// Print file header
-	vtkFile << "# vtk DataFile Version 2.0" << std::endl;
-	vtkFile << "Boom" << std::endl;
-	vtkFile << "ASCII" << std::endl << std::endl;
+	*this->_outputFile << "# vtk DataFile Version 2.0" << std::endl;
+	*this->_outputFile << "Boom" << std::endl;
+	*this->_outputFile << "ASCII" << std::endl << std::endl;
 	
 	// Print grid header
 	int nx = flowField.getNx();
 	int ny = flowField.getNy();
 	int nz = is3D ? flowField.getNz() : 0;
-	vtkFile << "DATASET STRUCTURED_GRID" << std::endl;
-	vtkFile << "DIMENSIONS " << (nx+1) << " " << (ny+1)  << " " << (nz+1) << std::endl;
-	vtkFile << "POINTS " << (nx+1)*(ny+1)*(nz+1) << " float" << std::endl;
+	*this->_outputFile << "DATASET STRUCTURED_GRID" << std::endl;
+	*this->_outputFile << "DIMENSIONS " << (nx+1) << " " << (ny+1)  << " " << (nz+1) << std::endl;
+	*this->_outputFile << "POINTS " << (nx+1)*(ny+1)*(nz+1) << " float" << std::endl;
 	
 	int cellsX = flowField.getCellsX();
 	int cellsY = flowField.getCellsY();
@@ -92,28 +94,28 @@ void VTKStencil::write ( FlowField & flowField, int timeStep ) {
 	for(int k = 2; k < cellsZ; k++) {
 		for(int j = 2; j < cellsY; j++) {
 			for(int i = 2; i < cellsX; i++) {
-				vtkFile << this->_parameters.meshsize->getPosX(i, j, k) << " " << this->_parameters.meshsize->getPosY(i, j, k) << " " << this->_parameters.meshsize->getPosZ(i, j, k) << std::endl;
+				*this->_outputFile << this->_parameters.meshsize->getPosX(i, j, k) << " " << this->_parameters.meshsize->getPosY(i, j, k) << " " << this->_parameters.meshsize->getPosZ(i, j, k) << std::endl;
 			}
 		}
 	}
-	vtkFile << std::endl;
+	*this->_outputFile << std::endl;
 	
 	FieldIterator<FlowField> vtkIt(flowField, this->_parameters, *this);
 	
 	// Print pressure
 	this->_outputPressure = 1;
 	int numCells = is3D ? nx*ny*nz : nx*ny;
-	vtkFile << "CELL_DATA " << numCells << std::endl;
-	vtkFile << "SCALARS pressure float 1" << std::endl;
-	vtkFile << "LOOKUP_TABLE default" << std::endl;
+	*this->_outputFile << "CELL_DATA " << numCells << std::endl;
+	*this->_outputFile << "SCALARS pressure float 1" << std::endl;
+	*this->_outputFile << "LOOKUP_TABLE default" << std::endl;
 	vtkIt.iterate();
-	vtkFile << std::endl;
+	*this->_outputFile << std::endl;
 	
 	// Print velocity
 	this->_outputPressure = 0;
-	vtkFile << "VECTORS velocity float" << std::endl;
+	*this->_outputFile << "VECTORS velocity float" << std::endl;
 	vtkIt.iterate();
-	vtkFile << std::endl;
+	*this->_outputFile << std::endl;
 	
 	this->_outputFile->close();
 	
