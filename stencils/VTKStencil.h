@@ -18,7 +18,7 @@ class VTKStencil : public FieldStencil<FlowField> {
 	protected:
 	
 		std::ofstream *_outputFile;
-		bool _outputPressure;
+		bool _isWritingPressure;
 
     public:
 
@@ -50,6 +50,18 @@ class VTKStencil : public FieldStencil<FlowField> {
          * @param flowField Flow field to be written
          */
         void write ( FlowField & flowField, int timeStep );
+
+        std::string getFilename( int timeStep );
+        void writeFileHeader();
+		void writeCellDataHeader ( FlowField & flowField );
+        void writeGrid ( FlowField & flowField );
+        void writePressure ( FlowField & flowField );
+        void writeVelocity ( FlowField & flowField );
+        
+        void isWritingPressure(bool isWritingPressure);
+        bool isWritingPressure();
+        void isWritingVelocity(bool isWritingVelocity);
+        bool isWritingVelocity();
 
 };
 
