@@ -11,6 +11,8 @@
 
 VTKStencil::VTKStencil ( const Parameters & parameters ) : FieldStencil<FlowField> ( parameters ) {
 	this->_outputFile = new std::ofstream;
+	this->_velocityStringStream << std::fixed << std::setprecision(6);
+	this->_pressureStringStream << std::fixed << std::setprecision(6);
 }
 
 VTKStencil::~VTKStencil () {
