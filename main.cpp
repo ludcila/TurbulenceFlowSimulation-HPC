@@ -1,11 +1,17 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <iostream>
+#include <sstream>
 #include "Configuration.h"
 #include "Simulation.h"
 #include "parallelManagers/PetscParallelConfiguration.h"
 #include "MeshsizeFactory.h"
+#include <time.h>
 #include <iomanip>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <dirent.h>
+
 
 int main (int argc, char *argv[]) {
 
@@ -60,16 +66,27 @@ int main (int argc, char *argv[]) {
     if(simulation == NULL){ handleError(1, "simulation==NULL!"); }
     simulation->initializeFlowField();
     //flowField->getFlags().show();
+    
+    /* Create a folder for the VTK output */
+	time_t rawtime = time(NULL);
+	struct tm * timeinfo = localtime(&rawtime);
+	char buffer[80];
+	strftime (buffer, sizeof(buffer),"%d.%m.%y-%H:%M:%S", timeinfo);
+	std::stringstream foldername;
+	foldername << parameters.vtk.prefix << "_" << buffer;
+	struct stat info;
+	if( stat( foldername.str().c_str(), &info ) != 0 ) {
+		mkdir(foldername.str().c_str(), 0777);
+	}
 
     FLOAT time = 0.0;
     FLOAT timeStdOut=parameters.stdOut.interval;
     FLOAT timeVTKOut=parameters.vtk.interval;
     int timeSteps = 0;
-    
-    simulation->plotVTK(timeSteps);
-    timeVTKOut += parameters.vtk.interval;
 
     // TODO WS1: plot initial state
+    simulation->plotVTK(timeSteps, foldername.str());
+    timeVTKOut += parameters.vtk.interval;
 
     // time loop
     while (time < parameters.simulation.finalTime){
@@ -89,14 +106,14 @@ int main (int argc, char *argv[]) {
       
       // TODO WS1: trigger VTK output
       if(timeVTKOut <= time) {
-	      simulation->plotVTK(timeSteps);
+	      simulation->plotVTK(timeSteps, foldername.str());
 	      timeVTKOut += parameters.vtk.interval;
       }
       
     }
 
     // TODO WS1: plot final output
-    simulation->plotVTK(timeSteps);
+    simulation->plotVTK(timeSteps, foldername.str());
 
     delete simulation; simulation=NULL;
     delete flowField;  flowField= NULL;

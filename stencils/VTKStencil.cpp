@@ -69,12 +69,12 @@ void VTKStencil::apply ( FlowField & flowField, int i, int j, int k ) {
 	
 }
 
-void VTKStencil::write ( FlowField & flowField, int timeStep ) {
+void VTKStencil::write ( FlowField & flowField, int timeStep, std::string foldername ) {
 
 	std::cout << "=== Writing VTK Output ===" << std::endl;
 	
 	// Open the file and set precision
-	this->_outputFile->open(this->getFilename(timeStep).c_str());
+	this->_outputFile->open(this->getFilename(timeStep, foldername).c_str());
 	*this->_outputFile << std::fixed << std::setprecision(6);
 	
 	// Output the different sections of the file
@@ -172,9 +172,9 @@ void VTKStencil::writeVelocity ( FlowField & flowField ) {
 	
 }
 
-std::string VTKStencil::getFilename( int timeStep ) {
+std::string VTKStencil::getFilename( int timeStep, std::string foldername ) {
 	std::stringstream filename;
-	filename << this->_parameters.vtk.prefix << "." << timeStep << ".vtk";
+	filename << foldername << "/" << this->_parameters.vtk.prefix << "." << timeStep << ".vtk";
 	return filename.str();
 }
 

@@ -3,6 +3,7 @@
 
 #include <petscksp.h>
 #include <float.h>
+#include <string>
 #include "FlowField.h"
 #include "stencils/FGHStencil.h"
 #include "stencils/MovingWallStencils.h"
@@ -139,11 +140,11 @@ class Simulation {
     }
 
     /** TODO WS1: plots the flow field. */
-    virtual void plotVTK(int timeStep){
+    virtual void plotVTK(int timeStep, std::string foldername){
       // TODO WS1: create VTKStencil and respective iterator; iterate stencil
       //           over _flowField and write flow field information to vtk file
       VTKStencil vtkStencil(_parameters);
-      vtkStencil.write(_flowField, timeStep);
+      vtkStencil.write(_flowField, timeStep, foldername);
     }
 
   protected:

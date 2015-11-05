@@ -49,9 +49,9 @@ class VTKStencil : public FieldStencil<FlowField> {
         /** Writes the information to the file
          * @param flowField Flow field to be written
          */
-        void write ( FlowField & flowField, int timeStep );
+        void write ( FlowField & flowField, int timeStep, std::string foldername );
 
-        std::string getFilename( int timeStep );
+        std::string getFilename( int timeStep, std::string foldername );
         void writeFileHeader();
 		void writeCellDataHeader ( FlowField & flowField );
         void writeGrid ( FlowField & flowField );
