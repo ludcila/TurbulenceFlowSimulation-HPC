@@ -25,20 +25,14 @@ void VTKStencil::apply ( FlowField & flowField, int i, int j ) {
     const int obstacle = flowField.getFlags().getValue(i, j);
     
 	if(obstacle & OBSTACLE_SELF) {
-		if(this->isWritingPressure()) {
-			*this->_outputFile << "0.0" << std::endl;
-		} else {
-			*this->_outputFile << "0.0 0.0 0.0" << std::endl;
-		}
+		this->_pressureStringStream << "0.0" << std::endl;
+		this->_velocityStringStream << "0.0 0.0 0.0" << std::endl;
 	} else {
 		FLOAT pressure;
 		FLOAT velocity[2];
 		flowField.getPressureAndVelocity(pressure, velocity, i, j);
-		if(this->isWritingPressure()) {
-			*this->_outputFile << pressure << std::endl;
-		} else {
-			*this->_outputFile << velocity[0] << " " << velocity[1] << " 0.0" << std::endl;
-		}
+		this->_pressureStringStream << pressure << std::endl;
+		this->_velocityStringStream << velocity[0] << " " << velocity[1] << " 0.0" << std::endl;
 	}
 	
 }
@@ -51,20 +45,14 @@ void VTKStencil::apply ( FlowField & flowField, int i, int j, int k ) {
     const int obstacle = flowField.getFlags().getValue(i, j, k);
     
 	if(obstacle & OBSTACLE_SELF) {
-		if(this->isWritingPressure()) {
-			*this->_outputFile << "0.0" << std::endl;
-		} else {
-			*this->_outputFile << "0.0 0.0 0.0" << std::endl;
-		}
+		this->_pressureStringStream << "0.0" << std::endl;
+		this->_velocityStringStream << "0.0 0.0 0.0" << std::endl;
 	} else {
 		FLOAT pressure;
 		FLOAT velocity[3];
 		flowField.getPressureAndVelocity(pressure, velocity, i, j, k);
-		if(this->isWritingPressure()) {
-			*this->_outputFile << pressure << std::endl;
-		} else {
-			*this->_outputFile << velocity[0] << " " << velocity[1] << " " << velocity[2] << std::endl;
-		}
+		this->_pressureStringStream << pressure << std::endl;
+		this->_velocityStringStream << velocity[0] << " " << velocity[1] << " " << velocity[2] << std::endl;
 	}
 	
 }
@@ -145,12 +133,8 @@ void VTKStencil::writePressure ( FlowField & flowField ) {
 	*this->_outputFile << "SCALARS pressure float 1" << std::endl;
 	*this->_outputFile << "LOOKUP_TABLE default" << std::endl;
 	
-	// Set flag to output pressure
-	this->isWritingPressure(1);
-	
-	// Iterate over the flow field
-	FieldIterator<FlowField> vtkIt(flowField, this->_parameters, *this);
-	vtkIt.iterate();
+	// Print pressure values
+	*this->_outputFile << this->_pressureStringStream.str().c_str();
 	
 	*this->_outputFile << std::endl;
 	
@@ -160,13 +144,9 @@ void VTKStencil::writeVelocity ( FlowField & flowField ) {
 
 	// Print header
 	*this->_outputFile << "VECTORS velocity float" << std::endl;
-
-	// Set flag to output velocity
-	this->isWritingVelocity(1);
 	
-	// Iterate over the flow field
-	FieldIterator<FlowField> vtkIt(flowField, this->_parameters, *this);
-	vtkIt.iterate();
+	// Print velocity values
+	*this->_outputFile << this->_velocityStringStream.str().c_str();
 	
 	*this->_outputFile << std::endl;
 	
@@ -177,18 +157,3 @@ std::string VTKStencil::getFilename( int timeStep, std::string foldername ) {
 	filename << foldername << "/" << this->_parameters.vtk.prefix << "." << timeStep << ".vtk";
 	return filename.str();
 }
-
-void VTKStencil::isWritingPressure(bool isWritingPressure) {
-	this->_isWritingPressure = isWritingPressure;
-}
-void VTKStencil::isWritingVelocity(bool isWritingVelocity) {
-	this->_isWritingPressure = !isWritingVelocity;
-}
-bool VTKStencil::isWritingPressure() {
-	return this->_isWritingPressure;
-}
-bool VTKStencil::isWritingVelocity() {
-	return !this->_isWritingPressure;
-}
-
-

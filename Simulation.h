@@ -144,7 +144,9 @@ class Simulation {
       // TODO WS1: create VTKStencil and respective iterator; iterate stencil
       //           over _flowField and write flow field information to vtk file
       VTKStencil vtkStencil(_parameters);
-      vtkStencil.write(_flowField, timeStep, foldername);
+      FieldIterator<FlowField> vtkIt(this->_flowField, this->_parameters, vtkStencil);
+      vtkIt.iterate();
+      vtkStencil.write(this->_flowField, timeStep, foldername);
     }
 
   protected:
