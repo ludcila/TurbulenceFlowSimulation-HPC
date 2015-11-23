@@ -8,12 +8,12 @@ class PressureBufferReadStencil : public BoundaryStencil<FlowField> {
 
 	private:
 	
-	FLOAT *bufferLeftWall;
-	FLOAT *bufferRightWall;
-	FLOAT *bufferTopWall;
-	FLOAT *bufferBottomWall;
-	FLOAT *bufferFrontWall;
-	FLOAT *bufferBackWall;
+	FLOAT *_bufferLeftWall;
+	FLOAT *_bufferRightWall;
+	FLOAT *_bufferTopWall;
+	FLOAT *_bufferBottomWall;
+	FLOAT *_bufferFrontWall;
+	FLOAT *_bufferBackWall;
 	
 	public:
 

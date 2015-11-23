@@ -47,7 +47,7 @@ PetscParallelManager::PetscParallelManager(FlowField &flowField, Parameters &par
 
 	// Iterators
 	_pressureBufferFillIterator(flowField, parameters, _pressureBufferFillStencil),
-	_pressureBufferReadIterator(flowField, parameters, _pressureBufferFillStencil)
+	_pressureBufferReadIterator(flowField, parameters, _pressureBufferReadStencil)
 	
 {
 
@@ -82,9 +82,12 @@ PetscParallelManager::~PetscParallelManager() {
 void PetscParallelManager::communicatePressure() {
 	
 	_pressureBufferFillIterator.iterate();
+	
 	// Left to right & Right to left
 	sendReceive(_pressureSendBufferRightWall, _parameters.parallel.rightNb, _pressureRecvBufferLeftWall, _parameters.parallel.leftNb, _cellsLeftRight);
 	sendReceive(_pressureSendBufferLeftWall, _parameters.parallel.leftNb, _pressureRecvBufferRightWall, _parameters.parallel.rightNb, _cellsLeftRight);
+	
+	_pressureBufferReadIterator.iterate();
 	
 }
 
