@@ -8,6 +8,7 @@
 #include <fstream>
 #include <sstream>
 #include <iomanip>
+#include <mpi.h>
 
 VTKStencil::VTKStencil ( const Parameters & parameters ) : FieldStencil<FlowField> ( parameters ) {
 	this->_outputFile = new std::ofstream;
@@ -154,8 +155,10 @@ void VTKStencil::writeVelocity ( FlowField & flowField ) {
 	
 }
 
-std::string VTKStencil::getFilename( int timeStep, std::string foldername ) {
+std::string VTKStencil::getFilename( int timeStep, std::string foldername ) {	
+	int rank;
+	MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 	std::stringstream filename;
-	filename << foldername << "/" << this->_parameters.vtk.prefix << "." << timeStep << ".vtk";
+	filename << foldername << "/" << this->_parameters.vtk.prefix << "." << rank << "." << timeStep << ".vtk";
 	return filename.str();
 }
