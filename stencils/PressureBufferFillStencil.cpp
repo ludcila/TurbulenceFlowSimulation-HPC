@@ -11,19 +11,19 @@ PressureBufferFillStencil::PressureBufferFillStencil (const Parameters & paramet
 }
 
 void PressureBufferFillStencil::applyLeftWall(FlowField & flowField, int i, int j) {
-	this->_bufferLeftWall[j] = flowField.getPressure().getScalar(i, j);
+	this->_bufferLeftWall[j] = flowField.getPressure().getScalar(i+2, j);
 }
 
 void PressureBufferFillStencil::applyRightWall(FlowField & flowField, int i, int j) {
-	this->_bufferRightWall[j] = flowField.getPressure().getScalar(i, j);
+	this->_bufferRightWall[j] = flowField.getPressure().getScalar(i-1, j);
 }
 
 void PressureBufferFillStencil::applyBottomWall(FlowField & flowField, int i, int j) {
-	this->_bufferBottomWall[i] = flowField.getPressure().getScalar(i, j);
+	this->_bufferBottomWall[i] = flowField.getPressure().getScalar(i, j+2);
 }
 
 void PressureBufferFillStencil::applyTopWall(FlowField & flowField, int i, int j) {
-	this->_bufferTopWall[i] = flowField.getPressure().getScalar(i, j);
+	this->_bufferTopWall[i] = flowField.getPressure().getScalar(i, j-1);
 }
 
 void PressureBufferFillStencil::applyLeftWall(FlowField & flowField, int i, int j, int k) {

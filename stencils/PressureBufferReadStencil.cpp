@@ -11,7 +11,7 @@ PressureBufferReadStencil::PressureBufferReadStencil (const Parameters & paramet
 }
 
 void PressureBufferReadStencil::applyLeftWall(FlowField & flowField, int i, int j) {
-	flowField.getPressure().getScalar(i, j) = _bufferLeftWall[j];
+	flowField.getPressure().getScalar(i+1, j) = _bufferLeftWall[j];
 }
 
 void PressureBufferReadStencil::applyRightWall(FlowField & flowField, int i, int j) {
