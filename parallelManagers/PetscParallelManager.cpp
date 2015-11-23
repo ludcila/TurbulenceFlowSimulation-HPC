@@ -42,10 +42,10 @@ PetscParallelManager::PetscParallelManager(FlowField &flowField, Parameters &par
 	_velocityRecvBufferBackWall		(parameters.geometry.dim == 2 ? NULL : new FLOAT[_cellsFrontBack * parameters.geometry.dim]),
 	
 	// Stencils
-	_pressureBufferFillStencil(parameters, _pressureSendBufferLeftWall, _pressureSendBufferRightWall, _pressureSendBufferTopWall, _pressureSendBufferBottomWall, _pressureSendBufferTopWall, _pressureSendBufferBottomWall),
-	_pressureBufferReadStencil(parameters, _pressureRecvBufferLeftWall, _pressureRecvBufferRightWall, _pressureRecvBufferTopWall, _pressureRecvBufferBottomWall, _pressureRecvBufferTopWall, _pressureRecvBufferBottomWall),
-	// _velocityBufferFillStencil(parameters, _velocitySendBufferLeftWall, _velocitySendBufferRightWall, _velocitySendBufferTopWall, _velocitySendBufferBottomWall, _velocitySendBufferTopWall, _velocitySendBufferBottomWall),
-	// _velocityBufferReadStencil(parameters, _velocityRecvBufferLeftWall, _velocityRecvBufferRightWall, _velocityRecvBufferTopWall, _velocityRecvBufferBottomWall, _velocityRecvBufferTopWall, _velocityRecvBufferBottomWall),
+	_pressureBufferFillStencil(parameters, _pressureSendBufferLeftWall, _pressureSendBufferRightWall, _pressureSendBufferTopWall, _pressureSendBufferBottomWall, _pressureSendBufferFrontWall, _pressureSendBufferBackWall),
+	_pressureBufferReadStencil(parameters, _pressureRecvBufferLeftWall, _pressureRecvBufferRightWall, _pressureRecvBufferTopWall, _pressureRecvBufferBottomWall, _pressureRecvBufferFrontWall, _pressureRecvBufferBackWall),
+	// _velocityBufferFillStencil(parameters, _velocitySendBufferLeftWall, _velocitySendBufferRightWall, _velocitySendBufferTopWall, _velocitySendBufferBottomWall, _velocitySendBufferFrontWall, _velocitySendBufferBackWall),
+	// _velocityBufferReadStencil(parameters, _velocityRecvBufferLeftWall, _velocityRecvBufferRightWall, _velocityRecvBufferTopWall, _velocityRecvBufferBottomWall, _velocityRecvBufferFrontWall, _velocityRecvBufferBackWall),
 
 	// Iterators
 	_pressureBufferFillIterator(flowField, parameters, _pressureBufferFillStencil),
