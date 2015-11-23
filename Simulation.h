@@ -20,6 +20,7 @@
 #include "GlobalBoundaryFactory.h"
 #include "Iterators.h"
 #include "Definitions.h"
+#include "parallelManagers/PetscParallelManager.h"
 
 #include "LinearSolver.h"
 #include "solvers/SORSolver.h"
@@ -54,12 +55,15 @@ class Simulation {
     FieldIterator<FlowField> _obstacleIterator;
 
     PetscSolver _solver;
+    
+    PetscParallelManager _parallelManager;
 
 
   public:
     Simulation(Parameters &parameters, FlowField &flowField):
        _parameters(parameters),
        _flowField(flowField),
+       _parallelManager(flowField, parameters),
        _maxUStencil(parameters),
        _maxUFieldIterator(_flowField,parameters,_maxUStencil),
        _maxUBoundaryIterator(_flowField,parameters,_maxUStencil),
@@ -130,6 +134,7 @@ class Simulation {
         // solve for pressure 
         _solver.solve();
         // TODO WS2: communicate pressure values
+        _parallelManager.communicatePressure();
         // compute velocity
         _velocityIterator.iterate();
 	// set obstacle boundaries
