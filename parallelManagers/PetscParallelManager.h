@@ -6,6 +6,8 @@
 #include "../Iterators.h"
 #include "../stencils/PressureBufferFillStencil.h"
 #include "../stencils/PressureBufferReadStencil.h"
+//#include "../stencils/VelocityBufferFillStencil.h"
+//#include "../stencils/VelocityBufferReadStencil.h"
 
 class PetscParallelManager {
 
@@ -58,14 +60,15 @@ class PetscParallelManager {
 	// Iterators
 	ParallelBoundaryIterator<FlowField> _pressureBufferFillIterator;
 	ParallelBoundaryIterator<FlowField> _pressureBufferReadIterator;
-	//ParallelBoundaryIterator _velocityBufferFillIterator;
-	//ParallelBoundaryIterator _velocityBufferReadIterator;
+	// ParallelBoundaryIterator<FlowField> _velocityBufferFillIterator;
+	// ParallelBoundaryIterator<FlowField> _velocityBufferReadIterator;
 
 	public:
 	
 	PetscParallelManager(FlowField &flowField, Parameters &parameters);
 	~PetscParallelManager();
 	void communicatePressure();
+	//void communicateVelocity();
 	void sendReceive(FLOAT *sendBuffer, int sendTo, FLOAT *receiveBuffer, int receiveFrom, int size);
 	
 

@@ -1,13 +1,12 @@
 #include "PressureBufferFillStencil.h"
 
-PressureBufferFillStencil::PressureBufferFillStencil (const Parameters & parameters, FLOAT *bufferLeftWall, FLOAT *bufferRightWall, FLOAT *bufferTopWall, FLOAT *bufferBottomWall): BoundaryStencil(parameters) {
+PressureBufferFillStencil::PressureBufferFillStencil (const Parameters & parameters, FLOAT *bufferLeftWall, FLOAT *bufferRightWall, FLOAT *bufferTopWall, FLOAT *bufferBottomWall, FLOAT *bufferFrontWall, FLOAT *bufferBackWall): BoundaryStencil(parameters) {
 	this->_bufferLeftWall = bufferLeftWall;
 	this->_bufferRightWall = bufferRightWall;
 	this->_bufferTopWall = bufferTopWall;
 	this->_bufferBottomWall = bufferBottomWall;
-}
-
-PressureBufferFillStencil::PressureBufferFillStencil (const Parameters & parameters, FLOAT *bufferLeftWall, FLOAT *bufferRightWall, FLOAT *bufferTopWall, FLOAT *bufferBottomWall, FLOAT *bufferFrontWall, FLOAT *bufferBackWall): BoundaryStencil(parameters) {
+	this->_bufferFrontWall = bufferFrontWall;
+	this->_bufferBackWall = bufferBackWall;
 }
 
 void PressureBufferFillStencil::applyLeftWall(FlowField & flowField, int i, int j) {

@@ -42,12 +42,16 @@ PetscParallelManager::PetscParallelManager(FlowField &flowField, Parameters &par
 	_velocityRecvBufferBackWall		(parameters.geometry.dim == 2 ? NULL : new FLOAT[_cellsFrontBack * parameters.geometry.dim]),
 	
 	// Stencils
-	_pressureBufferFillStencil(parameters, _pressureSendBufferLeftWall, _pressureSendBufferRightWall, _pressureSendBufferTopWall, _pressureSendBufferBottomWall),
-	_pressureBufferReadStencil(parameters, _pressureRecvBufferLeftWall, _pressureRecvBufferRightWall, _pressureRecvBufferTopWall, _pressureRecvBufferBottomWall),
+	_pressureBufferFillStencil(parameters, _pressureSendBufferLeftWall, _pressureSendBufferRightWall, _pressureSendBufferTopWall, _pressureSendBufferBottomWall, _pressureSendBufferTopWall, _pressureSendBufferBottomWall),
+	_pressureBufferReadStencil(parameters, _pressureRecvBufferLeftWall, _pressureRecvBufferRightWall, _pressureRecvBufferTopWall, _pressureRecvBufferBottomWall, _pressureRecvBufferTopWall, _pressureRecvBufferBottomWall),
+	// _velocityBufferFillStencil(parameters, _velocitySendBufferLeftWall, _velocitySendBufferRightWall, _velocitySendBufferTopWall, _velocitySendBufferBottomWall, _velocitySendBufferTopWall, _velocitySendBufferBottomWall),
+	// _velocityBufferReadStencil(parameters, _velocityRecvBufferLeftWall, _velocityRecvBufferRightWall, _velocityRecvBufferTopWall, _velocityRecvBufferBottomWall, _velocityRecvBufferTopWall, _velocityRecvBufferBottomWall),
 
 	// Iterators
 	_pressureBufferFillIterator(flowField, parameters, _pressureBufferFillStencil),
 	_pressureBufferReadIterator(flowField, parameters, _pressureBufferReadStencil)
+	// _velocityBufferFillIterator(flowField, parameters, _velocityBufferFillStencil),
+	// _velocityBufferReadIterator(flowField, parameters, _velocityBufferReadStencil)
 	
 {
 

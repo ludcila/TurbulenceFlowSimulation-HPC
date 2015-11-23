@@ -17,8 +17,6 @@ class PressureBufferFillStencil : public BoundaryStencil<FlowField> {
 	
 	public:
 
-	PressureBufferFillStencil (const Parameters & parameters, FLOAT *bufferLeftWall, FLOAT *bufferRightWall, FLOAT *bufferTopWall, FLOAT *bufferBottomWall);
-
 	PressureBufferFillStencil (const Parameters & parameters, FLOAT *bufferLeftWall, FLOAT *bufferRightWall, FLOAT *bufferTopWall, FLOAT *bufferBottomWall, FLOAT *bufferFrontWall, FLOAT *bufferBackWall);
 	
 	void applyLeftWall(FlowField & flowField, int i, int j);
