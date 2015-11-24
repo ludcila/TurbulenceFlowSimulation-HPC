@@ -137,9 +137,10 @@ class Simulation {
         _parallelManager.communicatePressure();
         // compute velocity
         _velocityIterator.iterate();
-	// set obstacle boundaries
-	_obstacleIterator.iterate();
+        // set obstacle boundaries
+        _obstacleIterator.iterate();
         // TODO WS2: communicate velocity values
+		_parallelManager.communicateVelocity();
         // Iterate for velocities on the boundary
         _wallVelocityIterator.iterate();
     }

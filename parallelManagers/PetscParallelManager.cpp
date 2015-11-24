@@ -3,7 +3,7 @@
 #include "../stencils/PressureBufferReadStencil.h"
 
 PetscParallelManager::PetscParallelManager(FlowField &flowField, Parameters &parameters) :
-	
+
 	_parameters(parameters),
 	_flowField(flowField),
 	
@@ -44,14 +44,14 @@ PetscParallelManager::PetscParallelManager(FlowField &flowField, Parameters &par
 	// Stencils
 	_pressureBufferFillStencil(parameters, _pressureSendBufferLeftWall, _pressureSendBufferRightWall, _pressureSendBufferTopWall, _pressureSendBufferBottomWall, _pressureSendBufferFrontWall, _pressureSendBufferBackWall),
 	_pressureBufferReadStencil(parameters, _pressureRecvBufferLeftWall, _pressureRecvBufferRightWall, _pressureRecvBufferTopWall, _pressureRecvBufferBottomWall, _pressureRecvBufferFrontWall, _pressureRecvBufferBackWall),
-	// _velocityBufferFillStencil(parameters, _velocitySendBufferLeftWall, _velocitySendBufferRightWall, _velocitySendBufferTopWall, _velocitySendBufferBottomWall, _velocitySendBufferFrontWall, _velocitySendBufferBackWall),
-	// _velocityBufferReadStencil(parameters, _velocityRecvBufferLeftWall, _velocityRecvBufferRightWall, _velocityRecvBufferTopWall, _velocityRecvBufferBottomWall, _velocityRecvBufferFrontWall, _velocityRecvBufferBackWall),
+	_velocityBufferFillStencil(parameters, _velocitySendBufferLeftWall, _velocitySendBufferRightWall, _velocitySendBufferTopWall, _velocitySendBufferBottomWall, _velocitySendBufferFrontWall, _velocitySendBufferBackWall),
+	_velocityBufferReadStencil(parameters, _velocityRecvBufferLeftWall, _velocityRecvBufferRightWall, _velocityRecvBufferTopWall, _velocityRecvBufferBottomWall, _velocityRecvBufferFrontWall, _velocityRecvBufferBackWall),
 
 	// Iterators
 	_pressureBufferFillIterator(flowField, parameters, _pressureBufferFillStencil),
-	_pressureBufferReadIterator(flowField, parameters, _pressureBufferReadStencil)
-	// _velocityBufferFillIterator(flowField, parameters, _velocityBufferFillStencil),
-	// _velocityBufferReadIterator(flowField, parameters, _velocityBufferReadStencil)
+	_pressureBufferReadIterator(flowField, parameters, _pressureBufferReadStencil),
+	_velocityBufferFillIterator(flowField, parameters, _velocityBufferFillStencil),
+	_velocityBufferReadIterator(flowField, parameters, _velocityBufferReadStencil)
 	
 {
 
@@ -95,12 +95,32 @@ void PetscParallelManager::communicatePressure() {
 	
 }
 
+void PetscParallelManager::communicateVelocity() {
+
+	_velocityBufferFillIterator.iterate();
+
+	// Left to right & Right to left
+	sendReceive(_velocitySendBufferRightWall, _parameters.parallel.rightNb, _velocityRecvBufferLeftWall, _parameters.parallel.leftNb, _cellsLeftRight);
+	sendReceive(_velocitySendBufferLeftWall, _parameters.parallel.leftNb, _velocityRecvBufferRightWall, _parameters.parallel.rightNb, _cellsLeftRight);
+
+	_velocityBufferReadIterator.iterate();
+
+}
+
 void PetscParallelManager::sendReceive(FLOAT *sendBuffer, int sendTo, FLOAT *receiveBuffer, int receiveFrom, int size) {
-	MPI_Sendrecv(
-		sendBuffer, size, MPI_DOUBLE, sendTo, 0,
-		receiveBuffer, size, MPI_DOUBLE, receiveFrom, 0,
-		MPI_COMM_WORLD, MPI_STATUS_IGNORE
-	);
-	// MPI_DOUBLE ok?
+
+	MPI_Sendrecv( 	sendBuffer,
+					size,
+					(sizeof(FLOAT) == sizeof(float) ? MPI_FLOAT : MPI_DOUBLE),
+					sendTo,
+					0,
+					receiveBuffer,
+					size,
+					(sizeof(FLOAT) == sizeof(float) ? MPI_FLOAT : MPI_DOUBLE),
+					receiveFrom,
+					0,
+					MPI_COMM_WORLD,
+					MPI_STATUS_IGNORE);
+	// MPI_DOUBLE ok? maybe like that?
 }
 
