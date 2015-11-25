@@ -11,7 +11,7 @@ VelocityBufferReadStencil::VelocityBufferReadStencil (const Parameters & paramet
 
 void VelocityBufferReadStencil::applyLeftWall(FlowField & flowField, int i, int j) {
 	flowField.getVelocity().getVector(i, j, 0)[0] = _bufferLeftWall[BUFFER_2D_POS_X(j)];
-	flowField.getVelocity().getVector(i, j, 0)[1] = _bufferLeftWall[BUFFER_2D_POS_Y(j)];
+	flowField.getVelocity().getVector(i+1, j, 0)[1] = _bufferLeftWall[BUFFER_2D_POS_Y(j)];
 }
 
 void VelocityBufferReadStencil::applyRightWall(FlowField & flowField, int i, int j) {
@@ -20,7 +20,7 @@ void VelocityBufferReadStencil::applyRightWall(FlowField & flowField, int i, int
 }
 
 void VelocityBufferReadStencil::applyBottomWall(FlowField & flowField, int i, int j) {
-	flowField.getVelocity().getVector(i, j, 0)[0] = _bufferBottomWall[BUFFER_2D_POS_X(i)];
+	flowField.getVelocity().getVector(i, j+1, 0)[0] = _bufferBottomWall[BUFFER_2D_POS_X(i)];
 	flowField.getVelocity().getVector(i, j, 0)[1] = _bufferBottomWall[BUFFER_2D_POS_Y(i)];
 }
 

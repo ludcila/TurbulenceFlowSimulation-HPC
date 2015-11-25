@@ -16,7 +16,7 @@ void VelocityBufferFillStencil::applyLeftWall(FlowField & flowField, int i, int 
 }
 
 void VelocityBufferFillStencil::applyRightWall(FlowField & flowField, int i, int j) {
-	this->_bufferRightWall[BUFFER_2D_POS_X(j)] = flowField.getVelocity().getVector(i-1, j, 0)[0];
+	this->_bufferRightWall[BUFFER_2D_POS_X(j)] = flowField.getVelocity().getVector(i-2, j, 0)[0];
 	this->_bufferRightWall[BUFFER_2D_POS_Y(j)] = flowField.getVelocity().getVector(i-1, j, 0)[1];
 }
 
@@ -27,7 +27,7 @@ void VelocityBufferFillStencil::applyBottomWall(FlowField & flowField, int i, in
 
 void VelocityBufferFillStencil::applyTopWall(FlowField & flowField, int i, int j) {
 	this->_bufferTopWall[BUFFER_2D_POS_X(i)] = flowField.getVelocity().getVector(i, j-1, 0)[0];
-	this->_bufferTopWall[BUFFER_2D_POS_Y(i)] = flowField.getVelocity().getVector(i, j-1, 0)[1];
+	this->_bufferTopWall[BUFFER_2D_POS_Y(i)] = flowField.getVelocity().getVector(i, j-2, 0)[1];
 }
 
 void VelocityBufferFillStencil::applyLeftWall(FlowField & flowField, int i, int j, int k) {

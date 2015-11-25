@@ -18,11 +18,11 @@ void PressureBufferReadStencil::applyRightWall(FlowField & flowField, int i, int
 }
 
 void PressureBufferReadStencil::applyBottomWall(FlowField & flowField, int i, int j) {
-
+	flowField.getPressure().getScalar(i, j+1) = _bufferBottomWall[i];
 }
 
 void PressureBufferReadStencil::applyTopWall(FlowField & flowField, int i, int j) {
-
+	flowField.getPressure().getScalar(i, j) = _bufferTopWall[i];
 }
 
 void PressureBufferReadStencil::applyLeftWall(FlowField & flowField, int i, int j, int k) {
