@@ -1,6 +1,5 @@
 #include "VelocityBufferFillStencil.h"
 
-
 VelocityBufferFillStencil::VelocityBufferFillStencil (const Parameters & parameters, FLOAT *bufferLeftWall, FLOAT *bufferRightWall, FLOAT *bufferTopWall, FLOAT *bufferBottomWall, FLOAT *bufferFrontWall, FLOAT *bufferBackWall): BoundaryStencil(parameters) {
 	this->_bufferLeftWall = bufferLeftWall;
 	this->_bufferRightWall = bufferRightWall;
