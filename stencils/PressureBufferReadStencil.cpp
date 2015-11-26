@@ -1,6 +1,6 @@
 #include "PressureBufferReadStencil.h"
 
-PressureBufferReadStencil::PressureBufferReadStencil (const Parameters & parameters, FLOAT *bufferLeftWall, FLOAT *bufferRightWall, FLOAT *bufferTopWall, FLOAT *bufferBottomWall, FLOAT *bufferFrontWall, FLOAT *bufferBackWall): BoundaryStencil(parameters) {
+PressureBufferReadStencil::PressureBufferReadStencil (const Parameters & parameters, FLOAT *bufferLeftWall, FLOAT *bufferRightWall, FLOAT *bufferTopWall, FLOAT *bufferBottomWall, FLOAT *bufferFrontWall, FLOAT *bufferBackWall): BoundaryStencil<FlowField>(parameters) {
 	this->_bufferLeftWall = bufferLeftWall;
 	this->_bufferRightWall = bufferRightWall;
 	this->_bufferTopWall = bufferTopWall;

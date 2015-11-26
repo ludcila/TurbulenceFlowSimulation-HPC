@@ -26,30 +26,30 @@ class PetscParallelManager {
 	FlowField &_flowField;
 	
 	// Buffers
-	FLOAT *_pressureSendBufferLeftWall = NULL;
-	FLOAT *_pressureRecvBufferLeftWall = NULL;
-	FLOAT *_pressureSendBufferRightWall = NULL;
-	FLOAT *_pressureRecvBufferRightWall = NULL;
-	FLOAT *_pressureSendBufferTopWall = NULL;
-	FLOAT *_pressureRecvBufferTopWall = NULL;
-	FLOAT *_pressureSendBufferBottomWall = NULL;
-	FLOAT *_pressureRecvBufferBottomWall = NULL;
-	FLOAT *_pressureSendBufferFrontWall = NULL;
-	FLOAT *_pressureRecvBufferFrontWall = NULL;
-	FLOAT *_pressureSendBufferBackWall = NULL;
-	FLOAT *_pressureRecvBufferBackWall = NULL;
-	FLOAT *_velocitySendBufferLeftWall = NULL;
-	FLOAT *_velocityRecvBufferLeftWall = NULL;
-	FLOAT *_velocitySendBufferRightWall = NULL;
-	FLOAT *_velocityRecvBufferRightWall = NULL;
-	FLOAT *_velocitySendBufferTopWall = NULL;
-	FLOAT *_velocityRecvBufferTopWall = NULL;
-	FLOAT *_velocitySendBufferBottomWall = NULL;
-	FLOAT *_velocityRecvBufferBottomWall = NULL;
-	FLOAT *_velocitySendBufferFrontWall = NULL;
-	FLOAT *_velocityRecvBufferFrontWall = NULL;
-	FLOAT *_velocitySendBufferBackWall = NULL;
-	FLOAT *_velocityRecvBufferBackWall = NULL;
+	FLOAT *_pressureSendBufferLeftWall;
+	FLOAT *_pressureRecvBufferLeftWall;
+	FLOAT *_pressureSendBufferRightWall;
+	FLOAT *_pressureRecvBufferRightWall;
+	FLOAT *_pressureSendBufferTopWall;
+	FLOAT *_pressureRecvBufferTopWall;
+	FLOAT *_pressureSendBufferBottomWall;
+	FLOAT *_pressureRecvBufferBottomWall;
+	FLOAT *_pressureSendBufferFrontWall;
+	FLOAT *_pressureRecvBufferFrontWall;
+	FLOAT *_pressureSendBufferBackWall;
+	FLOAT *_pressureRecvBufferBackWall;
+	FLOAT *_velocitySendBufferLeftWall;
+	FLOAT *_velocityRecvBufferLeftWall;
+	FLOAT *_velocitySendBufferRightWall;
+	FLOAT *_velocityRecvBufferRightWall;
+	FLOAT *_velocitySendBufferTopWall;
+	FLOAT *_velocityRecvBufferTopWall;
+	FLOAT *_velocitySendBufferBottomWall;
+	FLOAT *_velocityRecvBufferBottomWall;
+	FLOAT *_velocitySendBufferFrontWall;
+	FLOAT *_velocityRecvBufferFrontWall;
+	FLOAT *_velocitySendBufferBackWall;
+	FLOAT *_velocityRecvBufferBackWall;
 	
 	// Stencils
 	PressureBufferFillStencil _pressureBufferFillStencil;

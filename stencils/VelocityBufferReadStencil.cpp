@@ -1,6 +1,6 @@
 #include "VelocityBufferReadStencil.h"
 
-VelocityBufferReadStencil::VelocityBufferReadStencil (const Parameters & parameters, FLOAT *bufferLeftWall, FLOAT *bufferRightWall, FLOAT *bufferTopWall, FLOAT *bufferBottomWall, FLOAT *bufferFrontWall, FLOAT *bufferBackWall): BoundaryStencil(parameters) {
+VelocityBufferReadStencil::VelocityBufferReadStencil (const Parameters & parameters, FLOAT *bufferLeftWall, FLOAT *bufferRightWall, FLOAT *bufferTopWall, FLOAT *bufferBottomWall, FLOAT *bufferFrontWall, FLOAT *bufferBackWall): BoundaryStencil<FlowField>(parameters) {
 	this->_bufferLeftWall = bufferLeftWall;
 	this->_bufferRightWall = bufferRightWall;
 	this->_bufferTopWall = bufferTopWall;
