@@ -10,7 +10,7 @@
  */
 class FlowField {
 
-    private:
+    protected:
 
         const int _size_x; //! Size in the X direction
         const int _size_y; //! Size in the Y direction
@@ -28,7 +28,7 @@ class FlowField {
 
         ScalarField _RHS;      //! Right hand side for the Poisson equation
 
-    public:
+    public:	
 
         /** Constructor for the 2D flow field
          *
