@@ -4,6 +4,7 @@
 #include <math.h>
 #include "../Definitions.h"
 #include "../Parameters.h"
+#include "../FlowField.h"
 
 // Load the local velocity cube with relevant velocities of the 2D plane
 inline void loadLocalVelocity2D(FlowField & flowField, FLOAT * const localVelocity, int i, int j){
