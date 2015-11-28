@@ -50,6 +50,8 @@ class TurbulentFlowField : public FlowField {
          */
         TurbulentFlowField (const Parameters & parameters);
 
+	ScalarField & getTurbulentViscosity ();
+
 };
 
 #endif

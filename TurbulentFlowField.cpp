@@ -31,4 +31,7 @@ TurbulentFlowField::TurbulentFlowField (const Parameters & parameters):
                       ScalarField(_size_x + 3, _size_y + 3, _size_z + 3))
 { }
 
+ScalarField & TurbulentFlowField::getTurbulentViscosity () {
+    return _nitau;
+}
 

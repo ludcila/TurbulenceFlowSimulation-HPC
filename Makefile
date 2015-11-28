@@ -29,6 +29,7 @@ stencils/PressureBufferFillStencil.o \
 stencils/PressureBufferReadStencil.o \
 stencils/VelocityBufferFillStencil.o \
 stencils/VelocityBufferReadStencil.o \
+stencils/TurbulentViscosityStencil.o \
 parallelManagers/PetscParallelManager.o\
 parallelManagers/PetscParallelConfiguration.o\
 GlobalBoundaryFactory.o\
