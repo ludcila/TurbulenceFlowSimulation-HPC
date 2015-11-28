@@ -636,6 +636,70 @@ inline FLOAT dw2dz ( const FLOAT * const lv, const Parameters & parameters, cons
 }
 
 
+inline FLOAT dndudx ( const FLOAT * const lv, const Parameters & parameters, const FLOAT* const lm, const FLOAT* lt ) {
+
+    const FLOAT dx = lm[mapd(0,0,0,0)];
+
+    const FLOAT u0 = lv[mapd(0,0,0,0)];
+    const FLOAT uM1= lv[mapd(-1,0,0,0)];
+    const FLOAT u1 = lv[mapd(1,0,0,0)];
+    
+    // Kinematic viscosity
+    const FLOAT kni = 1.0 / parameters.flow.Re;
+    // Turbulent viscosity
+    const FLOAT tni0 = lt[mapd(0,0,0,0)];
+    const FLOAT tni1 = lt[mapd(1,0,0,0)];
+    // Total viscosity
+    const FLOAT ni0 = kni + tni0;
+    const FLOAT ni1 = kni + tni1;
+    
+    return 1.0 / (dx*dx) * (ni1 * (u1 - u0) - ni0 * (u0 - uM1));
+
+}
+
+inline FLOAT dndvdy ( const FLOAT * const lv, const Parameters & parameters, const FLOAT* const lm ) {
+
+    const FLOAT dy = lm[mapd(0,0,0,1)];
+
+    const FLOAT v0 = lv[mapd(0,0,0,1)];
+    const FLOAT vM1= lv[mapd(0,-1,0,1)];
+    const FLOAT v1 = lv[mapd(0,1,0,1)];
+    
+    // Kinematic viscosity
+    const FLOAT kni = 1.0 / parameters.flow.Re;
+    // Turbulent viscosity
+    const FLOAT tni0 = lt[mapd(0,0,0,0)];
+    const FLOAT tni1 = lt[mapd(0,1,0,0)];
+    // Total viscosity
+    const FLOAT ni0 = kni + tni0;
+    const FLOAT ni1 = kni + tni1;
+    
+    return 1.0 / (dy*dy) * (ni1 * (v1 - v0) - ni0 * (v0 - vM1));
+    
+}
+
+inline FLOAT dndvdy ( const FLOAT * const lv, const Parameters & parameters, const FLOAT* const lm ) {
+
+    const FLOAT dz = lm[mapd(0,0,0,2)];
+
+    const FLOAT w0 = lv[mapd(0,0,0,2)];
+    const FLOAT wM1= lv[mapd(0,0,-1,2)];
+    const FLOAT w1 = lv[mapd(0,0,1,2)];
+    
+    // Kinematic viscosity
+    const FLOAT kni = 1.0 / parameters.flow.Re;
+    // Turbulent viscosity
+    const FLOAT tni0 = lt[mapd(0,0,0,0)];
+    const FLOAT tni1 = lt[mapd(0,0,1,0)];
+    // Total viscosity
+    const FLOAT ni0 = kni + tni0;
+    const FLOAT ni1 = kni + tni1;
+    
+    return 1.0 / (dz*dz) * (ni1 * (w1 - w0) - ni0 * (w0 - wM1));
+    
+}
+
+
 inline FLOAT computeF2D(const FLOAT * const localVelocity, const FLOAT * const localMeshsize, const Parameters & parameters, FLOAT dt){
     return localVelocity [mapd(0,0,0,0)]
         + dt * ( 1 / parameters.flow.Re * ( d2udx2 ( localVelocity, localMeshsize )
