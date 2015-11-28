@@ -74,6 +74,31 @@ inline FLOAT dudx ( const FLOAT * const lv, const FLOAT * const lm ) {
     return tmp2;*/
 }
 
+inline FLOAT dudy ( const FLOAT * const lv, const FLOAT * const lm ) {
+    //double tmp1= ( lv [mapd(0,0,0,0)] - lv [mapd(-1,0,0,0)] ) / GeometricParameters::dx;
+
+    // evaluate dudx in the cell center by a central difference
+    const int index0 = mapd(0,0,0,0);
+    const int index1 = mapd(0,-1,0,0);
+    return  2*( lv [index0] - lv [index1] ) / (lm[index0]+lm[index1]);
+    /*if (fabs(tmp1-tmp2) > 1.0e-12){handleError(1, "dudx");}
+
+    return tmp2;*/
+}
+
+inline FLOAT dudz ( const FLOAT * const lv, const FLOAT * const lm ) {
+    //double tmp1= ( lv [mapd(0,0,0,0)] - lv [mapd(-1,0,0,0)] ) / GeometricParameters::dx;
+
+    // evaluate dudx in the cell center by a central difference
+    const int index0 = mapd(0,0,0,0);
+    const int index1 = mapd(0,0,-1,0);
+    return  2*( lv [index0] - lv [index1] ) / (lm[index0]+lm[index1]);
+    /*if (fabs(tmp1-tmp2) > 1.0e-12){handleError(1, "dudx");}
+
+    return tmp2;*/
+}
+
+
 inline FLOAT dvdy ( const FLOAT * const lv, const FLOAT * const lm ) {
     //double tmp1= ( lv [mapd(0,0,0,1)] - lv [mapd(0,-1,0,1)] ) / GeometricParameters::dy;
     const int index0 = mapd(0, 0,0,1);
@@ -81,6 +106,30 @@ inline FLOAT dvdy ( const FLOAT * const lv, const FLOAT * const lm ) {
     return ( lv [index0] - lv [index1] ) / lm[index0];
 
     /*if (fabs(tmp1-tmp2) > 1.0e-12){handleError(1, "dvdy");}
+
+    return tmp2;*/
+}
+
+inline FLOAT dvdx ( const FLOAT * const lv, const FLOAT * const lm ) {
+    //double tmp1= ( lv [mapd(0,0,0,0)] - lv [mapd(-1,0,0,0)] ) / GeometricParameters::dx;
+
+    // evaluate dudx in the cell center by a central difference
+    const int index0 = mapd(0,0,0,1);
+    const int index1 = mapd(-1,0,0,1);
+    return  2*( lv [index0] - lv [index1] ) / (lm[index0]+lm[index1]);
+    /*if (fabs(tmp1-tmp2) > 1.0e-12){handleError(1, "dudx");}
+
+    return tmp2;*/
+}
+
+inline FLOAT dvdz ( const FLOAT * const lv, const FLOAT * const lm ) {
+    //double tmp1= ( lv [mapd(0,0,0,0)] - lv [mapd(-1,0,0,0)] ) / GeometricParameters::dx;
+
+    // evaluate dudx in the cell center by a central difference
+    const int index0 = mapd(0,0,0,1);
+    const int index1 = mapd(0,0,-1,1);
+    return  2*( lv [index0] - lv [index1] ) / (lm[index0]+lm[index1]);
+    /*if (fabs(tmp1-tmp2) > 1.0e-12){handleError(1, "dudx");}
 
     return tmp2;*/
 }
@@ -96,7 +145,29 @@ inline FLOAT dwdz ( const FLOAT * const lv, const FLOAT * const lm ) {
     return tmp2;*/
 }
 
+inline FLOAT dwdx ( const FLOAT * const lv, const FLOAT * const lm ) {
+    //double tmp1= ( lv [mapd(0,0,0,0)] - lv [mapd(-1,0,0,0)] ) / GeometricParameters::dx;
 
+    // evaluate dudx in the cell center by a central difference
+    const int index0 = mapd(0,0,0,2);
+    const int index1 = mapd(-1,0,0,2);
+    return  2*( lv [index0] - lv [index1] ) / (lm[index0]+lm[index1]);
+    /*if (fabs(tmp1-tmp2) > 1.0e-12){handleError(1, "dudx");}
+
+    return tmp2;*/
+}
+
+inline FLOAT dwdy ( const FLOAT * const lv, const FLOAT * const lm ) {
+    //double tmp1= ( lv [mapd(0,0,0,0)] - lv [mapd(-1,0,0,0)] ) / GeometricParameters::dx;
+
+    // evaluate dudx in the cell center by a central difference
+    const int index0 = mapd(0,0,0,2);
+    const int index1 = mapd(0,-1,0,2);
+    return  2*( lv [index0] - lv [index1] ) / (lm[index0]+lm[index1]);
+    /*if (fabs(tmp1-tmp2) > 1.0e-12){handleError(1, "dudx");}
+
+    return tmp2;*/
+}
 // second derivative of u-component w.r.t. x-direction, evaluated at the location of the u-component
 inline FLOAT d2udx2 ( const FLOAT * const lv, const FLOAT * const lm ) {
     //double tmp1= ( lv[mapd(1,0,0,0)] - 2*lv[mapd(0,0,0,0)] + lv[mapd(-1,0,0,0)] )
@@ -657,7 +728,7 @@ inline FLOAT dndudx ( const FLOAT * const lv, const Parameters & parameters, con
 
 }
 
-inline FLOAT dndvdy ( const FLOAT * const lv, const Parameters & parameters, const FLOAT* const lm ) {
+inline FLOAT dndvdy ( const FLOAT * const lv, const Parameters & parameters, const FLOAT* const lm, const FLOAT* lt  ) {
 
     const FLOAT dy = lm[mapd(0,0,0,1)];
 
@@ -678,7 +749,7 @@ inline FLOAT dndvdy ( const FLOAT * const lv, const Parameters & parameters, con
     
 }
 
-inline FLOAT dndvdy ( const FLOAT * const lv, const Parameters & parameters, const FLOAT* const lm ) {
+inline FLOAT dndwdz ( const FLOAT * const lv, const Parameters & parameters, const FLOAT* const lm, const FLOAT* lt  ) {
 
     const FLOAT dz = lm[mapd(0,0,0,2)];
 
@@ -740,5 +811,21 @@ inline FLOAT computeH3D(const FLOAT * const localVelocity, const FLOAT * const l
                 - dw2dz ( localVelocity, parameters, localMeshsize ) - duwdx ( localVelocity, parameters, localMeshsize )
                 - dvwdy ( localVelocity, parameters, localMeshsize ) + parameters.environment.gz );
 }
+
+inline FLOAT computeSdotS3D(const FLOAT * const localVelocity, const FLOAT * const localMeshsize){
+return 4*(dudx(localVelocity, localMeshsize)*dudx(localVelocity, localMeshsize)
++dvdy(localVelocity, localMeshsize)*dvdy(localVelocity, localMeshsize)+dwdz(localVelocity, localMeshsize)*dwdz(localVelocity, localMeshsize))
++2*((dudy(localVelocity, localMeshsize)+dvdx(localVelocity, localMeshsize))*(dudy(localVelocity, localMeshsize)+dvdx(localVelocity, localMeshsize))
++(dudz(localVelocity, localMeshsize)+dwdx(localVelocity, localMeshsize))*(dudz(localVelocity, localMeshsize)+dwdx(localVelocity, localMeshsize))
++(dvdz(localVelocity, localMeshsize)+dwdy(localVelocity, localMeshsize))*(dvdz(localVelocity, localMeshsize)+dwdy(localVelocity, localMeshsize)));
+}
+
+inline FLOAT computeSdotS2D(const FLOAT * const localVelocity, const FLOAT * const localMeshsize){
+return 4*(dudx(localVelocity, localMeshsize)*dudx(localVelocity, localMeshsize)
++dvdy(localVelocity, localMeshsize)*dvdy(localVelocity, localMeshsize))
++2*((dudy(localVelocity, localMeshsize)+dvdx(localVelocity, localMeshsize))*(dudy(localVelocity, localMeshsize)+dvdx(localVelocity, localMeshsize)));
+}
+
+
 
 #endif
