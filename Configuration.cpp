@@ -419,6 +419,25 @@ void Configuration::loadParameters(Parameters & parameters, const MPI_Comm & com
 
         //------------------------------------------------------
         // TODO WS2: Turbulence
+          // Turbulence parameters
+          std::string temp;
+          if (parameters.simulation.type.compare("turbulence") == 0)
+          {
+            node = confFile.FirstChildElement()->FirstChildElement("simulation")\
+                                               ->FirstChildElement("boundary_layer");
+            if (node != NULL){
+              readStringMandatory(temp, node);
+              if ((temp.compare("laminar")==0) || (temp.compare("turbulent")==0)){
+                parameters.turbulence.boundary_layer_equation=temp;
+              } else {
+                handleError(1, "Unknown boundary layer thickness model! Currently supported: laminar, turbulent");
+              }
+
+            } else {
+                handleError (1, "Error; boundary layer equation type is not specified");
+            }
+          }
+
         //------------------------------------------------------
     }
 
@@ -478,6 +497,6 @@ void Configuration::loadParameters(Parameters & parameters, const MPI_Comm & com
     MPI_Bcast(parameters.walls.vectorBack,   3, MY_MPI_FLOAT, 0, communicator);
 
     // TODO WS2: broadcast turbulence parameters
-
+    broadcastString (parameters.turbulence.boundary_layer_equation, communicator);
 
 }

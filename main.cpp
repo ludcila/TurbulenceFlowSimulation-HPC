@@ -11,7 +11,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <dirent.h>
-
+#include "TurbulentFlowField.h"  // TODO move this line to the new TurbulentSimulation
 
 int main (int argc, char *argv[]) {
 
@@ -34,7 +34,7 @@ int main (int argc, char *argv[]) {
     MeshsizeFactory::getInstance().initMeshsize(parameters);
     FlowField *flowField = NULL;
     Simulation *simulation = NULL;
-    
+
     #ifdef DEBUG
     std::cout << "Processor " << parameters.parallel.rank << " with index ";
     std::cout << parameters.parallel.indices[0] << ",";
@@ -53,7 +53,12 @@ int main (int argc, char *argv[]) {
     // initialise simulation
     if (parameters.simulation.type=="turbulence"){
       // TODO WS2: initialise turbulent flow field and turbulent simulation object
+      if(rank==0){ std::cout << "Start Turbulence simulation in " << parameters.geometry.dim << "D" << std::endl; }
+      flowField = new TurbulentFlowField(parameters);
+      if(flowField == NULL){ handleError(1, "flowField==NULL!"); }
+      //simulation = new Simulation(parameters,*flowField);
       handleError(1,"Turbulence currently not supported yet!");
+
     } else if (parameters.simulation.type=="dns"){
       if(rank==0){ std::cout << "Start DNS simulation in " << parameters.geometry.dim << "D" << std::endl; }
       flowField = new FlowField(parameters);
@@ -66,7 +71,7 @@ int main (int argc, char *argv[]) {
     if(simulation == NULL){ handleError(1, "simulation==NULL!"); }
     simulation->initializeFlowField();
     //flowField->getFlags().show();
-    
+
     /* Create a folder for the VTK output */
 	time_t rawtime = time(NULL);
 	struct tm * timeinfo = localtime(&rawtime);
@@ -101,15 +106,15 @@ int main (int argc, char *argv[]) {
                         parameters.timestep.dt << std::endl;
           timeStdOut += parameters.stdOut.interval;
       }
-      
+
       timeSteps++;
-      
+
       // TODO WS1: trigger VTK output
       if(timeVTKOut <= time) {
 	      simulation->plotVTK(timeSteps, foldername.str());
 	      timeVTKOut += parameters.vtk.interval;
       }
-      
+
     }
 
     // TODO WS1: plot final output

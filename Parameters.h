@@ -132,7 +132,10 @@ class BFStepParameters{
         FLOAT yRatio;
 };
 
-
+class TurbulenceParameters{
+    public:
+        std::string boundary_layer_equation;
+};
 
 //@}
 
@@ -155,6 +158,7 @@ class Parameters {
         StdOutParameters        stdOut;
         BFStepParameters        bfStep;
         // TODO WS2: include parameters for turbulence
+        TurbulenceParameters    turbulence;
         Meshsize                *meshsize;
 };
 
