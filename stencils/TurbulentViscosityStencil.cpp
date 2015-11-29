@@ -20,6 +20,59 @@ void TurbulentViscosityStencil::apply ( TurbulentFlowField & flowField, int i, i
 FLOAT lm;
 loadLocalVelocity2D(  flowField, _localVelocity, i, j);
 loadLocalMeshsize2D(_parameters, _localMeshsize, i, j);
+const int obstacleleft_down = flowField.getFlags().getValue(this->_parameters.parallel.firstCorner[0],this->_parameters.parallel.firstCorner[1]);
+/*const int obstacleright_up = flowField.getFlags().getValue(this->_parameters.parallel.firstcorner(0)+this->_parameters.geometry.sizeX-1,this->_parameters.parallel.firstcorner(1)+this->_parameters.geometry.sizeY-1);*/
+FLOAT mindistance;
+FLOAT delta;
+FLOAT re=this->_parameters.flow.Re;
+
+ 
+if(this->_parameters.turbulence.boundary_layer_equation=="laminar")
+{
+	if((obstacleleft_down & OBSTACLE_LEFT)==1)  delta=1000;
+
+	else delta=4.91*this->_parameters.meshsize->getPosX(i,j)/(pow(re, 1/2));
+}
+
+else {
+	if((obstacleleft_down & OBSTACLE_LEFT)==1)  delta=1000;
+
+	else delta=0.382*this->_parameters.meshsize->getPosX(i,j)/(pow(re, 1/5));
+}
+	
+
+if((obstacleleft_down & OBSTACLE_LEFT)==1)
+	{
+	if(j<=i || j<this->_parameters.geometry.sizeX-i)
+		if( j<=this->_parameters.geometry.sizeY/2) mindistance=this->_parameters.meshsize->getPosY(i,j);
+	
+	else if(this->_parameters.geometry.sizeY-j<=i || this->_parameters.geometry.sizeY-j<=this->_parameters.geometry.sizeX-i)
+		if( j>this->_parameters.geometry.sizeY/2) mindistance=this->_parameters.geometry.lengthY-this->_parameters.meshsize->getPosY(i,j);
+
+	else{
+		if(i<=this->_parameters.geometry.sizeX/2)  mindistance=this->_parameters.meshsize->getPosX(i,j);
+
+		else mindistance=this->_parameters.geometry.lengthX-this->_parameters.meshsize->getPosX(i,j);
+
+}
+
+else {
+
+	if(this->_parameters.meshsize->getPosX(i,j)<this->_parameters.bfStep.xRatio){
+		if(this->_parameters.meshsize->getPosY(i,j)-this->_parameters.bfStep.yRatio<=this->_parameters.geometry.lengthY-this->_parameters.meshsize->getPosY(i,j))   mindistance=this->_parameters.meshsize->getPosY(i,j)-this->_parameters.bfStep.yRatio;
+		else mindistance=this->_parameters.geometry.lengthY-this->_parameters.meshsize->getPosY(i,j);
+		
+	}
+
+	else{
+		if(j<=this->_parameters.geometry.sizeY/2) mindistance=this->_parameters.meshsize->getPosY(i,j);
+		
+		else mindistance=this->_parameters.geometry.lengthY-this->_parameters.meshsize->getPosY(i,j);
+	}
+
+}
+
+
 
 if(0.41*this->_parameters.meshsize->getPosY(i,j) < 0.09*4.91* this->_parameters.meshsize->getPosX(i,j)/(sqrt(this->_parameters.flow.Re)))
 lm=0.41*this->_parameters.meshsize->getPosY(i,j);
@@ -31,7 +84,7 @@ flowField.getTurbulentViscosity().getScalar(i,j)=lm*lm*sqrt(2*computeSdotS2D(_lo
 
 }
 
-
+}
 
 
 

@@ -17,7 +17,7 @@ class TimestepParameters{
 class SimulationParameters{
     public:
         FLOAT finalTime;  //! Final time for the simulation
-        std::string type; //! type of the simulation (DNS vs. turbulence)
+        std::string type; //! type of the simulation (DNS vs. turbulence modeling)
         std::string scenario;   //! If channel or cavity, for example
 };
 
