@@ -21,8 +21,8 @@ FLOAT lm;
 loadLocalVelocity2D(  flowField, _localVelocity, i, j);
 loadLocalMeshsize2D(_parameters, _localMeshsize, i, j);
 
-if( this->_parameters.meshsize->getPosY(i,j) < 0.09*4.91* this->_parameters.meshsize->getPosX(i,j)/(sqrt(this->_parameters.flow.Re)))
-lm=this->_parameters.meshsize->getPosY(i,j);
+if(0.41*this->_parameters.meshsize->getPosY(i,j) < 0.09*4.91* this->_parameters.meshsize->getPosX(i,j)/(sqrt(this->_parameters.flow.Re)))
+lm=0.41*this->_parameters.meshsize->getPosY(i,j);
 
 else 
 lm= 0.09*4.91* this->_parameters.meshsize->getPosX(i,j)/(sqrt(this->_parameters.flow.Re));
@@ -48,8 +48,8 @@ else
 closestwall=this->_parameters.meshsize->getPosZ(i,j,k);
 
 
-if( closestwall < 0.09*4.91*this->_parameters.meshsize->getPosX(i,j,k)/(sqrt(this->_parameters.flow.Re)))
-lm=closestwall;
+if( 0.41*closestwall < 0.09*4.91*this->_parameters.meshsize->getPosX(i,j,k)/(sqrt(this->_parameters.flow.Re)))
+lm=0.41*closestwall;
 
 else 
 lm=0.09*4.91* this->_parameters.meshsize->getPosX(i,j,k)/(sqrt(this->_parameters.flow.Re));
