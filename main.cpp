@@ -82,6 +82,13 @@ int main (int argc, char *argv[]) {
 	struct stat info;
 	if( stat( foldername.str().c_str(), &info ) != 0 ) {
 		mkdir(foldername.str().c_str(), 0777);
+		/* Copy the currently used config file into the VTK output directory */
+		const char* fileName = "/config.xml";
+		std::ifstream source(argv[1], std::ios::binary);
+		std::ofstream dest(foldername.str().append(fileName).c_str(), std::ios::binary);
+    		dest << source.rdbuf();
+    		source.close();
+    		dest.close();
 	}
 
     FLOAT time = 0.0;
