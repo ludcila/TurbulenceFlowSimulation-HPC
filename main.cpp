@@ -4,6 +4,7 @@
 #include <sstream>
 #include "Configuration.h"
 #include "Simulation.h"
+#include "TurbulentSimulation.h"
 #include "parallelManagers/PetscParallelConfiguration.h"
 #include "MeshsizeFactory.h"
 #include <time.h>
@@ -56,9 +57,7 @@ int main (int argc, char *argv[]) {
       if(rank==0){ std::cout << "Start Turbulence simulation in " << parameters.geometry.dim << "D" << std::endl; }
       flowField = new TurbulentFlowField(parameters);
       if(flowField == NULL){ handleError(1, "flowField==NULL!"); }
-      //simulation = new Simulation(parameters,*flowField);
-      handleError(1,"Turbulence currently not supported yet!");
-
+      simulation = new TurbulentSimulation(parameters,*static_cast<TurbulentFlowField*>(flowField));
     } else if (parameters.simulation.type=="dns"){
       if(rank==0){ std::cout << "Start DNS simulation in " << parameters.geometry.dim << "D" << std::endl; }
       flowField = new FlowField(parameters);
