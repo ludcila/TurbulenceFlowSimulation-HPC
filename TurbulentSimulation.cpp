@@ -1,19 +1,21 @@
-#include <TurbulentSimulation.h>
+#include "TurbulentSimulation.h"
 
 TurbulentSimulation::TurbulentSimulation(Parameters &parameters, TurbulentFlowField &flowField):
 	Simulation(parameters, flowField),
-	_flowField(flowField)
+	_turbulentFlowField(static_cast<TurbulentFlowField&>(_flowField)),
+	_turbulentFghStencil(parameters),
+	_turbulentFghIterator(_turbulentFlowField, parameters, _turbulentFghStencil),
+	_turbulentVtkStencil(parameters),
+	_turbulentVtkIterator(_turbulentFlowField, parameters, _turbulentVtkStencil, 1, 0)
 {
 }
 
 // TODO: Changes for turbulent simulation not implemented yet!
 void TurbulentSimulation::solveTimestep(){
-	std::cout << "Solving timestep for turbulent flow" << std::endl;
-	_flowField.getTurbulentViscosity();
 	// determine and set max. timestep which is allowed in this simulation
 	setTimeStep();
 	// compute fgh
-	_fghIterator.iterate();
+	_turbulentFghIterator.iterate();
 	// set global boundary values
 	_wallFGHIterator.iterate();
 	// compute the right hand side
@@ -68,3 +70,7 @@ void TurbulentSimulation::setTimeStep(){
 	
 }
 
+void TurbulentSimulation::plotVTK(int timeStep, std::string foldername) {
+	_turbulentVtkIterator.iterate();
+	_turbulentVtkStencil.write(this->_turbulentFlowField, timeStep, foldername);
+}

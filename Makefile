@@ -1,7 +1,7 @@
 #### The petsc environment can also be fixed in the makefile
 # PETSC_DIR = 
 # PETSC_ARCH = 
-include ${PETSC_DIR}/conf/petscvariables
+include ${PETSC_DIR}/conf/variables
 
 HOSTNAME=$(shell hostname)
 ifeq ($(HOSTNAME),mac-login-intel)
@@ -33,7 +33,7 @@ stencils/MaxUStencil.o stencils/MovingWallStencils.o stencils/PeriodicBoundarySt
 stencils/FGHStencil.o solvers/SORSolver.o solvers/PetscSolver.o \
 stencils/TurbulenceFGHStencil.o\
 stencils/RHSStencil.o stencils/VelocityStencil.o \
-stencils/VTKStencil.o \
+stencils/TurbulentVTKStencil.o \
 stencils/PressureBufferFillStencil.o \
 stencils/PressureBufferReadStencil.o \
 stencils/VelocityBufferFillStencil.o \

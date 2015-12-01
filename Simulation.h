@@ -53,6 +53,9 @@ class Simulation {
     ObstacleStencil _obstacleStencil;
     FieldIterator<FlowField> _velocityIterator;
     FieldIterator<FlowField> _obstacleIterator;
+    
+    VTKStencil<FlowField> _vtkStencil;
+    FieldIterator<FlowField> _vtkIterator;
 
     PetscSolver _solver;
     
@@ -78,6 +81,8 @@ class Simulation {
        _obstacleStencil(parameters),
        _velocityIterator(_flowField,parameters,_velocityStencil),
        _obstacleIterator(_flowField,parameters,_obstacleStencil),
+       _vtkStencil(parameters),
+       _vtkIterator(_flowField,parameters,_vtkStencil, 1, 0),
        _solver(_flowField,parameters)
        {
        }
@@ -145,14 +150,9 @@ class Simulation {
         _wallVelocityIterator.iterate();
     }
 
-    /** TODO WS1: plots the flow field. */
     virtual void plotVTK(int timeStep, std::string foldername){
-      // TODO WS1: create VTKStencil and respective iterator; iterate stencil
-      //           over _flowField and write flow field information to vtk file
-      VTKStencil vtkStencil(_parameters);
-      FieldIterator<FlowField> vtkIt(this->_flowField, this->_parameters, vtkStencil);
-      vtkIt.iterate();
-      vtkStencil.write(this->_flowField, timeStep, foldername);
+      _vtkIterator.iterate();
+      _vtkStencil.write(this->_flowField, timeStep, foldername);
     }
 
   protected:
