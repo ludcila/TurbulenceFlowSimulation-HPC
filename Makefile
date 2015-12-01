@@ -3,6 +3,14 @@
 # PETSC_ARCH = 
 include ${PETSC_DIR}/conf/petscvariables
 
+HOSTNAME=$(shell hostname)
+ifeq ($(HOSTNAME),mac-login-intel)
+        include ${PETSC_DIR}/../conf/petscvariables
+endif
+ifeq ($(HOSTNAME),mac-login-amd)
+        include ${PETSC_DIR}/../conf/petscvariables
+endif
+
 # default gnu compiler (currently not used)
 # CC = g++
 # compiler wrapper for mac-cluster
@@ -23,6 +31,7 @@ OBJ = DataStructures.o Configuration.o 3rdparty/tinyxml2/tinyxml2.o SimpleTimer.
 NSOBJ = FlowField.o TurbulentFlowField.o LinearSolver.o Meshsize.o\
 stencils/MaxUStencil.o stencils/MovingWallStencils.o stencils/PeriodicBoundaryStencils.o\
 stencils/FGHStencil.o solvers/SORSolver.o solvers/PetscSolver.o \
+stencils/TurbulenceFGHStencil.o\
 stencils/RHSStencil.o stencils/VelocityStencil.o \
 stencils/VTKStencil.o \
 stencils/PressureBufferFillStencil.o \
