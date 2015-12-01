@@ -902,16 +902,16 @@ inline FLOAT dy_dudy_dvdx ( const FLOAT * const lv, const Parameters & parameter
     const FLOAT dyM1= lm[mapd(0,-1,0,1)];
 
     const FLOAT u0 = lv[mapd(0,0,0,0)];
-    const FLOAT uM1= lv[mapd(-1,0,0,0)];
-    const FLOAT uP1 = lv[mapd(1,0,0,0)];
-    const FLOAT uup= (dyP1*uP1+dy*u0)/(dy+dyP1);
-    const FLOAT udown= (dyM1*uM1+dy*u0)/(dy+dyM1);
+    const FLOAT uM1= lv[mapd(0,-1,0,0)];
+    const FLOAT uP1 = lv[mapd(0,1,0,0)];
+    const FLOAT uup= (uP1-u0)/(dy+dyP1)*2.0;
+    const FLOAT udown= -(uM1-u0)/(dy+dyM1)*2.0;
 
     const FLOAT v0 = lv[mapd(0,0,0,1)];
-    const FLOAT vM1= lv[mapd(0,-1,0,1)];
-    const FLOAT vP1 = lv[mapd(0,1,0,1)];
-    const FLOAT vup= (dxP1*vP1+dx*v0)/(dx+dxP1);
-    const FLOAT vdown= (dxM1*vM1+dx*v0)/(dx+dxM1);
+    const FLOAT vM1= lv[mapd(-1,0,0,1)];
+    const FLOAT vP1 = lv[mapd(1,0,0,1)];
+    const FLOAT vup= (vP1-v0)/(dx+dxP1)*2.0;
+    const FLOAT vdown= -(vM1-v0)/(dx+dxM1)*2.0;
 
     // Kinematic viscosity
     const FLOAT kni = 1.0 / parameters.flow.Re;
@@ -940,16 +940,16 @@ inline FLOAT dz_dudz_dwdx ( const FLOAT * const lv, const Parameters & parameter
     const FLOAT dzM1= lm[mapd(0,0,-1,2)];
 
     const FLOAT u0 = lv[mapd(0,0,0,0)];
-    const FLOAT uM1= lv[mapd(-1,0,0,0)];
-    const FLOAT uP1 = lv[mapd(1,0,0,0)];
-    const FLOAT uup= (dzP1*uP1+dz*u0)/(dz+dzP1);
-    const FLOAT udown= (dzM1*uM1+dz*u0)/(dz+dzM1);
+    const FLOAT uM1= lv[mapd(0,0,-1,0)];
+    const FLOAT uP1 = lv[mapd(0,0,1,0)];
+    const FLOAT uup= (uP1-u0)/(dz+dzP1)*2.0;
+    const FLOAT udown= -(uM1-u0)/(dz+dzM1)*2.0;
 
     const FLOAT w0 = lv[mapd(0,0,0,2)];
-    const FLOAT wM1= lv[mapd(0,0,-1,2)];
-    const FLOAT wP1 = lv[mapd(0,0,1,2)];
-    const FLOAT wup= (dxP1*wP1+dx*w0)/(dx+dxP1);
-    const FLOAT wdown= (dxM1*wM1+dx*w0)/(dx+dxM1);
+    const FLOAT wM1= lv[mapd(-1,0,0,2)];
+    const FLOAT wP1 = lv[mapd(1,0,0,2)];
+    const FLOAT wup= (wP1-w0)/(dx+dxP1)*2.0;
+    const FLOAT wdown= -(wM1-w0)/(dx+dxM1)*2.0;
 
     // Kinematic viscosity
     const FLOAT kni = 1.0 / parameters.flow.Re;
@@ -978,16 +978,16 @@ inline FLOAT dx_dudy_dvdx ( const FLOAT * const lv, const Parameters & parameter
     const FLOAT dyM1= lm[mapd(0,-1,0,1)];
 
     const FLOAT u0 = lv[mapd(0,0,0,0)];
-    const FLOAT uM1= lv[mapd(-1,0,0,0)];
-    const FLOAT uP1 = lv[mapd(1,0,0,0)];
-    const FLOAT uup= (dyP1*uP1+dy*u0)/(dy+dyP1);
-    const FLOAT udown= (dyM1*uM1+dy*u0)/(dy+dyM1);
+    const FLOAT uM1= lv[mapd(0,-1,0,0)];
+    const FLOAT uP1 = lv[mapd(0,1,0,0)];
+    const FLOAT uup= (uP1-u0)/(dy+dyP1)*2.0;
+    const FLOAT udown= -(uM1-u0)/(dy+dyM1)*2.0;
 
     const FLOAT v0 = lv[mapd(0,0,0,1)];
-    const FLOAT vM1= lv[mapd(0,-1,0,1)];
-    const FLOAT vP1 = lv[mapd(0,1,0,1)];
-    const FLOAT vup= (dxP1*vP1+dx*v0)/(dx+dxP1);
-    const FLOAT vdown= (dxM1*vM1+dx*v0)/(dx+dxM1);
+    const FLOAT vM1= lv[mapd(-1,0,0,1)];
+    const FLOAT vP1 = lv[mapd(1,0,0,1)];
+    const FLOAT vup= (vP1-v0)/(dx+dxP1)*2.0;
+    const FLOAT vdown= -(vM1-v0)/(dx+dxM1)*2.0;
 
     // Kinematic viscosity
     const FLOAT kni = 1.0 / parameters.flow.Re;
@@ -1011,21 +1011,21 @@ inline FLOAT dz_dvdz_dwdy ( const FLOAT * const lv, const Parameters & parameter
     const FLOAT dzplusP1= lm[mapd(0,1,1,2)];
     const FLOAT dzplusM1= lm[mapd(0,1,-1,2)];
 
-     const FLOAT dy = lm[mapd(0,0,0,1)];
+    const FLOAT dy = lm[mapd(0,0,0,1)];
     const FLOAT dyP1= lm[mapd(0,1,0,1)];
     const FLOAT dyM1= lm[mapd(0,-1,0,1)];
 
     const FLOAT w0 = lv[mapd(0,0,0,2)];
-    const FLOAT wM1= lv[mapd(0,0,-1,2)];
-    const FLOAT wP1 = lv[mapd(0,0,1,2)];
-    const FLOAT wup= (dyP1*wP1+dy*w0)/(dy+dyP1);
-    const FLOAT wdown= (dyM1*wM1+dy*w0)/(dy+dyM1);
+    const FLOAT wM1= lv[mapd(0,-1,0,2)];
+    const FLOAT wP1 = lv[mapd(0,1,0,2)];
+    const FLOAT wup= (wP1-w0)/(dy+dyP1)*2.0;
+    const FLOAT wdown= -(wM1-w0)/(dy+dyM1)*2.0;
 
     const FLOAT v0 = lv[mapd(0,0,0,1)];
-    const FLOAT vM1= lv[mapd(0,-1,0,1)];
-    const FLOAT vP1 = lv[mapd(0,1,0,1)];
-    const FLOAT vup= (dzP1*vP1+dz*v0)/(dz+dzP1);
-    const FLOAT vdown= (dzM1*vM1+dz*v0)/(dz+dzM1);
+    const FLOAT vM1= lv[mapd(0,0,-1,1)];
+    const FLOAT vP1 = lv[mapd(0,0,1,1)];
+    const FLOAT vup= (vP1-v0)/(dz+dzP1)*2.0;
+    const FLOAT vdown= -(vM1-v0)/(dz+dzM1)*2.0;
 
     // Kinematic viscosity
     const FLOAT kni = 1.0 / parameters.flow.Re;
@@ -1054,16 +1054,16 @@ inline FLOAT dx_dudz_dwdx ( const FLOAT * const lv, const Parameters & parameter
     const FLOAT dzM1= lm[mapd(0,0,-1,2)];
 
     const FLOAT u0 = lv[mapd(0,0,0,0)];
-    const FLOAT uM1= lv[mapd(-1,0,0,0)];
-    const FLOAT uP1 = lv[mapd(1,0,0,0)];
-    const FLOAT uup= (dzP1*uP1+dz*u0)/(dz+dzP1);
-    const FLOAT udown= (dzM1*uM1+dz*u0)/(dz+dzM1);
+    const FLOAT uM1= lv[mapd(0,0,-1,0)];
+    const FLOAT uP1 = lv[mapd(0,0,1,0)];
+    const FLOAT uup= (uP1-u0)/(dz+dzP1)*2.0;
+    const FLOAT udown= -(uM1-u0)/(dz+dzM1)*2.0;
 
     const FLOAT w0 = lv[mapd(0,0,0,2)];
-    const FLOAT wM1= lv[mapd(0,0,-1,2)];
-    const FLOAT wP1 = lv[mapd(0,0,1,2)];
-    const FLOAT wup= (dxP1*wP1+dx*w0)/(dx+dxP1);
-    const FLOAT wdown= (dxM1*wM1+dx*w0)/(dx+dxM1);
+    const FLOAT wM1= lv[mapd(-1,0,0,2)];
+    const FLOAT wP1 = lv[mapd(1,0,0,2)];
+    const FLOAT wup= (wP1-w0)/(dx+dxP1)*2.0;
+    const FLOAT wdown= -(wM1-w0)/(dx+dxM1)*2.0;
 
     // Kinematic viscosity
     const FLOAT kni = 1.0 / parameters.flow.Re;
@@ -1093,16 +1093,16 @@ inline FLOAT dy_dvdz_dwdy ( const FLOAT * const lv, const Parameters & parameter
     const FLOAT dyplusM1= lm[mapd(0,-1,1,1)];
 
     const FLOAT w0 = lv[mapd(0,0,0,2)];
-    const FLOAT wM1= lv[mapd(0,0,-1,2)];
-    const FLOAT wP1 = lv[mapd(0,0,1,2)];
-    const FLOAT wup= (dyP1*wP1+dy*w0)/(dy+dyP1);
-    const FLOAT wdown= (dyM1*wM1+dy*w0)/(dy+dyM1);
+    const FLOAT wM1= lv[mapd(0,-1,0,2)];
+    const FLOAT wP1 = lv[mapd(0,1,0,2)];
+    const FLOAT wup= (wP1-w0)/(dy+dyP1)*2.0;
+    const FLOAT wdown= -(wM1-w0)/(dy+dyM1)*2.0;
 
     const FLOAT v0 = lv[mapd(0,0,0,1)];
-    const FLOAT vM1= lv[mapd(0,-1,0,1)];
-    const FLOAT vP1 = lv[mapd(0,1,0,1)];
-    const FLOAT vup= (dzP1*vP1+dz*v0)/(dz+dzP1);
-    const FLOAT vdown= (dzM1*vM1+dz*v0)/(dz+dzM1);
+    const FLOAT vM1= lv[mapd(0,0,-1,1)];
+    const FLOAT vP1 = lv[mapd(0,0,1,1)];
+    const FLOAT vup= (vP1-v0)/(dz+dzP1)*2.0;
+    const FLOAT vdown= -(vM1-v0)/(dz+dzM1)*2.0;
 
     // Kinematic viscosity
     const FLOAT kni = 1.0 / parameters.flow.Re;
