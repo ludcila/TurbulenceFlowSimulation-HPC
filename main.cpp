@@ -3,6 +3,7 @@
 #include <iostream>
 #include <sstream>
 #include "Configuration.h"
+#include "SimulationFactory.h"
 #include "Simulation.h"
 #include "TurbulentSimulation.h"
 #include "parallelManagers/PetscParallelConfiguration.h"
@@ -33,8 +34,9 @@ int main (int argc, char *argv[]) {
     configuration.loadParameters(parameters);
     PetscParallelConfiguration parallelConfiguration(parameters);
     MeshsizeFactory::getInstance().initMeshsize(parameters);
-    FlowField *flowField = NULL;
-    Simulation *simulation = NULL;
+    
+    SimulationFactory simulationFactory(parameters);
+    Simulation *simulation = simulationFactory.getSimulation();
 
     #ifdef DEBUG
     std::cout << "Processor " << parameters.parallel.rank << " with index ";
@@ -50,22 +52,7 @@ int main (int argc, char *argv[]) {
     std::cout << std::endl;
     std::cout << "Min. meshsizes: " << parameters.meshsize->getDxMin() << ", " << parameters.meshsize->getDyMin() << ", " << parameters.meshsize->getDzMin() << std::endl;
     #endif
-
-    // initialise simulation
-    if (parameters.simulation.type=="turbulence"){
-      // TODO WS2: initialise turbulent flow field and turbulent simulation object
-      if(rank==0){ std::cout << "Start Turbulence simulation in " << parameters.geometry.dim << "D" << std::endl; }
-      flowField = new TurbulentFlowField(parameters);
-      if(flowField == NULL){ handleError(1, "flowField==NULL!"); }
-      simulation = new TurbulentSimulation(parameters,*static_cast<TurbulentFlowField*>(flowField));
-    } else if (parameters.simulation.type=="dns"){
-      if(rank==0){ std::cout << "Start DNS simulation in " << parameters.geometry.dim << "D" << std::endl; }
-      flowField = new FlowField(parameters);
-      if(flowField == NULL){ handleError(1, "flowField==NULL!"); }
-      simulation = new Simulation(parameters,*flowField);
-    } else {
-      handleError(1, "Unknown simulation type! Currently supported: dns, turbulence");
-    }
+    
     // call initialization of simulation (initialize flow field)
     if(simulation == NULL){ handleError(1, "simulation==NULL!"); }
     simulation->initializeFlowField();
@@ -125,9 +112,6 @@ int main (int argc, char *argv[]) {
 
     // TODO WS1: plot final output
     simulation->plotVTK(timeSteps, foldername.str());
-
-    delete simulation; simulation=NULL;
-    delete flowField;  flowField= NULL;
 
     PetscFinalize();
 }
