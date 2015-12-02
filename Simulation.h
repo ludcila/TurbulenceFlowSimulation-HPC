@@ -54,7 +54,7 @@ class Simulation {
     FieldIterator<FlowField> _velocityIterator;
     FieldIterator<FlowField> _obstacleIterator;
     
-    VTKStencil<FlowField> _vtkStencil;
+    VTKStencil _vtkStencil;
     FieldIterator<FlowField> _vtkIterator;
 
     PetscSolver _solver;

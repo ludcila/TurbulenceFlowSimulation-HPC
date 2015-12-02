@@ -1,8 +1,12 @@
 #include <iostream>
 #include <sstream>
+#include <iomanip>
 #include "TurbulentVTKStencil.h"
 
-TurbulentVTKStencil::TurbulentVTKStencil(Parameters & parameters) : VTKStencil<TurbulentFlowField>(parameters) {
+TurbulentVTKStencil::TurbulentVTKStencil(Parameters & parameters) :
+	VTKStencil(parameters),
+	FieldStencil<TurbulentFlowField>(parameters)
+{
 }
 
 void TurbulentVTKStencil::apply(TurbulentFlowField & flowField, int i, int j) {
@@ -74,7 +78,7 @@ void TurbulentVTKStencil::writeTurbulentViscosity() {
 	*this->_outputFile << "SCALARS turbulent_viscosity float 1" << std::endl;
 	*this->_outputFile << "LOOKUP_TABLE default" << std::endl;
 
-	// Print pressure values
+	// Print turbulent viscosity values
 	*this->_outputFile << this->_turbulentViscosityStringStream.str().c_str();
 
 	*this->_outputFile << std::endl;

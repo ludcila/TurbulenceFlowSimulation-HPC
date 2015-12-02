@@ -33,6 +33,7 @@ stencils/MaxUStencil.o stencils/MovingWallStencils.o stencils/PeriodicBoundarySt
 stencils/FGHStencil.o solvers/SORSolver.o solvers/PetscSolver.o \
 stencils/TurbulenceFGHStencil.o\
 stencils/RHSStencil.o stencils/VelocityStencil.o \
+stencils/VTKStencil.o \
 stencils/TurbulentVTKStencil.o \
 stencils/PressureBufferFillStencil.o \
 stencils/PressureBufferReadStencil.o \
