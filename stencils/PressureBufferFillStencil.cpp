@@ -9,6 +9,7 @@ PressureBufferFillStencil::PressureBufferFillStencil (const Parameters & paramet
 	this->_bufferBackWall = bufferBackWall;
 }
 
+// 2D stencils
 void PressureBufferFillStencil::applyLeftWall(FlowField & flowField, int i, int j) {
 	this->_bufferLeftWall[j] = flowField.getPressure().getScalar(i+2, j);
 }
@@ -25,27 +26,29 @@ void PressureBufferFillStencil::applyTopWall(FlowField & flowField, int i, int j
 	this->_bufferTopWall[i] = flowField.getPressure().getScalar(i, j-1);
 }
 
-void PressureBufferFillStencil::applyLeftWall(FlowField & flowField, int i, int j, int k) {
 
+// 3D stencils
+void PressureBufferFillStencil::applyLeftWall(FlowField & flowField, int i, int j, int k) {
+	this->_bufferLeftWall[flowField.getCellsZ()*j+k] = flowField.getPressure().getScalar(i+2, j, k);
 }
 
 void PressureBufferFillStencil::applyRightWall(FlowField & flowField, int i, int j, int k) {
-
+	this->_bufferRightWall[flowField.getCellsZ()*j+k] = flowField.getPressure().getScalar(i-1, j, k);
 }
 
 void PressureBufferFillStencil::applyBottomWall(FlowField & flowField, int i, int j, int k) {
-
+	this->_bufferBottomWall[flowField.getCellsZ()*i+k] = flowField.getPressure().getScalar(i, j+2, k);
 }
 
 void PressureBufferFillStencil::applyTopWall(FlowField & flowField, int i, int j, int k) {
-
+	this->_bufferTopWall[flowField.getCellsZ()*i+k] = flowField.getPressure().getScalar(i, j-1, k);
 }
 
 void PressureBufferFillStencil::applyFrontWall(FlowField & flowField, int i, int j, int k) {
-
+	this->_bufferFrontWall[flowField.getCellsY()*i+j] = flowField.getPressure().getScalar(i, j, k+2);
 }
 
 void PressureBufferFillStencil::applyBackWall(FlowField & flowField, int i, int j, int k) {
-
+	this->_bufferBackWall[flowField.getCellsY()*i+j] = flowField.getPressure().getScalar(i, j, k-1);
 }
 
