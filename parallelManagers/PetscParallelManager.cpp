@@ -93,6 +93,9 @@ void PetscParallelManager::communicatePressure() {
 	// Top to bottom & Bottom to top
 	sendReceive(_pressureSendBufferTopWall, _parameters.parallel.topNb, _pressureRecvBufferBottomWall, _parameters.parallel.bottomNb, _cellsTopBottom);
 	sendReceive(_pressureSendBufferBottomWall, _parameters.parallel.bottomNb, _pressureRecvBufferTopWall, _parameters.parallel.topNb, _cellsTopBottom);
+	// Front to back & Back to front
+	sendReceive(_pressureSendBufferFrontWall, _parameters.parallel.frontNb, _pressureRecvBufferBackWall, _parameters.parallel.backNb, _cellsFrontBack);
+	sendReceive(_pressureSendBufferBackWall, _parameters.parallel.backNb, _pressureRecvBufferFrontWall, _parameters.parallel.frontNb, _cellsFrontBack);
 	
 	_pressureBufferReadIterator.iterate();
 	
@@ -108,6 +111,9 @@ void PetscParallelManager::communicateVelocity() {
 	// Top to bottom & Bottom to top
 	sendReceive(_velocitySendBufferTopWall, _parameters.parallel.topNb, _velocityRecvBufferBottomWall, _parameters.parallel.bottomNb, _cellsTopBottom * _parameters.geometry.dim);
 	sendReceive(_velocitySendBufferBottomWall, _parameters.parallel.bottomNb, _velocityRecvBufferTopWall, _parameters.parallel.topNb, _cellsTopBottom * _parameters.geometry.dim);
+	// Front to back & Back to front
+	sendReceive(_velocitySendBufferFrontWall, _parameters.parallel.frontNb, _velocityRecvBufferBackWall, _parameters.parallel.backNb, _cellsFrontBack * _parameters.geometry.dim);
+	sendReceive(_velocitySendBufferBackWall, _parameters.parallel.backNb, _velocityRecvBufferFrontWall, _parameters.parallel.frontNb, _cellsFrontBack * _parameters.geometry.dim);
 
 	_velocityBufferReadIterator.iterate();
 
