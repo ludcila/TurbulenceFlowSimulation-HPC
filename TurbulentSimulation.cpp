@@ -2,7 +2,7 @@
 
 TurbulentSimulation::TurbulentSimulation(Parameters &parameters, TurbulentFlowField &flowField):
 	Simulation(parameters, flowField),
-	_turbulentFlowField(static_cast<TurbulentFlowField&>(_flowField)),
+	_turbulentFlowField(flowField),
 	_turbulentFghStencil(parameters),
 	_turbulentFghIterator(_turbulentFlowField, parameters, _turbulentFghStencil),
 	_turbulentVtkStencil(parameters),
