@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <configuration>
-    <flow Re="100" />
+    <flow Re="1000" />
     <simulation finalTime="10.0" >
       <type>turbulence</type>
       <boundary_layer>turbulent</boundary_layer>
         <scenario>channel</scenario>
     </simulation>
-    <backwardFacingStep xRatio="0.2" yRatio="0.5" />
+    <backwardFacingStep xRatio="0.5" yRatio="0.2" />
     <timestep dt="1" tau="0.5" />
     <solver gamma="0.5" />
     <geometry

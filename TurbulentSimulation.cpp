@@ -6,7 +6,10 @@ TurbulentSimulation::TurbulentSimulation(Parameters &parameters, TurbulentFlowFi
 	_turbulentFghStencil(parameters),
 	_turbulentFghIterator(_turbulentFlowField, parameters, _turbulentFghStencil),
 	_turbulentVtkStencil(parameters),
-	_turbulentVtkIterator(_turbulentFlowField, parameters, _turbulentVtkStencil, 1, 0)
+	_turbulentVtkIterator(_turbulentFlowField, parameters, _turbulentVtkStencil, 1, 0),
+	_minNUStencil(parameters),
+        _minNUFieldIterator(_turbulentFlowField,parameters,_minNUStencil),
+        _minNUBoundaryIterator(_turbulentFlowField,parameters,_minNUStencil)
 {
 }
 
@@ -36,7 +39,8 @@ void TurbulentSimulation::solveTimestep(){
 
 // TODO: Changes for turbulent simulation not implemented yet!
 void TurbulentSimulation::setTimeStep(){
-
+	
+	const FLOAT cinematicviscosity=1.0/_parameters.flow.Re;
 	FLOAT localMin, globalMin;
 	assertion(_parameters.geometry.dim == 2 || _parameters.geometry.dim == 3);
 	FLOAT factor = 1.0/(_parameters.meshsize->getDxMin() * _parameters.meshsize->getDxMin()) +
@@ -46,6 +50,11 @@ void TurbulentSimulation::setTimeStep(){
 	_maxUStencil.reset();
 	_maxUFieldIterator.iterate();
 	_maxUBoundaryIterator.iterate();
+	
+	//_minNUStencil.reset();
+	_minNUFieldIterator.iterate();
+	_minNUBoundaryIterator.iterate();
+
 	if (_parameters.geometry.dim == 3) {
 	factor += 1.0/(_parameters.meshsize->getDzMin() * _parameters.meshsize->getDzMin());
 	_parameters.timestep.dt = 1.0 / _maxUStencil.getMaxValues()[2];
@@ -54,7 +63,7 @@ void TurbulentSimulation::setTimeStep(){
 	}
 
 	localMin = std::min(_parameters.timestep.dt,
-		                            std::min(std::min(_parameters.flow.Re/(2*factor),
+		                            std::min(std::min(1.0/(cinematicviscosity+_minNUStencil.getMinValue())/(2*factor),
 		                            1.0 / _maxUStencil.getMaxValues()[0]),
 		                            1.0 / _maxUStencil.getMaxValues()[1]));
 

@@ -5,7 +5,7 @@
 #include "TurbulentFlowField.h"
 #include "stencils/TurbulenceFGHStencil.h"
 #include "stencils/TurbulentVTKStencil.h"
-
+#include "stencils/MinNUStencil.h"
 
 class TurbulentSimulation : public Simulation {
 	
@@ -15,6 +15,10 @@ class TurbulentSimulation : public Simulation {
 		TurbulenceFGHStencil _turbulentFghStencil;
     	FieldIterator<TurbulentFlowField> _turbulentVtkIterator;
 		TurbulentVTKStencil _turbulentVtkStencil;
+
+	MinNUStencil _minNUStencil;
+	FieldIterator<TurbulentFlowField> _minNUFieldIterator;
+        GlobalBoundaryIterator<TurbulentFlowField> _minNUBoundaryIterator;
 		/*
 			The changes are only in the flow field and the stencils, however, 
 			if we change the stencils we also need to change the iterators (apparently).
@@ -29,10 +33,13 @@ class TurbulentSimulation : public Simulation {
 		*/
 
 	public:
+		
 		TurbulentSimulation(Parameters &parameters, TurbulentFlowField &flowField);
 		virtual ~TurbulentSimulation(){}
 		virtual void solveTimestep();
 		virtual void plotVTK(int timeStep, std::string foldername);
+
+
 
 	protected:
 		virtual void setTimeStep();
