@@ -58,7 +58,7 @@ void MinNUStencil::applyBackWall   ( TurbulentFlowField & flowField, int i, int 
 
 
 void MinNUStencil::cellMinValue(TurbulentFlowField & flowField, int i, int j){
-    FLOAT * viscosity = flowField.getTurbulentViscosity().getScalar(i, j);
+    FLOAT  viscosity = flowField.getTurbulentViscosity().getScalar(i, j);
    
     if (viscosity > _minValue){
         _minValue = viscosity;
@@ -67,7 +67,7 @@ void MinNUStencil::cellMinValue(TurbulentFlowField & flowField, int i, int j){
 }
 
 void MinNUStencil::cellMinValue(TurbulentFlowField & flowField, int i, int j, int k){
-    FLOAT * viscosity= flowField.getTurbulentViscosity().getScalar(i, j);
+    FLOAT  viscosity= flowField.getTurbulentViscosity().getScalar(i, j);
    
     if (viscosity > _minValue){
         _minValue = viscosity;

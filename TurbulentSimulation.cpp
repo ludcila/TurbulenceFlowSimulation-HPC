@@ -51,7 +51,7 @@ void TurbulentSimulation::setTimeStep(){
 	_maxUFieldIterator.iterate();
 	_maxUBoundaryIterator.iterate();
 	
-	//_minNUStencil.reset();
+	_minNUStencil.reset();
 	_minNUFieldIterator.iterate();
 	_minNUBoundaryIterator.iterate();
 

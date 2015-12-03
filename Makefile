@@ -35,6 +35,7 @@ stencils/TurbulenceFGHStencil.o\
 stencils/RHSStencil.o stencils/VelocityStencil.o \
 stencils/VTKStencil.o \
 stencils/TurbulentVTKStencil.o \
+stencils/MinNUStencil.o\
 stencils/PressureBufferFillStencil.o \
 stencils/PressureBufferReadStencil.o \
 stencils/VelocityBufferFillStencil.o \
