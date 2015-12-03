@@ -916,8 +916,8 @@ inline FLOAT dy_dudy_dvdx ( const FLOAT * const lv, const Parameters & parameter
     // Kinematic viscosity
     const FLOAT kni = 1.0 / parameters.flow.Re;
     // Turbulent viscosity
-    const FLOAT tniplus = ((lt[mapd(0,0,0,0)]+lt[mapd(0,1,0,0)])*2/(dy+dyP1)+(lt[mapd(1,0,0,0)]+lt[mapd(1,1,0,0)])*2.0/(dyplus+dyplusP1))*2.0/(dx+dxP1);
-    const FLOAT tniminus = ((lt[mapd(0,0,0,0)]+lt[mapd(0,-1,0,0)])*2/(dy+dyM1)+(lt[mapd(1,0,0,0)]+lt[mapd(1,-1,0,0)])*2.0/(dyplus+dyplusM1))*2.0/(dx+dxP1);
+    const FLOAT tniplus = ((lt[mapd(0,0,0,0)]*dy+lt[mapd(0,1,0,0)]*dyP1)*dx/(dy+dyP1)+(lt[mapd(1,0,0,0)]*dyplus+lt[mapd(1,1,0,0)]*dyplusP1)*dxP1/(dyplus+dyplusP1))*1.0/(dx+dxP1);
+    const FLOAT tniminus = ((lt[mapd(0,0,0,0)]*dy+lt[mapd(0,-1,0,0)]*dyM1)*dx/(dy+dyM1)+(lt[mapd(1,0,0,0)]*dyplus+lt[mapd(1,-1,0,0)]*dyplusM1)*dxP1/(dyplus+dyplusM1))*1.0/(dx+dxP1);
     // Total viscosity
     const FLOAT niplus = kni + tniplus;
     const FLOAT niminus = kni + tniminus;
@@ -954,8 +954,8 @@ inline FLOAT dz_dudz_dwdx ( const FLOAT * const lv, const Parameters & parameter
     // Kinematic viscosity
     const FLOAT kni = 1.0 / parameters.flow.Re;
     // Turbulent viscosity
-    const FLOAT tniplus = ((lt[mapd(0,0,0,0)]+lt[mapd(0,0,1,0)])*2/(dz+dzP1)+(lt[mapd(1,0,0,0)]+lt[mapd(1,0,1,0)])*2.0/(dzplus+dzplusP1))*2.0/(dx+dxP1);
-    const FLOAT tniminus = ((lt[mapd(0,0,0,0)]+lt[mapd(0,0,-1,0)])*2/(dz+dzM1)+(lt[mapd(1,0,0,0)]+lt[mapd(1,0,-1,0)])*2.0/(dzplus+dzplusM1))*2.0/(dx+dxP1);
+    const FLOAT tniplus = ((lt[mapd(0,0,0,0)]*dz+lt[mapd(0,0,1,0)]*dzP1)*dx/(dz+dzP1)+(lt[mapd(1,0,0,0)]*dzplus+lt[mapd(1,0,1,0)]*dzplusP1)*dxP1/(dzplus+dzplusP1))*1.0/(dx+dxP1);
+    const FLOAT tniminus = ((lt[mapd(0,0,0,0)]*dz+lt[mapd(0,0,-1,0)]*dzM1)*dx/(dz+dzM1)+(lt[mapd(1,0,0,0)]*dzplus+lt[mapd(1,0,-1,0)]*dzplusM1)*dxP1/(dzplus+dzplusM1))*1.0/(dx+dxP1);
     // Total viscosity
     const FLOAT niplus = kni + tniplus;
     const FLOAT niminus = kni + tniminus;
@@ -992,8 +992,8 @@ inline FLOAT dx_dudy_dvdx ( const FLOAT * const lv, const Parameters & parameter
     // Kinematic viscosity
     const FLOAT kni = 1.0 / parameters.flow.Re;
     // Turbulent viscosity
-    const FLOAT tniplus = ((lt[mapd(0,0,0,0)]+lt[mapd(1,0,0,0)])*2/(dx+dxP1)+(lt[mapd(0,1,0,0)]+lt[mapd(1,1,0,0)])*2.0/(dxplus+dxplusP1))*2.0/(dy+dyP1);
-    const FLOAT tniminus = ((lt[mapd(0,0,0,0)]+lt[mapd(-1,0,0,0)])*2/(dx+dxM1)+(lt[mapd(0,1,0,0)]+lt[mapd(-1,1,0,0)])*2.0/(dxplus+dxplusM1))*2.0/(dy+dyP1);
+    const FLOAT tniplus = ((lt[mapd(0,0,0,0)]*dx+lt[mapd(1,0,0,0)]*dxP1)*dy/(dx+dxP1)+(lt[mapd(0,1,0,0)]*dxplus+lt[mapd(1,1,0,0)]*dxplusP1)*dyP1/(dxplus+dxplusP1))*1.0/(dy+dyP1);
+    const FLOAT tniminus = ((lt[mapd(0,0,0,0)]*dx+lt[mapd(-1,0,0,0)]*dxM1)*dy/(dx+dxM1)+(lt[mapd(0,1,0,0)]*dxplus+lt[mapd(-1,1,0,0)]*dxplusM1)*dyP1/(dxplus+dxplusM1))*1.0/(dy+dyP1);
     // Total viscosity
     const FLOAT niplus = kni + tniplus;
     const FLOAT niminus = kni + tniminus;
@@ -1030,8 +1030,8 @@ inline FLOAT dz_dvdz_dwdy ( const FLOAT * const lv, const Parameters & parameter
     // Kinematic viscosity
     const FLOAT kni = 1.0 / parameters.flow.Re;
     // Turbulent viscosity
-    const FLOAT tniplus = ((lt[mapd(0,0,0,0)]+lt[mapd(0,0,1,0)])*2/(dz+dzP1)+(lt[mapd(0,1,0,0)]+lt[mapd(0,1,1,0)])*2.0/(dzplus+dzplusP1))*2.0/(dy+dyP1);
-    const FLOAT tniminus = ((lt[mapd(0,0,0,0)]+lt[mapd(0,0,-1,0)])*2/(dz+dzM1)+(lt[mapd(0,1,0,0)]+lt[mapd(0,1,-1,0)])*2.0/(dzplus+dzplusM1))*2.0/(dy+dyP1);
+    const FLOAT tniplus = ((lt[mapd(0,0,0,0)]*dz+lt[mapd(0,0,1,0)]*dzP1)*dy/(dz+dzP1)+(lt[mapd(0,1,0,0)]*dzplus+lt[mapd(0,1,1,0)]*dzplusP1)*dyP1/(dzplus+dzplusP1))*1.0/(dy+dyP1);
+    const FLOAT tniminus = ((lt[mapd(0,0,0,0)]*dz+lt[mapd(0,0,-1,0)]*dzM1)*dy/(dz+dzM1)+(lt[mapd(0,1,0,0)]*dzplus+lt[mapd(0,1,-1,0)]*dzplusM1)*dyP1/(dzplus+dzplusM1))*1.0/(dy+dyP1);
     // Total viscosity
     const FLOAT niplus = kni + tniplus;
     const FLOAT niminus = kni + tniminus;
@@ -1045,7 +1045,7 @@ inline FLOAT dx_dudz_dwdx ( const FLOAT * const lv, const Parameters & parameter
     const FLOAT dx = lm[mapd(0,0,0,0)];
     const FLOAT dxP1= lm[mapd(1,0,0,0)];
     const FLOAT dxM1= lm[mapd(-1,0,0,0)];
-    const FLOAT dxplus= lm[mapd(1,0,0,0)];
+    const FLOAT dxplus= lm[mapd(0,0,1,0)];
     const FLOAT dxplusP1= lm[mapd(1,0,1,0)];
     const FLOAT dxplusM1= lm[mapd(-1,0,1,0)];
 
@@ -1068,8 +1068,8 @@ inline FLOAT dx_dudz_dwdx ( const FLOAT * const lv, const Parameters & parameter
     // Kinematic viscosity
     const FLOAT kni = 1.0 / parameters.flow.Re;
     // Turbulent viscosity
-    const FLOAT tniplus = ((lt[mapd(0,0,0,0)]+lt[mapd(1,0,0,0)])*2/(dx+dxP1)+(lt[mapd(0,0,1,0)]+lt[mapd(1,0,1,0)])*2.0/(dxplus+dxplusP1))*2.0/(dz+dzP1);
-    const FLOAT tniminus = ((lt[mapd(0,0,0,0)]+lt[mapd(-1,0,0,0)])*2/(dx+dxM1)+(lt[mapd(0,0,1,0)]+lt[mapd(-1,0,1,0)])*2.0/(dxplus+dxplusM1))*2.0/(dz+dzP1);
+    const FLOAT tniplus = ((lt[mapd(0,0,0,0)]*dx+lt[mapd(1,0,0,0)]*dxP1)*dz/(dx+dxP1)+(lt[mapd(0,0,1,0)]*dxplus+lt[mapd(1,0,1,0)]*dxplusP1)*dzP1/(dxplus+dxplusP1))*1.0/(dz+dzP1);
+    const FLOAT tniminus = ((lt[mapd(0,0,0,0)]*dx+lt[mapd(-1,0,0,0)]*dxM1)*dz/(dx+dxM1)+(lt[mapd(0,0,1,0)]*dxplus+lt[mapd(-1,0,1,0)]*dxplusM1)*dzP1/(dxplus+dxplusM1))*1.0/(dz+dzP1);
     // Total viscosity
     const FLOAT niplus = kni + tniplus;
     const FLOAT niminus = kni + tniminus;
@@ -1088,7 +1088,7 @@ inline FLOAT dy_dvdz_dwdy ( const FLOAT * const lv, const Parameters & parameter
      const FLOAT dy = lm[mapd(0,0,0,1)];
     const FLOAT dyP1= lm[mapd(0,1,0,1)];
     const FLOAT dyM1= lm[mapd(0,-1,0,1)];
-    const FLOAT dyplus= lm[mapd(0,1,0,1)];
+    const FLOAT dyplus= lm[mapd(0,0,1,1)];
     const FLOAT dyplusP1= lm[mapd(0,1,1,1)];
     const FLOAT dyplusM1= lm[mapd(0,-1,1,1)];
 
@@ -1107,8 +1107,8 @@ inline FLOAT dy_dvdz_dwdy ( const FLOAT * const lv, const Parameters & parameter
     // Kinematic viscosity
     const FLOAT kni = 1.0 / parameters.flow.Re;
     // Turbulent viscosity
-    const FLOAT tniplus = ((lt[mapd(0,0,0,0)]+lt[mapd(0,1,0,0)])*2/(dy+dyP1)+(lt[mapd(0,1,0,0)]+lt[mapd(0,1,1,0)])*2.0/(dyplus+dyplusP1))*2.0/(dz+dzP1);
-    const FLOAT tniminus = ((lt[mapd(0,0,0,0)]+lt[mapd(0,-1,0,0)])*2/(dy+dyM1)+(lt[mapd(0,0,1,0)]+lt[mapd(0,-1,1,0)])*2.0/(dyplus+dyplusM1))*2.0/(dz+dzP1);
+    const FLOAT tniplus = ((lt[mapd(0,0,0,0)]*dy+lt[mapd(0,1,0,0)]*dyP1)*dz/(dy+dyP1)+(lt[mapd(0,0,1,0)]*dyplus+lt[mapd(0,1,1,0)]*dyplusP1)*dzP1/(dyplus+dyplusP1))*1.0/(dz+dzP1);
+    const FLOAT tniminus = ((lt[mapd(0,0,0,0)]*dy+lt[mapd(0,-1,0,0)]*dyM1)*dz/(dy+dyM1)+(lt[mapd(0,0,1,0)]*dyplus+lt[mapd(0,-1,1,0)]*dyplusM1)*dzP1/(dyplus+dyplusM1))*1.0/(dz+dzP1);
     // Total viscosity
     const FLOAT niplus = kni + tniplus;
     const FLOAT niminus = kni + tniminus;
@@ -1160,21 +1160,21 @@ inline FLOAT computeH3D(const FLOAT * const localVelocity, const FLOAT * const l
 
 inline FLOAT computeF2DTurbulence(const FLOAT * const localVelocity, const FLOAT * const localMeshsize, const FLOAT * const localTurbulentViscosity, const Parameters & parameters, FLOAT dt){
     return localVelocity [mapd(0,0,0,0)]
-        + dt * (      dxdudx       (localVelocity, parameters, localMeshsize, localTurbulentViscosity) + dy_dudy_dvdx (localVelocity, parameters, localMeshsize, localTurbulentViscosity)
+        + dt * (     2* dxdudx       (localVelocity, parameters, localMeshsize, localTurbulentViscosity) + dy_dudy_dvdx (localVelocity, parameters, localMeshsize, localTurbulentViscosity)
                     - du2dx        (localVelocity, parameters, localMeshsize)                          - duvdy        (localVelocity, parameters, localMeshsize)
                      + parameters.environment.gx);
 }
 
 inline FLOAT computeG2DTurbulence(const FLOAT * const localVelocity, const FLOAT * const localMeshsize, const FLOAT * const localTurbulentViscosity, const Parameters & parameters, FLOAT dt){
     return localVelocity [mapd(0,0,0,1)]
-        + dt * (      dx_dudy_dvdx (localVelocity, parameters, localMeshsize, localTurbulentViscosity) + dydvdy       (localVelocity, parameters, localMeshsize, localTurbulentViscosity)
+        + dt * (      dx_dudy_dvdx (localVelocity, parameters, localMeshsize, localTurbulentViscosity) +2* dydvdy       (localVelocity, parameters, localMeshsize, localTurbulentViscosity)
                     - duvdx        (localVelocity, parameters, localMeshsize)                          - dv2dy        (localVelocity, parameters, localMeshsize)
                     + parameters.environment.gy);
 }
 
 inline FLOAT computeF3DTurbulence(const FLOAT * const localVelocity, const FLOAT * const localMeshsize, const FLOAT * const localTurbulentViscosity, const Parameters & parameters, FLOAT dt){
     return localVelocity [mapd(0,0,0,0)]
-        + dt * (      dxdudx       (localVelocity, parameters, localMeshsize, localTurbulentViscosity) + dy_dudy_dvdx (localVelocity, parameters, localMeshsize, localTurbulentViscosity)
+        + dt * (     2* dxdudx       (localVelocity, parameters, localMeshsize, localTurbulentViscosity) + dy_dudy_dvdx (localVelocity, parameters, localMeshsize, localTurbulentViscosity)
                     + dz_dudz_dwdx (localVelocity, parameters, localMeshsize, localTurbulentViscosity)
                     - du2dx        (localVelocity, parameters, localMeshsize)                          - duvdy        (localVelocity, parameters, localMeshsize)
                     - duwdz        (localVelocity, parameters, localMeshsize)
@@ -1183,7 +1183,7 @@ inline FLOAT computeF3DTurbulence(const FLOAT * const localVelocity, const FLOAT
 
 inline FLOAT computeG3DTurbulence(const FLOAT * const localVelocity, const FLOAT * const localMeshsize, const FLOAT * const localTurbulentViscosity, const Parameters & parameters, FLOAT dt){
     return localVelocity [mapd(0,0,0,1)]
-        + dt * (      dx_dudy_dvdx (localVelocity, parameters, localMeshsize, localTurbulentViscosity) + dydvdy       (localVelocity, parameters, localMeshsize, localTurbulentViscosity)
+        + dt * (      dx_dudy_dvdx (localVelocity, parameters, localMeshsize, localTurbulentViscosity) + 2*dydvdy       (localVelocity, parameters, localMeshsize, localTurbulentViscosity)
                     + dz_dvdz_dwdy (localVelocity, parameters, localMeshsize, localTurbulentViscosity)
                     - dv2dy        (localVelocity, parameters, localMeshsize)                          - duvdx        (localVelocity, parameters, localMeshsize)
                     - dvwdz        (localVelocity, parameters, localMeshsize)
@@ -1193,7 +1193,7 @@ inline FLOAT computeG3DTurbulence(const FLOAT * const localVelocity, const FLOAT
 inline FLOAT computeH3DTurbulence(const FLOAT * const localVelocity, const FLOAT * const localMeshsize, const FLOAT * const localTurbulentViscosity, const Parameters & parameters, FLOAT dt){
     return localVelocity [mapd(0,0,0,2)]
         +  dt * (     dx_dudz_dwdx (localVelocity, parameters, localMeshsize, localTurbulentViscosity) + dy_dvdz_dwdy (localVelocity, parameters, localMeshsize, localTurbulentViscosity)
-                    + dzdwdz       (localVelocity, parameters, localMeshsize, localTurbulentViscosity)
+                    +2* dzdwdz       (localVelocity, parameters, localMeshsize, localTurbulentViscosity)
                     - dw2dz        (localVelocity, parameters, localMeshsize)                          - duwdx        (localVelocity, parameters, localMeshsize)
                     - dvwdy        (localVelocity, parameters, localMeshsize)
                     + parameters.environment.gz );
