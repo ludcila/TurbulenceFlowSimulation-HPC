@@ -31,26 +31,25 @@ FLOAT re=this->_parameters.flow.Re;
 if(this->_parameters.simulation.scenario=="channel"){
 
 	if (this->_parameters.turbulence.boundary_layer_equation=="laminar"){
-	deltay=4.91*this->_parameters.meshsize->getPosX(i,j)/(pow(re, 1/2));
+	deltay=4.91*this->_parameters.meshsize->getPosX(i,j)/(pow(re, 1/2.0));
 	}
 
-	else 	deltay=0.382*this->_parameters.meshsize->getPosX(i,j)/(pow(re, 1/5));
+	else 	deltay=0.382*this->_parameters.meshsize->getPosX(i,j)/(pow(re, 1/5.0));
 
 }
  
 //if we are in the cavity case, we can apply empirical laws like the Blasius', 'cause they are meant for flate plates, so we just need wall distance
 if(this->_parameters.simulation.scenario=="cavity"){
 	
-	if(i<=this->_parameters.geometry.sizeX/2 && j<=this->_parameters.geometry.sizeY/2)
 	lm=0.41*PetscMin(this->_parameters.meshsize->getPosX(i,j),this->_parameters.meshsize->getPosY(i,j));
 
-	if(i>this->_parameters.geometry.sizeX/2 && j<=this->_parameters.geometry.sizeY/2)
+	if(i>this->_parameters.geometry.sizeX/2.0 && j<=this->_parameters.geometry.sizeY/2.0)
 	lm=0.41*PetscMin(this->_parameters.geometry.lengthX-this->_parameters.meshsize->getPosX(i,j),this->_parameters.meshsize->getPosY(i,j));
 
-	if(i>this->_parameters.geometry.sizeX/2 && j>this->_parameters.geometry.sizeY/2)
+	if(i>this->_parameters.geometry.sizeX/2.0 && j>this->_parameters.geometry.sizeY/2.0)
 	lm=0.41*PetscMin(this->_parameters.geometry.lengthX-this->_parameters.meshsize->getPosX(i,j),this->_parameters.geometry.lengthY-this->_parameters.meshsize->getPosY(i,j));
 
-	if(i<=this->_parameters.geometry.sizeX/2 && j>this->_parameters.geometry.sizeY/2)
+	if(i<=this->_parameters.geometry.sizeX/2.0 && j>this->_parameters.geometry.sizeY/2.0)
 	lm=0.41*PetscMin(this->_parameters.meshsize->getPosX(i,j),this->_parameters.geometry.lengthY-this->_parameters.meshsize->getPosY(i,j));
 
 
@@ -60,13 +59,13 @@ if(this->_parameters.simulation.scenario=="cavity"){
 
 if(this->_parameters.simulation.scenario=="channel"){
 
-	if(j>this->_parameters.geometry.sizeY/2)
+	if(j>this->_parameters.geometry.sizeY/2.0)
 	lm=PetscMin(0.09*deltay,0.41*(this->_parameters.geometry.lengthY-this->_parameters.meshsize->getPosY(i,j)));
 
-	 if(j<=this->_parameters.geometry.sizeY/2 && this->_parameters.bfStep.xRatio!=0)
+	 if(j<=this->_parameters.geometry.sizeY/2.0 && this->_parameters.bfStep.xRatio!=0)
 		{
 		if(this->_parameters.meshsize->getPosX(i,j)<=this->_parameters.bfStep.xRatio*this->_parameters.geometry.lengthX)
-		lm=PetscMin(0.09*deltay,0.41*(-this->_parameters.meshsize->getPosY(i,j)+this->_parameters.bfStep.yRatio*this->_parameters.geometry.lengthY/2));
+		lm=PetscMin(0.09*deltay,0.41*(-this->_parameters.meshsize->getPosY(i,j)+this->_parameters.bfStep.yRatio*this->_parameters.geometry.lengthY/2.0));
 
 		else lm=0.41*this->_parameters.meshsize->getPosY(i,j);
 		}
@@ -96,10 +95,10 @@ FLOAT re=this->_parameters.flow.Re;
 if(this->_parameters.simulation.scenario=="channel"){
 
 	if (this->_parameters.turbulence.boundary_layer_equation=="laminar"){
-	deltay=4.91*this->_parameters.meshsize->getPosX(i,j,k)/(pow(re, 1/2));
+	deltay=4.91*this->_parameters.meshsize->getPosX(i,j,k)/(pow(re, 1/2.0));
 	}
 
-	else 	deltay=0.382*this->_parameters.meshsize->getPosX(i,j,k)/(pow(re, 1/5));
+	else 	deltay=0.382*this->_parameters.meshsize->getPosX(i,j,k)/(pow(re, 1/5.0));
 deltaz=deltay;
 }
  
@@ -107,42 +106,42 @@ deltaz=deltay;
 //if we are in the cavity case, we can apply empirical laws like the Blasius', 'cause they are meant for flate plates, so we just need wall distance
 if(this->_parameters.simulation.scenario=="cavity"){
 	
-	if(i<=this->_parameters.geometry.sizeX/2 && j<=this->_parameters.geometry.sizeY/2 && k<=this->_parameters.geometry.sizeZ/2)
+	if(i<=this->_parameters.geometry.sizeX/2.0 && j<=this->_parameters.geometry.sizeY/2.0 && k<=this->_parameters.geometry.sizeZ/2.0)
 	lm=0.41*PetscMin(this->_parameters.meshsize->getPosZ(i,j,k),PetscMin(this->_parameters.meshsize->getPosX(i,j,k),this->_parameters.meshsize->getPosY(i,j,k)));
 
-	if(i>this->_parameters.geometry.sizeX/2 && j<=this->_parameters.geometry.sizeY/2 && k<=this->_parameters.geometry.sizeZ/2)
+	if(i>this->_parameters.geometry.sizeX/2.0 && j<=this->_parameters.geometry.sizeY/2.0 && k<=this->_parameters.geometry.sizeZ/2.0)
 	lm=0.41*PetscMin(this->_parameters.meshsize->getPosZ(i,j,k),PetscMin(this->_parameters.geometry.lengthX-this->_parameters.meshsize->getPosX(i,j,k),this->_parameters.meshsize->getPosY(i,j,k)));
 
-	if(i>this->_parameters.geometry.sizeX/2 && j>this->_parameters.geometry.sizeY/2 && k<=this->_parameters.geometry.sizeZ/2)
+	if(i>this->_parameters.geometry.sizeX/2.0 && j>this->_parameters.geometry.sizeY/2.0 && k<=this->_parameters.geometry.sizeZ/2.0)
 	lm=0.41*PetscMin(this->_parameters.meshsize->getPosZ(i,j,k),PetscMin(this->_parameters.geometry.lengthX-this->_parameters.meshsize->getPosX(i,j,k),this->_parameters.geometry.lengthY-this->_parameters.meshsize->getPosY(i,j,k)));
 
-	if(i<=this->_parameters.geometry.sizeX/2 && j>this->_parameters.geometry.sizeY/2 && k<=this->_parameters.geometry.sizeZ/2)
+	if(i<=this->_parameters.geometry.sizeX/2.0 && j>this->_parameters.geometry.sizeY/2.0 && k<=this->_parameters.geometry.sizeZ/2.0)
 	lm=0.41*PetscMin(this->_parameters.meshsize->getPosZ(i,j,k),PetscMin(this->_parameters.meshsize->getPosX(i,j,k),this->_parameters.geometry.lengthY-this->_parameters.meshsize->getPosY(i,j,k)));
 
-	if(i<=this->_parameters.geometry.sizeX/2 && j<=this->_parameters.geometry.sizeY/2 && k>this->_parameters.geometry.sizeZ/2)
+	if(i<=this->_parameters.geometry.sizeX/2.0 && j<=this->_parameters.geometry.sizeY/2.0 && k>this->_parameters.geometry.sizeZ/2.0)
 	lm=0.41*PetscMin(this->_parameters.geometry.lengthZ-this->_parameters.meshsize->getPosZ(i,j,k),PetscMin(this->_parameters.meshsize->getPosX(i,j,k),this->_parameters.meshsize->getPosY(i,j,k)));
 
-	if(i>this->_parameters.geometry.sizeX/2 && j<=this->_parameters.geometry.sizeY/2 && k>this->_parameters.geometry.sizeZ/2)
+	if(i>this->_parameters.geometry.sizeX/2.0 && j<=this->_parameters.geometry.sizeY/2.0 && k>this->_parameters.geometry.sizeZ/2.0)
 	lm=0.41*PetscMin(this->_parameters.geometry.lengthZ-this->_parameters.meshsize->getPosZ(i,j,k),PetscMin(this->_parameters.geometry.lengthX-this->_parameters.meshsize->getPosX(i,j,k),this->_parameters.meshsize->getPosY(i,j,k)));
 
-	if(i>this->_parameters.geometry.sizeX/2 && j>this->_parameters.geometry.sizeY/2 && k>this->_parameters.geometry.sizeZ/2)
+	if(i>this->_parameters.geometry.sizeX/2.0 && j>this->_parameters.geometry.sizeY/2.0 && k>this->_parameters.geometry.sizeZ/2.0)
 	lm=0.41*PetscMin(this->_parameters.geometry.lengthZ-this->_parameters.meshsize->getPosZ(i,j,k),PetscMin(this->_parameters.geometry.lengthX-this->_parameters.meshsize->getPosX(i,j,k),this->_parameters.geometry.lengthY-this->_parameters.meshsize->getPosY(i,j,k)));
 
-	if(i<=this->_parameters.geometry.sizeX/2 && j>this->_parameters.geometry.sizeY/2 && k>this->_parameters.geometry.sizeZ/2)
+	if(i<=this->_parameters.geometry.sizeX/2.0 && j>this->_parameters.geometry.sizeY/2.0 && k>this->_parameters.geometry.sizeZ/2.0)
 	lm=0.41*PetscMin(this->_parameters.geometry.lengthZ-this->_parameters.meshsize->getPosZ(i,j,k),PetscMin(this->_parameters.meshsize->getPosX(i,j,k),this->_parameters.geometry.lengthY-this->_parameters.meshsize->getPosY(i,j,k)));
 }
 
 //now we determine lm for the channel case
 
-if(this->_parameters.simulation.scenario=="channel" && k<=this->_parameters.geometry.sizeZ/2){
+if(this->_parameters.simulation.scenario=="channel" && k<=this->_parameters.geometry.sizeZ/2.0){
 
-	if(j>this->_parameters.geometry.sizeY/2)
+	if(j>this->_parameters.geometry.sizeY/2.0)
 	lm=PetscMin(0.09*deltay,0.41*PetscMin(this->_parameters.meshsize->getPosZ(i,j,k),(this->_parameters.geometry.lengthY-this->_parameters.meshsize->getPosY(i,j,k))));
 
-	 if(j<=this->_parameters.geometry.sizeY/2 && this->_parameters.bfStep.xRatio!=0)
+	 if(j<=this->_parameters.geometry.sizeY/2.0 && this->_parameters.bfStep.xRatio!=0)
 		{
 		if(this->_parameters.meshsize->getPosX(i,j,k)<=this->_parameters.bfStep.xRatio*this->_parameters.geometry.lengthX)
-		lm=PetscMin(0.09*deltay,0.41*PetscMin(this->_parameters.meshsize->getPosZ(i,j,k),(-this->_parameters.meshsize->getPosY(i,j,k)+this->_parameters.bfStep.yRatio*this->_parameters.geometry.lengthY/2)));
+		lm=PetscMin(0.09*deltay,0.41*PetscMin(this->_parameters.meshsize->getPosZ(i,j,k),(-this->_parameters.meshsize->getPosY(i,j,k)+this->_parameters.bfStep.yRatio*this->_parameters.geometry.lengthY/2.0)));
 
 		else lm=0.41*PetscMin(this->_parameters.meshsize->getPosZ(i,j,k),this->_parameters.meshsize->getPosY(i,j,k));
 		}
@@ -150,15 +149,15 @@ if(this->_parameters.simulation.scenario=="channel" && k<=this->_parameters.geom
 	else lm=PetscMin(0.09*deltay,0.41*PetscMin(this->_parameters.meshsize->getPosZ(i,j,k),this->_parameters.meshsize->getPosY(i,j,k)));
 }
 
-if(this->_parameters.simulation.scenario=="channel" && k>this->_parameters.geometry.sizeZ/2){
+if(this->_parameters.simulation.scenario=="channel" && k>this->_parameters.geometry.sizeZ/2.0){
 
-	if(j>this->_parameters.geometry.sizeY/2)
+	if(j>this->_parameters.geometry.sizeY/2.0)
 	lm=PetscMin(0.09*deltay,0.41*PetscMin(this->_parameters.geometry.lengthZ-this->_parameters.meshsize->getPosZ(i,j,k),(this->_parameters.geometry.lengthY-this->_parameters.meshsize->getPosY(i,j,k))));
 
-	 if(j<=this->_parameters.geometry.sizeY/2 && this->_parameters.bfStep.xRatio!=0)
+	 if(j<=this->_parameters.geometry.sizeY/2.0 && this->_parameters.bfStep.xRatio!=0)
 		{
 		if(this->_parameters.meshsize->getPosX(i,j,k)<=this->_parameters.bfStep.xRatio*this->_parameters.geometry.lengthX)
-		lm=PetscMin(0.09*deltay,0.41*PetscMin(this->_parameters.geometry.lengthZ-this->_parameters.meshsize->getPosZ(i,j,k),(-this->_parameters.meshsize->getPosY(i,j,k)+this->_parameters.bfStep.yRatio*this->_parameters.geometry.lengthY/2)));
+		lm=PetscMin(0.09*deltay,0.41*PetscMin(this->_parameters.geometry.lengthZ-this->_parameters.meshsize->getPosZ(i,j,k),(-this->_parameters.meshsize->getPosY(i,j,k)+this->_parameters.bfStep.yRatio*this->_parameters.geometry.lengthY/2.0)));
 
 		else lm=0.41*PetscMin(this->_parameters.geometry.lengthZ-this->_parameters.meshsize->getPosZ(i,j,k),this->_parameters.meshsize->getPosY(i,j,k));
 		}

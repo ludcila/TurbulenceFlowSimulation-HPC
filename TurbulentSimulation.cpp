@@ -5,6 +5,8 @@ TurbulentSimulation::TurbulentSimulation(Parameters &parameters, TurbulentFlowFi
 	_turbulentFlowField(flowField),
 	_turbulentFghStencil(parameters),
 	_turbulentFghIterator(_turbulentFlowField, parameters, _turbulentFghStencil),
+	_turbulentViscosityStencil(parameters),
+	_turbulentViscosityIterator(_turbulentFlowField, parameters, _turbulentViscosityStencil, 1, 0),
 	_turbulentVtkStencil(parameters),
 	_turbulentVtkIterator(_turbulentFlowField, parameters, _turbulentVtkStencil, 1, 0),
 	_minNUStencil(parameters),
@@ -18,6 +20,7 @@ void TurbulentSimulation::solveTimestep(){
 	// determine and set max. timestep which is allowed in this simulation
 	setTimeStep();
 	// compute fgh
+	_turbulentViscosityIterator.iterate();
 	_turbulentFghIterator.iterate();
 	// set global boundary values
 	_wallFGHIterator.iterate();

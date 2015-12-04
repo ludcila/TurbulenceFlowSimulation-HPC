@@ -4,6 +4,7 @@
 #include "Simulation.h"
 #include "TurbulentFlowField.h"
 #include "stencils/TurbulenceFGHStencil.h"
+#include "stencils/TurbulentViscosityStencil.h"
 #include "stencils/TurbulentVTKStencil.h"
 #include "stencils/MinNUStencil.h"
 
@@ -15,6 +16,8 @@ class TurbulentSimulation : public Simulation {
 		TurbulenceFGHStencil _turbulentFghStencil;
     	FieldIterator<TurbulentFlowField> _turbulentVtkIterator;
 		TurbulentVTKStencil _turbulentVtkStencil;
+		TurbulentViscosityStencil _turbulentViscosityStencil;
+		FieldIterator<TurbulentFlowField> _turbulentViscosityIterator;
 
 	MinNUStencil _minNUStencil;
 	FieldIterator<TurbulentFlowField> _minNUFieldIterator;
