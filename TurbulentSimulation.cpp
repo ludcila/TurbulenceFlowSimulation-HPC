@@ -1,4 +1,5 @@
 #include "TurbulentSimulation.h"
+#include "stencils/WallDistanceStencil.h"
 
 TurbulentSimulation::TurbulentSimulation(Parameters &parameters, TurbulentFlowField &flowField):
 	Simulation(parameters, flowField),
@@ -17,10 +18,10 @@ TurbulentSimulation::TurbulentSimulation(Parameters &parameters, TurbulentFlowFi
 
 // TODO: Changes for turbulent simulation not implemented yet!
 void TurbulentSimulation::solveTimestep(){
+	_turbulentViscosityIterator.iterate();
 	// determine and set max. timestep which is allowed in this simulation
 	setTimeStep();
 	// compute fgh
-	_turbulentViscosityIterator.iterate();
 	_turbulentFghIterator.iterate();
 	// set global boundary values
 	_wallFGHIterator.iterate();
@@ -86,3 +87,11 @@ void TurbulentSimulation::plotVTK(int timeStep, std::string foldername) {
 	_turbulentVtkIterator.iterate();
 	_turbulentVtkStencil.write(this->_turbulentFlowField, timeStep, foldername);
 }
+
+void TurbulentSimulation::initializeFlowField() {
+	Simulation::initializeFlowField();
+	WallDistanceStencil wds(_parameters);
+	FieldIterator<TurbulentFlowField> it(_turbulentFlowField, _parameters, wds);
+	it.iterate();	
+};
+

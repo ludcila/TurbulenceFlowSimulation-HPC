@@ -22,3 +22,7 @@ TurbulentFlowField::TurbulentFlowField (const Parameters & parameters):
 ScalarField & TurbulentFlowField::getTurbulentViscosity () {
     return _nitau;
 }
+
+ScalarField & TurbulentFlowField::getWallDistance () {
+    return _distance;
+}

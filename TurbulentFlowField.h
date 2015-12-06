@@ -15,7 +15,7 @@ class TurbulentFlowField : public FlowField {
     private:
 
         ScalarField _distance;
-	ScalarField _nitau;
+		ScalarField _nitau;
 
 
     public:
@@ -50,7 +50,8 @@ class TurbulentFlowField : public FlowField {
          */
         TurbulentFlowField (const Parameters & parameters);
 
-	ScalarField & getTurbulentViscosity ();
+		ScalarField & getTurbulentViscosity();
+		ScalarField & getWallDistance();
 
 };
 

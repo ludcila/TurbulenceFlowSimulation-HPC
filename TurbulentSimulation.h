@@ -41,6 +41,7 @@ class TurbulentSimulation : public Simulation {
 		virtual ~TurbulentSimulation(){}
 		virtual void solveTimestep();
 		virtual void plotVTK(int timeStep, std::string foldername);
+		virtual void initializeFlowField();
 
 
 
