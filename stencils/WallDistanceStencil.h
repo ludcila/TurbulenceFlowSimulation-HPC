@@ -10,10 +10,8 @@
 class WallDistanceStencil : public FieldStencil<TurbulentFlowField> {
 
 	protected:
-	
-		FLOAT _lengthX;
-		FLOAT _lengthY;
-		FLOAT _lengthZ;
+		
+		const Parameters & _parameters;
 
     public:
 
@@ -41,7 +39,12 @@ class WallDistanceStencil : public FieldStencil<TurbulentFlowField> {
          */
         virtual void apply ( TurbulentFlowField & flowField, int i, int j, int k );
 
-
+		/*
+			Compute distance to the step, applicable for both 2D and 3D scenarios
+			as long as the step spans the entire Z axis
+		*/
+		FLOAT distanceToStep(FLOAT posX, FLOAT posY);
+		
 };
 
 #endif
