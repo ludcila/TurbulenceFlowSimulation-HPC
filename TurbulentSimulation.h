@@ -6,7 +6,7 @@
 #include "stencils/TurbulenceFGHStencil.h"
 #include "stencils/TurbulentViscosityStencil.h"
 #include "stencils/TurbulentVTKStencil.h"
-#include "stencils/MinNUStencil.h"
+#include "stencils/MaxNuStencil.h"
 
 class TurbulentSimulation : public Simulation {
 	
@@ -18,10 +18,10 @@ class TurbulentSimulation : public Simulation {
 		TurbulentVTKStencil _turbulentVtkStencil;
 		TurbulentViscosityStencil _turbulentViscosityStencil;
 		FieldIterator<TurbulentFlowField> _turbulentViscosityIterator;
-
-	MinNUStencil _minNUStencil;
-	FieldIterator<TurbulentFlowField> _minNUFieldIterator;
-        GlobalBoundaryIterator<TurbulentFlowField> _minNUBoundaryIterator;
+		MaxNuStencil _maxNuStencil;
+		FieldIterator<TurbulentFlowField> _maxNuFieldIterator;
+        GlobalBoundaryIterator<TurbulentFlowField> _maxNuBoundaryIterator;
+        
 		/*
 			The changes are only in the flow field and the stencils, however, 
 			if we change the stencils we also need to change the iterators (apparently).

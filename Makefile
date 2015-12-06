@@ -36,7 +36,7 @@ stencils/RHSStencil.o stencils/VelocityStencil.o \
 stencils/VTKStencil.o \
 stencils/TurbulentVTKStencil.o \
 stencils/WallDistanceStencil.o\
-stencils/MinNUStencil.o\
+stencils/MaxNuStencil.o\
 stencils/PressureBufferFillStencil.o \
 stencils/PressureBufferReadStencil.o \
 stencils/VelocityBufferFillStencil.o \
