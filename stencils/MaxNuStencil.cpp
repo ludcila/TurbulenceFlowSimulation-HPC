@@ -78,6 +78,6 @@ void MaxNuStencil::reset () {
     _maxValue = 0;
 }
 
-const FLOAT  MaxNuStencil::getMaxValue() const{
+FLOAT  MaxNuStencil::getMaxValue() const{
     return _maxValue;
 }

@@ -57,14 +57,14 @@ void VelocityBufferFillStencil::applyTopWall(FlowField & flowField, int i, int j
 }
 
 void VelocityBufferFillStencil::applyFrontWall(FlowField & flowField, int i, int j, int k) {
-	this->_bufferFrontWall[BUFFER_3D_POS_X(flowField.getCellsZ()*i+j)] = flowField.getVelocity().getVector(i, j, k+2)[0];
-	this->_bufferFrontWall[BUFFER_3D_POS_Y(flowField.getCellsZ()*i+j)] = flowField.getVelocity().getVector(i, j, k+2)[1];
-	this->_bufferFrontWall[BUFFER_3D_POS_Z(flowField.getCellsZ()*i+j)] = flowField.getVelocity().getVector(i, j, k+2)[2];
+	this->_bufferFrontWall[BUFFER_3D_POS_X(flowField.getCellsY()*i+j)] = flowField.getVelocity().getVector(i, j, k+2)[0];
+	this->_bufferFrontWall[BUFFER_3D_POS_Y(flowField.getCellsY()*i+j)] = flowField.getVelocity().getVector(i, j, k+2)[1];
+	this->_bufferFrontWall[BUFFER_3D_POS_Z(flowField.getCellsY()*i+j)] = flowField.getVelocity().getVector(i, j, k+2)[2];
 }
 
 void VelocityBufferFillStencil::applyBackWall(FlowField & flowField, int i, int j, int k) {
-	this->_bufferBackWall[BUFFER_3D_POS_X(flowField.getCellsZ()*i+j)] = flowField.getVelocity().getVector(i, j, k-1)[0];
-	this->_bufferBackWall[BUFFER_3D_POS_Y(flowField.getCellsZ()*i+j)] = flowField.getVelocity().getVector(i, j, k-1)[1];
-	this->_bufferBackWall[BUFFER_3D_POS_Z(flowField.getCellsZ()*i+j)] = flowField.getVelocity().getVector(i, j, k-2)[2];
+	this->_bufferBackWall[BUFFER_3D_POS_X(flowField.getCellsY()*i+j)] = flowField.getVelocity().getVector(i, j, k-1)[0];
+	this->_bufferBackWall[BUFFER_3D_POS_Y(flowField.getCellsY()*i+j)] = flowField.getVelocity().getVector(i, j, k-1)[1];
+	this->_bufferBackWall[BUFFER_3D_POS_Z(flowField.getCellsY()*i+j)] = flowField.getVelocity().getVector(i, j, k-2)[2];
 }
 

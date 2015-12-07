@@ -3,11 +3,11 @@
 
 #include "../Stencil.h"
 #include "../FlowField.h"
-#define BUFFER_2D_POS_X(i) 2*i
-#define BUFFER_2D_POS_Y(i) 2*i+1
-#define BUFFER_3D_POS_X(i) 3*i
-#define BUFFER_3D_POS_Y(i) 3*i+1
-#define BUFFER_3D_POS_Z(i) 3*i+2
+#define BUFFER_2D_POS_X(i) 2*(i)
+#define BUFFER_2D_POS_Y(i) 2*(i)+1
+#define BUFFER_3D_POS_X(i) 3*(i)
+#define BUFFER_3D_POS_Y(i) 3*(i)+1
+#define BUFFER_3D_POS_Z(i) 3*(i)+2
 
 class VelocityBufferFillStencil : public BoundaryStencil<FlowField> {
 
