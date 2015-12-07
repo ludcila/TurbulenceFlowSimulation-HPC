@@ -41,8 +41,11 @@ stencils/PressureBufferFillStencil.o \
 stencils/PressureBufferReadStencil.o \
 stencils/VelocityBufferFillStencil.o \
 stencils/VelocityBufferReadStencil.o \
+stencils/ViscosityBufferFillStencil.o\
+stencils/ViscosityBufferReadStencil.o\
 stencils/TurbulentViscosityStencil.o \
 parallelManagers/PetscParallelManager.o\
+parallelManagers/PetscParallelManagerTurbulent.o\
 parallelManagers/PetscParallelConfiguration.o\
 GlobalBoundaryFactory.o\
 stencils/BFStepInitStencil.o stencils/NeumannBoundaryStencils.o stencils/BFInputStencils.o stencils/ObstacleStencil.o\
