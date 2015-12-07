@@ -98,59 +98,63 @@ inline FLOAT dudx ( const FLOAT * const lv, const FLOAT * const lm ) {
 }
 
 inline FLOAT dudy ( const FLOAT * const lv, const FLOAT * const lm ) {
-    //double tmp1= ( lv [mapd(0,0,0,0)] - lv [mapd(-1,0,0,0)] ) / GeometricParameters::dx;
 
     // evaluate dudy in the cell center by interpolation
-//cells vel down
-    const int index0 = mapd(1,-1,0,0);
-    const int index1 = mapd(-1,-1,0,0);
+    
+    /*
+    	0 1 dyP
+    	2 3 dy
+    	4 5 dyM
+    */
+    
+	//cells vel up
+    FLOAT u0 = lv[mapd(-1,1,0,0)];
+    FLOAT u1 = lv[mapd(0,1,0,0)];
+    
+	//cells center
+    FLOAT u2 = lv[mapd(-1,0,0,0)];
+    FLOAT u3 = lv[mapd(0,0,0,0)];
+    
+	//cells vel down
+    FLOAT u4 = lv[mapd(-1,-1,0,0)];
+    FLOAT u5 = lv[mapd(0,-1,0,0)];
 
-//cells vel up
-    const int index2 = mapd(1,1,0,0);
-    const int index3 = mapd(-1,1,0,0);
+	// cells length y
+    FLOAT dy = lm[mapd(0,0,0,1)];
+    FLOAT dyM = lm[mapd(0,-1,0,1)];
+    FLOAT dyP = lm[mapd(0,1,0,1)];
+    
+	FLOAT veldown = ((u0+u1)*dy + (u2+u3)*dyP) / (2*(dy+dyP));
+	FLOAT velup = ((u4+u5)*dy + (u2+u3)*dyM) / (2*(dy+dyM));
 
-// cells length y
-    const int indexcenter= mapd(0,0,0,1);
-    const int indexdown= mapd(0,-1,0,1);
-    const int indexup= mapd(0,1,0,1);
-
-//cells center
-    const int index4 = mapd(1,0,0,0);
-    const int index5 = mapd(-1,0,0,0);
-
-
-FLOAT veldown=2.0/(lm[indexcenter]+lm[indexdown])*(lm[indexcenter]/2*(lv[index4]+lv[index5])/2+lm[indexdown]/2*(lv[index0]+lv[index1])/2);
-FLOAT velup=2.0/(lm[indexcenter]+lm[indexup])*(lm[indexcenter]/2*(lv[index4]+lv[index5])/2+lm[indexup]/2*(lv[index2]+lv[index3])/2);
-
-return 1.0/lm[indexcenter]*(velup-veldown);
+	return (velup-veldown) / dy;
+	
 }
 
 inline FLOAT dudz ( const FLOAT * const lv, const FLOAT * const lm ) {
-       //double tmp1= ( lv [mapd(0,0,0,0)] - lv [mapd(-1,0,0,0)] ) / GeometricParameters::dx;
 
-    // evaluate dudy in the cell center by interpolation
-//cells vel down
-    const int index0 = mapd(1,0,-1,0);
-    const int index1 = mapd(-1,0,-1,0);
+	//cells vel front
+    FLOAT u0 = lv[mapd(-1,0,1,0)];
+    FLOAT u1 = lv[mapd(0,0,1,0)];
+    
+	//cells center
+    FLOAT u2 = lv[mapd(-1,0,0,0)];
+    FLOAT u3 = lv[mapd(0,0,0,0)];
+    
+	//cells vel back
+    FLOAT u4 = lv[mapd(-1,0,-1,0)];
+    FLOAT u5 = lv[mapd(0,0,-1,0)];
 
-//cells vel up
-    const int index2 = mapd(1,0,1,0);
-    const int index3 = mapd(-1,0,1,0);
+	// cells length z
+    FLOAT dz = lm[mapd(0,0,0,2)];
+    FLOAT dzM = lm[mapd(0,0,-1,2)];
+    FLOAT dzP = lm[mapd(0,0,1,2)];
+    
+	FLOAT velback = ((u0+u1)*dz + (u2+u3)*dzP) / (2*(dz+dzP));
+	FLOAT velfront = ((u4+u5)*dz + (u2+u3)*dzM) / (2*(dz+dzM));
 
-// cells length z
-    const int indexcenter= mapd(0,0,0,2);
-    const int indexdown= mapd(0,0,-1,2);
-    const int indexup= mapd(0,0,1,2);
+	return (velfront-velback) / dz;
 
-//cells center
-    const int index4 = mapd(1,0,0,0);
-    const int index5 = mapd(-1,0,0,0);
-
-
-FLOAT veldown=2.0/(lm[indexcenter]+lm[indexdown])*(lm[indexcenter]/2*(lv[index4]+lv[index5])/2+lm[indexdown]/2*(lv[index0]+lv[index1])/2);
-FLOAT velup=2.0/(lm[indexcenter]+lm[indexup])*(lm[indexcenter]/2*(lv[index4]+lv[index5])/2+lm[indexup]/2*(lv[index2]+lv[index3])/2);
-
-return 1.0/lm[indexcenter]*(velup-veldown);
 }
 
 
@@ -166,122 +170,113 @@ inline FLOAT dvdy ( const FLOAT * const lv, const FLOAT * const lm ) {
 }
 
 inline FLOAT dvdx ( const FLOAT * const lv, const FLOAT * const lm ) {
-      //double tmp1= ( lv [mapd(0,0,0,0)] - lv [mapd(-1,0,0,0)] ) / GeometricParameters::dx;
 
-    // evaluate dudy in the cell center by interpolation
-//cells vel down
-    const int index0 = mapd(-1,1,0,1);
-    const int index1 = mapd(-1,-1,0,1);
+	//cells vel right
+    FLOAT v0 = lv[mapd(1,-1,0,1)];
+    FLOAT v1 = lv[mapd(1,0,0,1)];
+    
+	//cells center
+    FLOAT v2 = lv[mapd(0,-1,0,1)];
+    FLOAT v3 = lv[mapd(0,0,0,1)];
+    
+	//cells vel left
+    FLOAT v4 = lv[mapd(-1,-1,0,1)];
+    FLOAT v5 = lv[mapd(-1,0,0,1)];
 
-//cells vel up
-    const int index2 = mapd(1,1,0,1);
-    const int index3 = mapd(1,-1,0,1);
+	// cells length x
+    FLOAT dx = lm[mapd(0,0,0,0)];
+    FLOAT dxM = lm[mapd(-1,0,0,0)];
+    FLOAT dxP = lm[mapd(1,0,0,0)];
+    
+	FLOAT velleft = ((v0+v1)*dx + (v2+v3)*dxP) / (2*(dx+dxP));
+	FLOAT velright = ((v4+v5)*dx + (v2+v3)*dxM) / (2*(dx+dxM));
 
-// cells length x
-    const int indexcenter= mapd(0,0,0,0);
-    const int indexdown= mapd(-1,0,0,0);
-    const int indexup= mapd(1,0,0,0);
-
-
-//cells center
-    const int index4 = mapd(0,1,0,1);
-    const int index5 = mapd(0,-1,0,1);
-
-
-FLOAT veldown=2.0/(lm[indexcenter]+lm[indexdown])*(lm[indexcenter]/2*(lv[index4]+lv[index5])/2+lm[indexdown]/2*(lv[index0]+lv[index1])/2);
-FLOAT velup=2.0/(lm[indexcenter]+lm[indexup])*(lm[indexcenter]/2*(lv[index4]+lv[index5])/2+lm[indexup]/2*(lv[index2]+lv[index3])/2);
-
-return 1.0/lm[indexcenter]*(velup-veldown);
+	return (velright-velleft) / dx;
+	
 }
 
 inline FLOAT dvdz ( const FLOAT * const lv, const FLOAT * const lm ) {
-       //double tmp1= ( lv [mapd(0,0,0,0)] - lv [mapd(-1,0,0,0)] ) / GeometricParameters::dx;
 
-    // evaluate dudy in the cell center by interpolation
-//cells vel down
-    const int index0 = mapd(0,1,-1,1);
-    const int index1 = mapd(0,-1,-1,1);
+	//cells vel front
+    FLOAT v0 = lv[mapd(0,-1,1,1)];
+    FLOAT v1 = lv[mapd(0,0,1,1)];
+    
+	//cells center
+    FLOAT v2 = lv[mapd(0,-1,0,1)];
+    FLOAT v3 = lv[mapd(0,0,0,1)];
+    
+	//cells vel back
+    FLOAT v4 = lv[mapd(0,-1,-1,1)];
+    FLOAT v5 = lv[mapd(0,0,-1,1)];
 
-//cells vel up
-    const int index2 = mapd(0,1,1,1);
-    const int index3 = mapd(0,-1,1,1);
+	// cells length z
+    FLOAT dx = lm[mapd(0,0,0,0)];
+    FLOAT dxM = lm[mapd(-1,0,0,0)];
+    FLOAT dxP = lm[mapd(1,0,0,0)];
+    
+	FLOAT velback = ((v0+v1)*dx + (v2+v3)*dxP) / (2*(dx+dxP));
+	FLOAT velfront = ((v4+v5)*dx + (v2+v3)*dxM) / (2*(dx+dxM));
 
-// cells length z
-    const int indexcenter= mapd(0,0,0,2);
-    const int indexdown= mapd(0,0,-1,2);
-    const int indexup= mapd(0,0,1,2);
-
-
-//cells center
-    const int index4 = mapd(0,1,0,1);
-    const int index5 = mapd(0,-1,0,1);
-
-
-FLOAT veldown=2.0/(lm[indexcenter]+lm[indexdown])*(lm[indexcenter]/2*(lv[index4]+lv[index5])/2+lm[indexdown]/2*(lv[index0]+lv[index1])/2);
-FLOAT velup=2.0/(lm[indexcenter]+lm[indexup])*(lm[indexcenter]/2*(lv[index4]+lv[index5])/2+lm[indexup]/2*(lv[index2]+lv[index3])/2);
-
-return 1.0/lm[indexcenter]*(velup-veldown);
+	return (velfront-velback) / dx;
+	
 }
 
 inline FLOAT dwdz ( const FLOAT * const lv, const FLOAT * const lm ) {
-    //double tmp1= ( lv [mapd(0,0,0,2)] - lv [mapd(0,0,-1,2)] ) / GeometricParameters::dz;
     const int index0 = mapd(0,0, 0,2);
     const int index1 = mapd(0,0,-1,2);
     return ( lv [index0] - lv [index1] ) / lm[index0];
-
-    /*if (fabs(tmp1-tmp2) > 1.0e-12){handleError(1, "dwdz");}
-
-    return tmp2;*/
 }
 
 inline FLOAT dwdx ( const FLOAT * const lv, const FLOAT * const lm ) {
-    //double tmp1= ( lv [mapd(0,0,0,0)] - lv [mapd(-1,0,0,0)] ) / GeometricParameters::dx;
 
-    // evaluate dudy in the cell center by interpolation
-//cells vel down
-    const int index0 = mapd(-1,0,1,2);
-    const int index1 = mapd(-1,0,-1,2);
+	//cells vel right
+    FLOAT w0 = lv[mapd(1,0,-1,2)];
+    FLOAT w1 = lv[mapd(1,0,0,2)];
+    
+	//cells center
+    FLOAT w2 = lv[mapd(0,0,-1,2)];
+    FLOAT w3 = lv[mapd(0,0,0,2)];
+    
+	//cells vel left
+    FLOAT w4 = lv[mapd(-1,0,-1,2)];
+    FLOAT w5 = lv[mapd(-1,0,0,2)];
 
-//cells vel up
-    const int index2 = mapd(1,0,1,2);
-    const int index3 = mapd(1,0,-1,2);
+	// cells length x
+    FLOAT dx = lm[mapd(0,0,0,0)];
+    FLOAT dxM = lm[mapd(-1,0,0,0)];
+    FLOAT dxP = lm[mapd(1,0,0,0)];
+    
+	FLOAT velleft = ((w0+w1)*dx + (w2+w3)*dxP) / (2*(dx+dxP));
+	FLOAT velright = ((w4+w5)*dx + (w2+w3)*dxM) / (2*(dx+dxM));
 
-// cells length x
-    const int indexcenter= mapd(0,0,0,0);
-    const int indexdown= mapd(-1,0,0,0);
-    const int indexup= mapd(1,0,0,0);
-
-
-//cells center
-    const int index4 = mapd(0,0,1,2);
-    const int index5 = mapd(0,0,-1,2);
-
-
-FLOAT veldown=2.0/(lm[indexcenter]+lm[indexdown])*(lm[indexcenter]/2*(lv[index4]+lv[index5])/2+lm[indexdown]/2*(lv[index0]+lv[index1])/2);
-FLOAT velup=2.0/(lm[indexcenter]+lm[indexup])*(lm[indexcenter]/2*(lv[index4]+lv[index5])/2+lm[indexup]/2*(lv[index2]+lv[index3])/2);
-
-return 1.0/lm[indexcenter]*(velup-veldown);
+	return (velright-velleft) / dx;
+	
 }
 
 inline FLOAT dwdy ( const FLOAT * const lv, const FLOAT * const lm ) {
-    //double tmp1= ( lv [mapd(0,0,0,0)] - lv [mapd(-1,0,0,0)] ) / GeometricParameters::dx;
-  //double tmp1= ( lv [mapd(0,0,0,0)] - lv [mapd(-1,0,0,0)] ) / GeometricParameters::dx;
 
-    // evaluate dudy in the cell center by interpolation
-//cells vel down
-    const int index0 = mapd(0,-1,1,2);
-    const int index1 = mapd(0,-1,-1,2);
+	//cells vel up
+    FLOAT w0 = lv[mapd(0,1,-1,2)];
+    FLOAT w1 = lv[mapd(0,1,0,2)];
+    
+	//cells center
+    FLOAT w2 = lv[mapd(0,0,-1,2)];
+    FLOAT w3 = lv[mapd(0,0,0,2)];
+    
+	//cells vel down
+    FLOAT w4 = lv[mapd(0,-1,-1,2)];
+    FLOAT w5 = lv[mapd(0,-1,0,2)];
 
-//cells vel up
-    const int index2 = mapd(0,1,1,2);
-    const int index3 = mapd(0,1,-1,2);
+	// cells length y
+    FLOAT dy = lm[mapd(0,0,0,1)];
+    FLOAT dyM = lm[mapd(0,-1,0,1)];
+    FLOAT dyP = lm[mapd(0,1,0,1)];
+    
+	FLOAT veldown = ((w0+w1)*dy + (w2+w3)*dyP) / (2*(dy+dyP));
+	FLOAT velup = ((w4+w5)*dy + (w2+w3)*dyM) / (2*(dy+dyM));
 
-// cells length y
-    const int indexcenter= mapd(0,0,0,1);
-    const int indexdown= mapd(0,-1,0,1);
-    const int indexup= mapd(0,1,0,1);
-
-    return (lv[index0]+lv[index1])/2.0+(lm[indexdown]+lm[indexcenter])/2*((lv[index2]+lv[index3])/2.0-(lv[index0]+lv[index1])/2.0)/((lm[indexdown]+lm[indexcenter]+lm[indexup])/2);
+	return (velup-veldown) / dy;
+	
 }
 // second derivative of u-component w.r.t. x-direction, evaluated at the location of the u-component
 inline FLOAT d2udx2 ( const FLOAT * const lv, const FLOAT * const lm ) {
@@ -888,232 +883,234 @@ return 2.0 /(dz+dzP1)*(ni1*(wP1-w0)/dzP1-ni0*(w0-wM1)/dz);
 
 }
 
+inline FLOAT diffusive_term(
+	const FLOAT r1, const FLOAT r2, const FLOAT r3, 
+	const FLOAT p1, const FLOAT p2, const FLOAT p3, const FLOAT p4, 
+	const FLOAT nu0, const FLOAT nu1, const FLOAT nu2, const FLOAT nu3, const FLOAT nu4, const FLOAT nu5, const FLOAT nu6,
+	const FLOAT d1, const FLOAT d2,
+	const FLOAT h1, const FLOAT h2, const FLOAT h3)
+{
+	
+	const FLOAT drlow = (r2 - r1) / (h1 + h2) * 2;
+	const FLOAT dplow = (p2 - p1) / (d1 + d2) * 2;
+	const FLOAT nulow = ((nu1*h2 + nu3*h1)*d2 + (nu2*h2 + nu4*h1)*d1) / ((h1 + h2) * (d1 + d2));
+	
+	const FLOAT drhigh = (r3 - r2) / (h2 + h3) * 2;
+	const FLOAT dphigh = (p4 - p3) / (d1 + d2) * 2;
+	const FLOAT nuhigh = ((nu3*h3 + nu5*h2)*d2 + (nu4*h3 + nu6*h2)*d1) / ((h2 + h3) * (d1 + d2));
+	
+	return ((nuhigh+nu0)*(drhigh + dphigh) - (nulow+nu0)*(drlow + dplow)) / h2;
+	
+}
+
 inline FLOAT dy_dudy_dvdx ( const FLOAT * const lv, const Parameters & parameters, const FLOAT* const lm, const FLOAT* lt  ) {
-
-    const FLOAT dx = lm[mapd(0,0,0,0)];
-    const FLOAT dxP1= lm[mapd(1,0,0,0)];
-    const FLOAT dxM1= lm[mapd(-1,0,0,0)];
-
-     const FLOAT dy = lm[mapd(0,0,0,1)];
-    const FLOAT dyP1= lm[mapd(0,1,0,1)];
-    const FLOAT dyplus= lm[mapd(1,0,0,1)];
-    const FLOAT dyplusP1= lm[mapd(1,1,0,1)];
-    const FLOAT dyplusM1= lm[mapd(1,-1,0,1)];
-    const FLOAT dyM1= lm[mapd(0,-1,0,1)];
-
-    const FLOAT u0 = lv[mapd(0,0,0,0)];
-    const FLOAT uM1= lv[mapd(0,-1,0,0)];
-    const FLOAT uP1 = lv[mapd(0,1,0,0)];
-    const FLOAT uup= (uP1-u0)/(dy+dyP1)*2.0;
-    const FLOAT udown= -(uM1-u0)/(dy+dyM1)*2.0;
-
-    const FLOAT v0 = lv[mapd(0,0,0,1)];
-    const FLOAT vM1= lv[mapd(-1,0,0,1)];
-    const FLOAT vP1 = lv[mapd(1,0,0,1)];
-    const FLOAT vup= (vP1-v0)/(dx+dxP1)*2.0;
-    const FLOAT vdown= -(vM1-v0)/(dx+dxM1)*2.0;
-
-    // Kinematic viscosity
-    const FLOAT kni = 1.0 / parameters.flow.Re;
-    // Turbulent viscosity
-    const FLOAT tniplus = ((lt[mapd(0,0,0,0)]*dy+lt[mapd(0,1,0,0)]*dyP1)*dx/(dy+dyP1)+(lt[mapd(1,0,0,0)]*dyplus+lt[mapd(1,1,0,0)]*dyplusP1)*dxP1/(dyplus+dyplusP1))*1.0/(dx+dxP1);
-    const FLOAT tniminus = ((lt[mapd(0,0,0,0)]*dy+lt[mapd(0,-1,0,0)]*dyM1)*dx/(dy+dyM1)+(lt[mapd(1,0,0,0)]*dyplus+lt[mapd(1,-1,0,0)]*dyplusM1)*dxP1/(dyplus+dyplusM1))*1.0/(dx+dxP1);
-    // Total viscosity
-    const FLOAT niplus = kni + tniplus;
-    const FLOAT niminus = kni + tniminus;
-
-    return 1/dy*(niplus*(uup+vup)-niminus*(udown+vdown));
+	
+	// u velocities j=(-1,0,1)
+	const FLOAT r1 = lv[mapd( 0,-1, 0, 0)];
+	const FLOAT r2 = lv[mapd( 0, 0, 0, 0)];
+	const FLOAT r3 = lv[mapd( 0, 1, 0, 0)];
+	
+	// v velocities i=(0,1) x j=(-1,0)
+	const FLOAT p1 = lv[mapd( 0,-1, 0, 1)];
+	const FLOAT p2 = lv[mapd( 1,-1, 0, 1)];
+	const FLOAT p3 = lv[mapd( 0, 0, 0, 1)];
+	const FLOAT p4 = lv[mapd( 1, 0, 0, 1)];
+	
+	// dx i=(0,1)
+	const FLOAT d1 = lm[mapd( 0, 0, 0, 0)];
+	const FLOAT d2 = lm[mapd( 1, 0, 0, 0)];
+	
+	// dy j=(-1,0,1)
+	const FLOAT h1 = lm[mapd( 0,-1, 0, 1)];
+	const FLOAT h2 = lm[mapd( 0, 0, 0, 1)];
+	const FLOAT h3 = lm[mapd( 0, 1, 0, 1)];
+	
+	// viscosity i=(0,1) x j=(-1,0,1)
+	const FLOAT nu0 = 1.0 / parameters.flow.Re;
+	const FLOAT nu1 = lt[mapd( 0,-1, 0, 0)];
+	const FLOAT nu2 = lt[mapd( 1,-1, 0, 0)];
+	const FLOAT nu3 = lt[mapd( 0, 0, 0, 0)];
+	const FLOAT nu4 = lt[mapd( 1, 0, 0, 0)];
+	const FLOAT nu5 = lt[mapd( 0, 1, 0, 0)];
+	const FLOAT nu6 = lt[mapd( 1, 1, 0, 0)];
+	
+	return diffusive_term(r1, r2, r3, p1, p2, p3, p4, nu0, nu1, nu2, nu3, nu4, nu5, nu6, d1, d2, h1, h2, h3);
 
 }
 
 inline FLOAT dz_dudz_dwdx ( const FLOAT * const lv, const Parameters & parameters, const FLOAT* const lm, const FLOAT* lt  ) {
 
-    const FLOAT dx = lm[mapd(0,0,0,0)];
-    const FLOAT dxP1= lm[mapd(1,0,0,0)];
-    const FLOAT dxM1= lm[mapd(-1,0,0,0)];
-
-     const FLOAT dz = lm[mapd(0,0,0,2)];
-    const FLOAT dzP1= lm[mapd(0,0,1,2)];
-    const FLOAT dzplus= lm[mapd(1,0,0,2)];
-    const FLOAT dzplusP1= lm[mapd(1,0,1,2)];
-    const FLOAT dzplusM1= lm[mapd(1,0,-1,2)];
-    const FLOAT dzM1= lm[mapd(0,0,-1,2)];
-
-    const FLOAT u0 = lv[mapd(0,0,0,0)];
-    const FLOAT uM1= lv[mapd(0,0,-1,0)];
-    const FLOAT uP1 = lv[mapd(0,0,1,0)];
-    const FLOAT uup= (uP1-u0)/(dz+dzP1)*2.0;
-    const FLOAT udown= -(uM1-u0)/(dz+dzM1)*2.0;
-
-    const FLOAT w0 = lv[mapd(0,0,0,2)];
-    const FLOAT wM1= lv[mapd(-1,0,0,2)];
-    const FLOAT wP1 = lv[mapd(1,0,0,2)];
-    const FLOAT wup= (wP1-w0)/(dx+dxP1)*2.0;
-    const FLOAT wdown= -(wM1-w0)/(dx+dxM1)*2.0;
-
-    // Kinematic viscosity
-    const FLOAT kni = 1.0 / parameters.flow.Re;
-    // Turbulent viscosity
-    const FLOAT tniplus = ((lt[mapd(0,0,0,0)]*dz+lt[mapd(0,0,1,0)]*dzP1)*dx/(dz+dzP1)+(lt[mapd(1,0,0,0)]*dzplus+lt[mapd(1,0,1,0)]*dzplusP1)*dxP1/(dzplus+dzplusP1))*1.0/(dx+dxP1);
-    const FLOAT tniminus = ((lt[mapd(0,0,0,0)]*dz+lt[mapd(0,0,-1,0)]*dzM1)*dx/(dz+dzM1)+(lt[mapd(1,0,0,0)]*dzplus+lt[mapd(1,0,-1,0)]*dzplusM1)*dxP1/(dzplus+dzplusM1))*1.0/(dx+dxP1);
-    // Total viscosity
-    const FLOAT niplus = kni + tniplus;
-    const FLOAT niminus = kni + tniminus;
-
-    return 1/dz*(niplus*(uup+wup)-niminus*(udown+wdown));
+	// u velocities k=(-1,0,1)
+	const FLOAT r1 = lv[mapd( 0, 0,-1, 0)];
+	const FLOAT r2 = lv[mapd( 0, 0, 0, 0)];
+	const FLOAT r3 = lv[mapd( 0, 0, 1, 0)];
+	
+	// w velocities i=(0,1) x k=(-1,0)
+	const FLOAT p1 = lv[mapd( 0, 0,-1, 2)];
+	const FLOAT p2 = lv[mapd( 1, 0,-1, 2)];
+	const FLOAT p3 = lv[mapd( 0, 0, 0, 2)];
+	const FLOAT p4 = lv[mapd( 1, 0, 0, 2)];
+	
+	// dx i=(0,1)
+	const FLOAT d1 = lm[mapd( 0, 0, 0, 0)];
+	const FLOAT d2 = lm[mapd( 1, 0, 0, 0)];
+	
+	// dz k=(-1,0,1)
+	const FLOAT h1 = lm[mapd( 0, 0,-1, 2)];
+	const FLOAT h2 = lm[mapd( 0, 0, 0, 2)];
+	const FLOAT h3 = lm[mapd( 0, 0, 1, 2)];
+	
+	// viscosity i=(0,1) x k=(-1,0,1)
+	const FLOAT nu0 = 1.0 / parameters.flow.Re;
+	const FLOAT nu1 = lt[mapd( 0, 0,-1, 0)];
+	const FLOAT nu2 = lt[mapd( 1, 0,-1, 0)];
+	const FLOAT nu3 = lt[mapd( 0, 0, 0, 0)];
+	const FLOAT nu4 = lt[mapd( 1, 0, 0, 0)];
+	const FLOAT nu5 = lt[mapd( 0, 0, 1, 0)];
+	const FLOAT nu6 = lt[mapd( 1, 0, 1, 0)];
+	
+	return diffusive_term(r1, r2, r3, p1, p2, p3, p4, nu0, nu1, nu2, nu3, nu4, nu5, nu6, d1, d2, h1, h2, h3);
 
 }
 
 inline FLOAT dx_dudy_dvdx ( const FLOAT * const lv, const Parameters & parameters, const FLOAT* const lm, const FLOAT* lt  ) {
 
-    const FLOAT dx = lm[mapd(0,0,0,0)];
-    const FLOAT dxP1= lm[mapd(1,0,0,0)];
-    const FLOAT dxM1= lm[mapd(-1,0,0,0)];
-    const FLOAT dxplus= lm[mapd(0,1,0,0)];
-    const FLOAT dxplusP1= lm[mapd(1,1,0,0)];
-    const FLOAT dxplusM1= lm[mapd(-1,1,0,0)];
-
-     const FLOAT dy = lm[mapd(0,0,0,1)];
-    const FLOAT dyP1= lm[mapd(0,1,0,1)];
-    const FLOAT dyM1= lm[mapd(0,-1,0,1)];
-
-    const FLOAT u0 = lv[mapd(0,0,0,0)];
-    const FLOAT uM1= lv[mapd(0,-1,0,0)];
-    const FLOAT uP1 = lv[mapd(0,1,0,0)];
-    const FLOAT uup= (uP1-u0)/(dy+dyP1)*2.0;
-    const FLOAT udown= -(uM1-u0)/(dy+dyM1)*2.0;
-
-    const FLOAT v0 = lv[mapd(0,0,0,1)];
-    const FLOAT vM1= lv[mapd(-1,0,0,1)];
-    const FLOAT vP1 = lv[mapd(1,0,0,1)];
-    const FLOAT vup= (vP1-v0)/(dx+dxP1)*2.0;
-    const FLOAT vdown= -(vM1-v0)/(dx+dxM1)*2.0;
-
-    // Kinematic viscosity
-    const FLOAT kni = 1.0 / parameters.flow.Re;
-    // Turbulent viscosity
-    const FLOAT tniplus = ((lt[mapd(0,0,0,0)]*dx+lt[mapd(1,0,0,0)]*dxP1)*dy/(dx+dxP1)+(lt[mapd(0,1,0,0)]*dxplus+lt[mapd(1,1,0,0)]*dxplusP1)*dyP1/(dxplus+dxplusP1))*1.0/(dy+dyP1);
-    const FLOAT tniminus = ((lt[mapd(0,0,0,0)]*dx+lt[mapd(-1,0,0,0)]*dxM1)*dy/(dx+dxM1)+(lt[mapd(0,1,0,0)]*dxplus+lt[mapd(-1,1,0,0)]*dxplusM1)*dyP1/(dxplus+dxplusM1))*1.0/(dy+dyP1);
-    // Total viscosity
-    const FLOAT niplus = kni + tniplus;
-    const FLOAT niminus = kni + tniminus;
-
-    return 1/dx*(niplus*(uup+vup)-niminus*(udown+vdown));
+	// v velocities i=(-1,0,1)
+	const FLOAT r1 = lv[mapd(-1, 0, 0, 1)];
+	const FLOAT r2 = lv[mapd( 0, 0, 0, 1)];
+	const FLOAT r3 = lv[mapd( 1, 0, 0, 1)];
+	
+	// u velocities i=(-1,0) x j=(0,1)
+	const FLOAT p1 = lv[mapd(-1, 0, 0, 0)];
+	const FLOAT p2 = lv[mapd(-1, 1, 0, 0)];
+	const FLOAT p3 = lv[mapd( 0, 0, 0, 0)];
+	const FLOAT p4 = lv[mapd( 0, 1, 0, 0)];
+	
+	// dy j=(0,1)
+	const FLOAT d1 = lm[mapd( 0, 0, 0, 1)];
+	const FLOAT d2 = lm[mapd( 0, 1, 0, 1)];
+	
+	// dx i=(-1,0,1)
+	const FLOAT h1 = lm[mapd(-1, 0, 0, 0)];
+	const FLOAT h2 = lm[mapd( 0, 0, 0, 0)];
+	const FLOAT h3 = lm[mapd( 1, 0, 0, 0)];
+	
+	// viscosity j=(0,1) x i=(-1,0,1)
+	const FLOAT nu0 = 1.0 / parameters.flow.Re;
+	const FLOAT nu1 = lt[mapd(-1, 0, 0, 0)];
+	const FLOAT nu2 = lt[mapd(-1, 1, 0, 0)];
+	const FLOAT nu3 = lt[mapd( 0, 0, 0, 0)];
+	const FLOAT nu4 = lt[mapd( 0, 1, 0, 0)];
+	const FLOAT nu5 = lt[mapd( 1, 0, 0, 0)];
+	const FLOAT nu6 = lt[mapd( 1, 1, 0, 0)];
+	
+	return diffusive_term(r1, r2, r3, p1, p2, p3, p4, nu0, nu1, nu2, nu3, nu4, nu5, nu6, d1, d2, h1, h2, h3);
 
 }
 
 inline FLOAT dz_dvdz_dwdy ( const FLOAT * const lv, const Parameters & parameters, const FLOAT* const lm, const FLOAT* lt  ) {
 
-    const FLOAT dz = lm[mapd(0,0,0,2)];
-    const FLOAT dzP1= lm[mapd(0,0,1,2)];
-    const FLOAT dzM1= lm[mapd(0,0,-1,2)];
-    const FLOAT dzplus= lm[mapd(0,1,0,2)];
-    const FLOAT dzplusP1= lm[mapd(0,1,1,2)];
-    const FLOAT dzplusM1= lm[mapd(0,1,-1,2)];
-
-    const FLOAT dy = lm[mapd(0,0,0,1)];
-    const FLOAT dyP1= lm[mapd(0,1,0,1)];
-    const FLOAT dyM1= lm[mapd(0,-1,0,1)];
-
-    const FLOAT w0 = lv[mapd(0,0,0,2)];
-    const FLOAT wM1= lv[mapd(0,-1,0,2)];
-    const FLOAT wP1 = lv[mapd(0,1,0,2)];
-    const FLOAT wup= (wP1-w0)/(dy+dyP1)*2.0;
-    const FLOAT wdown= -(wM1-w0)/(dy+dyM1)*2.0;
-
-    const FLOAT v0 = lv[mapd(0,0,0,1)];
-    const FLOAT vM1= lv[mapd(0,0,-1,1)];
-    const FLOAT vP1 = lv[mapd(0,0,1,1)];
-    const FLOAT vup= (vP1-v0)/(dz+dzP1)*2.0;
-    const FLOAT vdown= -(vM1-v0)/(dz+dzM1)*2.0;
-
-    // Kinematic viscosity
-    const FLOAT kni = 1.0 / parameters.flow.Re;
-    // Turbulent viscosity
-    const FLOAT tniplus = ((lt[mapd(0,0,0,0)]*dz+lt[mapd(0,0,1,0)]*dzP1)*dy/(dz+dzP1)+(lt[mapd(0,1,0,0)]*dzplus+lt[mapd(0,1,1,0)]*dzplusP1)*dyP1/(dzplus+dzplusP1))*1.0/(dy+dyP1);
-    const FLOAT tniminus = ((lt[mapd(0,0,0,0)]*dz+lt[mapd(0,0,-1,0)]*dzM1)*dy/(dz+dzM1)+(lt[mapd(0,1,0,0)]*dzplus+lt[mapd(0,1,-1,0)]*dzplusM1)*dyP1/(dzplus+dzplusM1))*1.0/(dy+dyP1);
-    // Total viscosity
-    const FLOAT niplus = kni + tniplus;
-    const FLOAT niminus = kni + tniminus;
-
-    return 1/dz*(niplus*(wup+vup)-niminus*(wdown+vdown));
+	// v velocities k=(-1,0,1)
+	const FLOAT r1 = lv[mapd( 0, 0,-1, 1)];
+	const FLOAT r2 = lv[mapd( 0, 0, 0, 1)];
+	const FLOAT r3 = lv[mapd( 0, 0, 1, 1)];
+	
+	// w velocities k=(-1,0) x j=(0,1)
+	const FLOAT p1 = lv[mapd( 0, 0,-1, 2)];
+	const FLOAT p2 = lv[mapd( 0, 1,-1, 2)];
+	const FLOAT p3 = lv[mapd( 0, 0, 0, 2)];
+	const FLOAT p4 = lv[mapd( 0, 1, 0, 2)];
+	
+	// dy j=(0,1)
+	const FLOAT d1 = lm[mapd( 0, 0, 0, 1)];
+	const FLOAT d2 = lm[mapd( 0, 1, 0, 1)];
+	
+	// dz k=(-1,0,1)
+	const FLOAT h1 = lm[mapd( 0, 0,-1, 2)];
+	const FLOAT h2 = lm[mapd( 0, 0, 0, 2)];
+	const FLOAT h3 = lm[mapd( 0, 0, 1, 2)];
+	
+	// viscosity j=(0,1) x k=(-1,0,1)
+	const FLOAT nu0 = 1.0 / parameters.flow.Re;
+	const FLOAT nu1 = lt[mapd( 0, 0,-1, 0)];
+	const FLOAT nu2 = lt[mapd( 0, 1,-1, 0)];
+	const FLOAT nu3 = lt[mapd( 0, 0, 0, 0)];
+	const FLOAT nu4 = lt[mapd( 0, 1, 0, 0)];
+	const FLOAT nu5 = lt[mapd( 0, 0, 1, 0)];
+	const FLOAT nu6 = lt[mapd( 0, 1, 1, 0)];
+	
+	return diffusive_term(r1, r2, r3, p1, p2, p3, p4, nu0, nu1, nu2, nu3, nu4, nu5, nu6, d1, d2, h1, h2, h3);
 
 }
 
 inline FLOAT dx_dudz_dwdx ( const FLOAT * const lv, const Parameters & parameters, const FLOAT* const lm, const FLOAT* lt  ) {
 
-    const FLOAT dx = lm[mapd(0,0,0,0)];
-    const FLOAT dxP1= lm[mapd(1,0,0,0)];
-    const FLOAT dxM1= lm[mapd(-1,0,0,0)];
-    const FLOAT dxplus= lm[mapd(0,0,1,0)];
-    const FLOAT dxplusP1= lm[mapd(1,0,1,0)];
-    const FLOAT dxplusM1= lm[mapd(-1,0,1,0)];
-
-     const FLOAT dz = lm[mapd(0,0,0,2)];
-    const FLOAT dzP1= lm[mapd(0,0,1,2)];
-    const FLOAT dzM1= lm[mapd(0,0,-1,2)];
-
-    const FLOAT u0 = lv[mapd(0,0,0,0)];
-    const FLOAT uM1= lv[mapd(0,0,-1,0)];
-    const FLOAT uP1 = lv[mapd(0,0,1,0)];
-    const FLOAT uup= (uP1-u0)/(dz+dzP1)*2.0;
-    const FLOAT udown= -(uM1-u0)/(dz+dzM1)*2.0;
-
-    const FLOAT w0 = lv[mapd(0,0,0,2)];
-    const FLOAT wM1= lv[mapd(-1,0,0,2)];
-    const FLOAT wP1 = lv[mapd(1,0,0,2)];
-    const FLOAT wup= (wP1-w0)/(dx+dxP1)*2.0;
-    const FLOAT wdown= -(wM1-w0)/(dx+dxM1)*2.0;
-
-    // Kinematic viscosity
-    const FLOAT kni = 1.0 / parameters.flow.Re;
-    // Turbulent viscosity
-    const FLOAT tniplus = ((lt[mapd(0,0,0,0)]*dx+lt[mapd(1,0,0,0)]*dxP1)*dz/(dx+dxP1)+(lt[mapd(0,0,1,0)]*dxplus+lt[mapd(1,0,1,0)]*dxplusP1)*dzP1/(dxplus+dxplusP1))*1.0/(dz+dzP1);
-    const FLOAT tniminus = ((lt[mapd(0,0,0,0)]*dx+lt[mapd(-1,0,0,0)]*dxM1)*dz/(dx+dxM1)+(lt[mapd(0,0,1,0)]*dxplus+lt[mapd(-1,0,1,0)]*dxplusM1)*dzP1/(dxplus+dxplusM1))*1.0/(dz+dzP1);
-    // Total viscosity
-    const FLOAT niplus = kni + tniplus;
-    const FLOAT niminus = kni + tniminus;
-
-    return 1/dx*(niplus*(uup+wup)-niminus*(udown+wdown));
+	// w velocities i=(-1,0,1)
+	const FLOAT r1 = lv[mapd(-1, 0, 0, 2)];
+	const FLOAT r2 = lv[mapd( 0, 0, 0, 2)];
+	const FLOAT r3 = lv[mapd( 1, 0, 0, 2)];
+	
+	// u velocities i=(-1,0) x k=(0,1)
+	const FLOAT p1 = lv[mapd(-1, 0, 0, 0)];
+	const FLOAT p2 = lv[mapd(-1, 0, 1, 0)];
+	const FLOAT p3 = lv[mapd( 0, 0, 0, 0)];
+	const FLOAT p4 = lv[mapd( 0, 0, 1, 0)];
+	
+	// dz k=(0,1)
+	const FLOAT d1 = lm[mapd( 0, 0, 0, 2)];
+	const FLOAT d2 = lm[mapd( 0, 0, 1, 2)];
+	
+	// dx i=(-1,0,1)
+	const FLOAT h1 = lm[mapd(-1, 0, 0, 0)];
+	const FLOAT h2 = lm[mapd( 0, 0, 0, 0)];
+	const FLOAT h3 = lm[mapd( 1, 0, 0, 0)];
+	
+	// viscosity k=(0,1) x i=(-1,0,1)
+	const FLOAT nu0 = 1.0 / parameters.flow.Re;
+	const FLOAT nu1 = lt[mapd(-1, 0, 0, 0)];
+	const FLOAT nu2 = lt[mapd(-1, 0, 1, 0)];
+	const FLOAT nu3 = lt[mapd( 0, 0, 0, 0)];
+	const FLOAT nu4 = lt[mapd( 0, 0, 1, 0)];
+	const FLOAT nu5 = lt[mapd( 1, 0, 0, 0)];
+	const FLOAT nu6 = lt[mapd( 1, 0, 1, 0)];
+	
+	return diffusive_term(r1, r2, r3, p1, p2, p3, p4, nu0, nu1, nu2, nu3, nu4, nu5, nu6, d1, d2, h1, h2, h3);
 
 }
 
 inline FLOAT dy_dvdz_dwdy ( const FLOAT * const lv, const Parameters & parameters, const FLOAT* const lm, const FLOAT* lt  ) {
 
-    const FLOAT dz = lm[mapd(0,0,0,2)];
-    const FLOAT dzP1= lm[mapd(0,0,1,2)];
-    const FLOAT dzM1= lm[mapd(0,0,-1,2)];
+	// w velocities j=(-1,0,1)
+	const FLOAT r1 = lv[mapd( 0,-1, 0, 2)];
+	const FLOAT r2 = lv[mapd( 0, 0, 0, 2)];
+	const FLOAT r3 = lv[mapd( 0, 1, 0, 2)];
+	
+	// v velocities j=(-1,0) x k=(0,1)
+	const FLOAT p1 = lv[mapd( 0,-1, 0, 0)];
+	const FLOAT p2 = lv[mapd( 0,-1, 1, 0)];
+	const FLOAT p3 = lv[mapd( 0, 0, 0, 0)];
+	const FLOAT p4 = lv[mapd( 0, 0, 1, 0)];
+	
+	// dz k=(0,1)
+	const FLOAT d1 = lm[mapd( 0, 0, 0, 2)];
+	const FLOAT d2 = lm[mapd( 0, 0, 1, 2)];
+	
+	// dy j=(-1,0,1)
+	const FLOAT h1 = lm[mapd( 0,-1, 0, 1)];
+	const FLOAT h2 = lm[mapd( 0, 0, 0, 1)];
+	const FLOAT h3 = lm[mapd( 0, 1, 0, 1)];
+	
+	// viscosity k=(0,1) x j=(-1,0,1)
+	const FLOAT nu0 = 1.0 / parameters.flow.Re;
+	const FLOAT nu1 = lt[mapd( 0,-1, 0, 0)];
+	const FLOAT nu2 = lt[mapd( 0,-1, 1, 0)];
+	const FLOAT nu3 = lt[mapd( 0, 0, 0, 0)];
+	const FLOAT nu4 = lt[mapd( 0, 0, 1, 0)];
+	const FLOAT nu5 = lt[mapd( 0, 1, 0, 0)];
+	const FLOAT nu6 = lt[mapd( 0, 1, 1, 0)];
+	
+	return diffusive_term(r1, r2, r3, p1, p2, p3, p4, nu0, nu1, nu2, nu3, nu4, nu5, nu6, d1, d2, h1, h2, h3);
 
-
-     const FLOAT dy = lm[mapd(0,0,0,1)];
-    const FLOAT dyP1= lm[mapd(0,1,0,1)];
-    const FLOAT dyM1= lm[mapd(0,-1,0,1)];
-    const FLOAT dyplus= lm[mapd(0,0,1,1)];
-    const FLOAT dyplusP1= lm[mapd(0,1,1,1)];
-    const FLOAT dyplusM1= lm[mapd(0,-1,1,1)];
-
-    const FLOAT w0 = lv[mapd(0,0,0,2)];
-    const FLOAT wM1= lv[mapd(0,-1,0,2)];
-    const FLOAT wP1 = lv[mapd(0,1,0,2)];
-    const FLOAT wup= (wP1-w0)/(dy+dyP1)*2.0;
-    const FLOAT wdown= -(wM1-w0)/(dy+dyM1)*2.0;
-
-    const FLOAT v0 = lv[mapd(0,0,0,1)];
-    const FLOAT vM1= lv[mapd(0,0,-1,1)];
-    const FLOAT vP1 = lv[mapd(0,0,1,1)];
-    const FLOAT vup= (vP1-v0)/(dz+dzP1)*2.0;
-    const FLOAT vdown= -(vM1-v0)/(dz+dzM1)*2.0;
-
-    // Kinematic viscosity
-    const FLOAT kni = 1.0 / parameters.flow.Re;
-    // Turbulent viscosity
-    const FLOAT tniplus = ((lt[mapd(0,0,0,0)]*dy+lt[mapd(0,1,0,0)]*dyP1)*dz/(dy+dyP1)+(lt[mapd(0,0,1,0)]*dyplus+lt[mapd(0,1,1,0)]*dyplusP1)*dzP1/(dyplus+dyplusP1))*1.0/(dz+dzP1);
-    const FLOAT tniminus = ((lt[mapd(0,0,0,0)]*dy+lt[mapd(0,-1,0,0)]*dyM1)*dz/(dy+dyM1)+(lt[mapd(0,0,1,0)]*dyplus+lt[mapd(0,-1,1,0)]*dyplusM1)*dzP1/(dyplus+dyplusM1))*1.0/(dz+dzP1);
-    // Total viscosity
-    const FLOAT niplus = kni + tniplus;
-    const FLOAT niminus = kni + tniminus;
-
-    return 1/dy*(niplus*(wup+vup)-niminus*(wdown+vdown));
 
 }
 
@@ -1200,17 +1197,26 @@ inline FLOAT computeH3DTurbulence(const FLOAT * const localVelocity, const FLOAT
 }
 
 inline FLOAT computeSdotS3D(const FLOAT * const localVelocity, const FLOAT * const localMeshsize){
-return 4*(dudx(localVelocity, localMeshsize)*dudx(localVelocity, localMeshsize)
-+dvdy(localVelocity, localMeshsize)*dvdy(localVelocity, localMeshsize)+dwdz(localVelocity, localMeshsize)*dwdz(localVelocity, localMeshsize))
-+2*((dudy(localVelocity, localMeshsize)+dvdx(localVelocity, localMeshsize))*(dudy(localVelocity, localMeshsize)+dvdx(localVelocity, localMeshsize))
-+(dudz(localVelocity, localMeshsize)+dwdx(localVelocity, localMeshsize))*(dudz(localVelocity, localMeshsize)+dwdx(localVelocity, localMeshsize))
-+(dvdz(localVelocity, localMeshsize)+dwdy(localVelocity, localMeshsize))*(dvdz(localVelocity, localMeshsize)+dwdy(localVelocity, localMeshsize)));
+return 
+	4*(
+		+dudx(localVelocity, localMeshsize)*dudx(localVelocity, localMeshsize)
+		+dvdy(localVelocity, localMeshsize)*dvdy(localVelocity, localMeshsize)
+		+dwdz(localVelocity, localMeshsize)*dwdz(localVelocity, localMeshsize)
+	)
+	+2*(
+		+(dudy(localVelocity, localMeshsize)+dvdx(localVelocity, localMeshsize))*(dudy(localVelocity, localMeshsize)+dvdx(localVelocity, localMeshsize))
+		+(dudz(localVelocity, localMeshsize)+dwdx(localVelocity, localMeshsize))*(dudz(localVelocity, localMeshsize)+dwdx(localVelocity, localMeshsize))
+		+(dvdz(localVelocity, localMeshsize)+dwdy(localVelocity, localMeshsize))*(dvdz(localVelocity, localMeshsize)+dwdy(localVelocity, localMeshsize))
+	);
 }
 
 inline FLOAT computeSdotS2D(const FLOAT * const localVelocity, const FLOAT * const localMeshsize){
-return 4*(dudx(localVelocity, localMeshsize)*dudx(localVelocity, localMeshsize)
-+dvdy(localVelocity, localMeshsize)*dvdy(localVelocity, localMeshsize))
-+2*((dudy(localVelocity, localMeshsize)+dvdx(localVelocity, localMeshsize))*(dudy(localVelocity, localMeshsize)+dvdx(localVelocity, localMeshsize)));
+return 
+	(
+		+dudx(localVelocity, localMeshsize)*dudx(localVelocity, localMeshsize)
+		+dvdy(localVelocity, localMeshsize)*dvdy(localVelocity, localMeshsize))
+	+0.5*(
+		(dudy(localVelocity, localMeshsize)+dvdx(localVelocity, localMeshsize))*(dudy(localVelocity, localMeshsize)+dvdx(localVelocity, localMeshsize)));
 }
 
 
