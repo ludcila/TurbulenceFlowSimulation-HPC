@@ -96,7 +96,7 @@ loadLocalVelocity3D(  flowField, _localVelocity, i, j , k);
 loadLocalMeshsize3D(_parameters, _localMeshsize, i, j , k);
 FLOAT xpos = this->_parameters.meshsize->getPosX(i,j,k) + this->_parameters.meshsize->getDx(i,j,k);
 int sizeY = this->_parameters.geometry.sizeY;
-int sizeZ = this->_parameters.geometry.sizeY;
+int sizeZ = this->_parameters.geometry.sizeZ;
 FLOAT re=flowField.getVelocity().getVector(i,sizeY/2,sizeZ/2)[0]*xpos*this->_parameters.flow.Re;
 //FLOAT re=this->_parameters.flow.Re;
 
