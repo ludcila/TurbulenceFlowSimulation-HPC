@@ -12,12 +12,14 @@ TurbulentSimulation::TurbulentSimulation(Parameters &parameters, TurbulentFlowFi
 	_turbulentVtkIterator(_turbulentFlowField, parameters, _turbulentVtkStencil, 1, 0),
 	_maxNuStencil(parameters),
     _maxNuFieldIterator(_turbulentFlowField,parameters,_maxNuStencil),
-    _maxNuBoundaryIterator(_turbulentFlowField,parameters,_maxNuStencil)
+    _maxNuBoundaryIterator(_turbulentFlowField,parameters,_maxNuStencil),
+	_parallelManagerTurbulent(flowField, parameters)
 {
 }
 
 // TODO: Changes for turbulent simulation not implemented yet!
 void TurbulentSimulation::solveTimestep(){
+	_parallelManagerTurbulent.communicateViscosity();
 	_turbulentViscosityIterator.iterate();
 	// determine and set max. timestep which is allowed in this simulation
 	setTimeStep();
@@ -27,23 +29,23 @@ void TurbulentSimulation::solveTimestep(){
 	_wallFGHIterator.iterate();
 	// compute the right hand side
 	_rhsIterator.iterate();
-	// solve for pressure 
+	// solve for pressure
 	_solver.solve();
 	// TODO WS2: communicate pressure values
-	_parallelManager.communicatePressure();
+	_parallelManagerTurbulent.communicatePressure();
 	// compute velocity
 	_velocityIterator.iterate();
 	// set obstacle boundaries
 	_obstacleIterator.iterate();
 	// TODO WS2: communicate velocity values
-	_parallelManager.communicateVelocity();
+	_parallelManagerTurbulent.communicateVelocity();
 	// Iterate for velocities on the boundary
 	_wallVelocityIterator.iterate();
 }
 
 // TODO: Changes for turbulent simulation not implemented yet!
 void TurbulentSimulation::setTimeStep(){
-	
+
 	const FLOAT cinematicviscosity=1.0/_parameters.flow.Re;
 	FLOAT localMin, globalMin;
 	assertion(_parameters.geometry.dim == 2 || _parameters.geometry.dim == 3);
@@ -54,7 +56,7 @@ void TurbulentSimulation::setTimeStep(){
 	_maxUStencil.reset();
 	_maxUFieldIterator.iterate();
 	_maxUBoundaryIterator.iterate();
-	
+
 	_maxNuStencil.reset();
 	_maxNuFieldIterator.iterate();
 	_maxNuBoundaryIterator.iterate();
@@ -80,7 +82,7 @@ void TurbulentSimulation::setTimeStep(){
 
 	_parameters.timestep.dt = globalMin;
 	_parameters.timestep.dt *= _parameters.timestep.tau;
-	
+
 }
 
 void TurbulentSimulation::plotVTK(int timeStep, std::string foldername) {
@@ -92,6 +94,5 @@ void TurbulentSimulation::initializeFlowField() {
 	Simulation::initializeFlowField();
 	WallDistanceStencil wds(_parameters);
 	FieldIterator<TurbulentFlowField> it(_turbulentFlowField, _parameters, wds);
-	it.iterate();	
+	it.iterate();
 };
-

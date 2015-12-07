@@ -8,6 +8,8 @@
 
 class PetscParallelManagerTurbulent: public PetscParallelManager {
 
+  private:
+
   FLOAT *_viscositySendBufferLeftWall;
   FLOAT *_viscosityRecvBufferLeftWall;
   FLOAT *_viscositySendBufferRightWall;
@@ -26,6 +28,9 @@ class PetscParallelManagerTurbulent: public PetscParallelManager {
 
   ParallelBoundaryIterator<TurbulentFlowField> _viscosityBufferFillIterator;
   ParallelBoundaryIterator<TurbulentFlowField> _viscosityBufferReadIterator;
+
+
+  public:
 
   PetscParallelManagerTurbulent(TurbulentFlowField &flowField, Parameters &parameters);
   ~PetscParallelManagerTurbulent();
