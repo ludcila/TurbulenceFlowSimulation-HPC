@@ -1,14 +1,14 @@
 #### The petsc environment can also be fixed in the makefile
 # PETSC_DIR = 
 # PETSC_ARCH = 
-include ${PETSC_DIR}/conf/variables
 
 HOSTNAME=$(shell hostname)
 ifeq ($(HOSTNAME),mac-login-intel)
         include ${PETSC_DIR}/../conf/petscvariables
-endif
-ifeq ($(HOSTNAME),mac-login-amd)
+else ifeq ($(HOSTNAME),mac-login-amd)
         include ${PETSC_DIR}/../conf/petscvariables
+else 
+	include ${PETSC_DIR}/conf/variables
 endif
 
 # default gnu compiler (currently not used)
