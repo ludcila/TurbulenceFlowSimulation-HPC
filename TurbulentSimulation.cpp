@@ -19,8 +19,7 @@ TurbulentSimulation::TurbulentSimulation(Parameters &parameters, TurbulentFlowFi
 
 // TODO: Changes for turbulent simulation not implemented yet!
 void TurbulentSimulation::solveTimestep(){
-	_parallelManagerTurbulent.communicateViscosity();
-	_turbulentViscosityIterator.iterate();
+
 	// determine and set max. timestep which is allowed in this simulation
 	setTimeStep();
 	// compute fgh
@@ -41,6 +40,9 @@ void TurbulentSimulation::solveTimestep(){
 	_parallelManagerTurbulent.communicateVelocity();
 	// Iterate for velocities on the boundary
 	_wallVelocityIterator.iterate();
+
+	_parallelManagerTurbulent.communicateViscosity();
+	_turbulentViscosityIterator.iterate();
 }
 
 // TODO: Changes for turbulent simulation not implemented yet!
