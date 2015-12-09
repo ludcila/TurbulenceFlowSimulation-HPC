@@ -23,7 +23,7 @@ FLOAT lm;
 FLOAT deltay;
 loadLocalVelocity2D(  flowField, _localVelocity, i, j);
 loadLocalMeshsize2D(_parameters, _localMeshsize, i, j);
-FLOAT xpos = this->_parameters.meshsize->getPosX(i,j) + this->_parameters.meshsize->getDx(i,j);
+FLOAT xpos = this->_parameters.meshsize->getPosX(i,j) + this->_parameters.meshsize->getDx(i,j)/2;
 int sizeY = this->_parameters.geometry.sizeY;
 FLOAT re=flowField.getVelocity().getVector(i,sizeY/2)[0]*xpos*this->_parameters.flow.Re;
 
@@ -42,17 +42,7 @@ if(this->_parameters.simulation.scenario=="channel"){
  
 //if we are in the cavity case, we can apply empirical laws like the Blasius', 'cause they are meant for flate plates, so we just need wall distance
 if(this->_parameters.simulation.scenario=="cavity"){
-	
-	lm=0.41*PetscMin(xpos,this->_parameters.meshsize->getPosY(i,j));
-
-	if(i>this->_parameters.geometry.sizeX/2.0 && j<=this->_parameters.geometry.sizeY/2.0)
-	lm=0.41*PetscMin(this->_parameters.geometry.lengthX-xpos,this->_parameters.meshsize->getPosY(i,j));
-
-	if(i>this->_parameters.geometry.sizeX/2.0 && j>this->_parameters.geometry.sizeY/2.0)
-	lm=0.41*PetscMin(this->_parameters.geometry.lengthX-xpos,this->_parameters.geometry.lengthY-this->_parameters.meshsize->getPosY(i,j));
-
-	if(i<=this->_parameters.geometry.sizeX/2.0 && j>this->_parameters.geometry.sizeY/2.0)
-	lm=0.41*PetscMin(xpos,this->_parameters.geometry.lengthY-this->_parameters.meshsize->getPosY(i,j));
+	lm=0.41*flowField.getWallDistance().getScalar(i, j);
 
 
 }
@@ -61,22 +51,15 @@ if(this->_parameters.simulation.scenario=="cavity"){
 
 if(this->_parameters.simulation.scenario=="channel"){
 
-	if(j>this->_parameters.geometry.sizeY/2.0)
-	lm=PetscMin(0.09*deltay,0.41*(this->_parameters.geometry.lengthY-this->_parameters.meshsize->getPosY(i,j)));
-
-	 if(j<=this->_parameters.geometry.sizeY/2.0 && this->_parameters.bfStep.xRatio!=0)
-		{
-		if(xpos<=this->_parameters.bfStep.xRatio*this->_parameters.geometry.lengthX)
-		lm=PetscMin(0.09*deltay,0.41*(-this->_parameters.meshsize->getPosY(i,j)+this->_parameters.bfStep.yRatio*this->_parameters.geometry.lengthY/2.0));
-
-		else lm=0.41*this->_parameters.meshsize->getPosY(i,j);
-		}
-	
-	else lm=PetscMin(0.09*deltay,0.41*this->_parameters.meshsize->getPosY(i,j));
-	
 		FLOAT a = 0.09*deltay;
-	FLOAT b = 0.41*flowField.getWallDistance().getScalar(i, j);
-	lm = PetscMin(a, b);
+		FLOAT b = 0.41*flowField.getWallDistance().getScalar(i, j);
+
+		if(this->_parameters.bfStep.xRatio!=0 && this->_parameters.bfStep.yRatio && xpos>this->_parameters.bfStep.xRatio*this->_parameters.geometry.lengthX && this->_parameters.meshsize->getPosY(i,j)<=this->_parameters.geometry.lengthY/2)
+		lm=b;
+		
+	
+		else
+		lm = PetscMin(a, b);
 	
 }
 
@@ -117,42 +100,26 @@ deltaz=deltay;
 //if we are in the cavity case, we can apply empirical laws like the Blasius', 'cause they are meant for flate plates, so we just need wall distance
 if(this->_parameters.simulation.scenario=="cavity"){
 	
-	if(i<=this->_parameters.geometry.sizeX/2.0 && j<=this->_parameters.geometry.sizeY/2.0 && k<=this->_parameters.geometry.sizeZ/2.0)
-	lm=0.41*PetscMin(this->_parameters.meshsize->getPosZ(i,j,k),PetscMin(xpos,this->_parameters.meshsize->getPosY(i,j,k)));
-
-	if(i>this->_parameters.geometry.sizeX/2.0 && j<=this->_parameters.geometry.sizeY/2.0 && k<=this->_parameters.geometry.sizeZ/2.0)
-	lm=0.41*PetscMin(this->_parameters.meshsize->getPosZ(i,j,k),PetscMin(this->_parameters.geometry.lengthX-xpos,this->_parameters.meshsize->getPosY(i,j,k)));
-
-	if(i>this->_parameters.geometry.sizeX/2.0 && j>this->_parameters.geometry.sizeY/2.0 && k<=this->_parameters.geometry.sizeZ/2.0)
-	lm=0.41*PetscMin(this->_parameters.meshsize->getPosZ(i,j,k),PetscMin(this->_parameters.geometry.lengthX-xpos,this->_parameters.geometry.lengthY-this->_parameters.meshsize->getPosY(i,j,k)));
-
-	if(i<=this->_parameters.geometry.sizeX/2.0 && j>this->_parameters.geometry.sizeY/2.0 && k<=this->_parameters.geometry.sizeZ/2.0)
-	lm=0.41*PetscMin(this->_parameters.meshsize->getPosZ(i,j,k),PetscMin(xpos,this->_parameters.geometry.lengthY-this->_parameters.meshsize->getPosY(i,j,k)));
-
-	if(i<=this->_parameters.geometry.sizeX/2.0 && j<=this->_parameters.geometry.sizeY/2.0 && k>this->_parameters.geometry.sizeZ/2.0)
-	lm=0.41*PetscMin(this->_parameters.geometry.lengthZ-this->_parameters.meshsize->getPosZ(i,j,k),PetscMin(xpos,this->_parameters.meshsize->getPosY(i,j,k)));
-
-	if(i>this->_parameters.geometry.sizeX/2.0 && j<=this->_parameters.geometry.sizeY/2.0 && k>this->_parameters.geometry.sizeZ/2.0)
-	lm=0.41*PetscMin(this->_parameters.geometry.lengthZ-this->_parameters.meshsize->getPosZ(i,j,k),PetscMin(this->_parameters.geometry.lengthX-xpos,this->_parameters.meshsize->getPosY(i,j,k)));
-
-	if(i>this->_parameters.geometry.sizeX/2.0 && j>this->_parameters.geometry.sizeY/2.0 && k>this->_parameters.geometry.sizeZ/2.0)
-	lm=0.41*PetscMin(this->_parameters.geometry.lengthZ-this->_parameters.meshsize->getPosZ(i,j,k),PetscMin(this->_parameters.geometry.lengthX-xpos,this->_parameters.geometry.lengthY-this->_parameters.meshsize->getPosY(i,j,k)));
-
-	if(i<=this->_parameters.geometry.sizeX/2.0 && j>this->_parameters.geometry.sizeY/2.0 && k>this->_parameters.geometry.sizeZ/2.0)
-	lm=0.41*PetscMin(this->_parameters.geometry.lengthZ-this->_parameters.meshsize->getPosZ(i,j,k),PetscMin(xpos,this->_parameters.geometry.lengthY-this->_parameters.meshsize->getPosY(i,j,k)));
+	lm=0.41*flowField.getWallDistance().getScalar(i, j,k);
 }
 
 //now we determine lm for the channel case
 
 if(this->_parameters.simulation.scenario=="channel"){
+
+    		FLOAT a = 0.09*deltay;
+		FLOAT b = 0.41*flowField.getWallDistance().getScalar(i, j, k);
+
+		if(this->_parameters.bfStep.xRatio!=0 && this->_parameters.bfStep.yRatio && xpos>this->_parameters.bfStep.xRatio*this->_parameters.geometry.lengthX && this->_parameters.meshsize->getPosY(i,j,k)<=this->_parameters.geometry.lengthY/2)
+		lm=b;
+		
+		else
+		lm = PetscMin(a, b);
 	
-	FLOAT a = 0.09*deltay;
-	FLOAT b = 0.41*flowField.getWallDistance().getScalar(i, j, k);
-	lm = PetscMin(a, b);
 
 
 }
-FLOAT ss = computeSdotS3D(_localVelocity, _localMeshsize);
+
 
 //std::cout << i << " " << j << " " << k << " " << ss << std::endl;
 flowField.getTurbulentViscosity().getScalar(i,j,k)=lm*lm*sqrt(2*computeSdotS3D(_localVelocity, _localMeshsize));

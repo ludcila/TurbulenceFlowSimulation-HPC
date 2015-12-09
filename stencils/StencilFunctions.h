@@ -1198,12 +1198,12 @@ inline FLOAT computeH3DTurbulence(const FLOAT * const localVelocity, const FLOAT
 
 inline FLOAT computeSdotS3D(const FLOAT * const localVelocity, const FLOAT * const localMeshsize){
 return 
-	4*(
+	(
 		+dudx(localVelocity, localMeshsize)*dudx(localVelocity, localMeshsize)
 		+dvdy(localVelocity, localMeshsize)*dvdy(localVelocity, localMeshsize)
 		+dwdz(localVelocity, localMeshsize)*dwdz(localVelocity, localMeshsize)
 	)
-	+2*(
+	+0.5*(
 		+(dudy(localVelocity, localMeshsize)+dvdx(localVelocity, localMeshsize))*(dudy(localVelocity, localMeshsize)+dvdx(localVelocity, localMeshsize))
 		+(dudz(localVelocity, localMeshsize)+dwdx(localVelocity, localMeshsize))*(dudz(localVelocity, localMeshsize)+dwdx(localVelocity, localMeshsize))
 		+(dvdz(localVelocity, localMeshsize)+dwdy(localVelocity, localMeshsize))*(dvdz(localVelocity, localMeshsize)+dwdy(localVelocity, localMeshsize))

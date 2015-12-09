@@ -33,10 +33,20 @@ void WallDistanceStencil::apply ( TurbulentFlowField & flowField, int i, int j )
 			minDistance = std::min(minDistance, distanceToStep(posX, posY));
 		}
 		
-		flowField.getWallDistance().getScalar(i, j) = minDistance;
+
 		
 	}
 	
+
+
+	else{
+
+		FLOAT minY = std::min(posY, _parameters.geometry.lengthY-posY);
+		FLOAT minX = std::min(posX, _parameters.geometry.lengthX-posX);
+		minDistance = std::min(minY, minX);
+	}
+
+	flowField.getWallDistance().getScalar(i, j) = minDistance;
 }
 
 void WallDistanceStencil::apply ( TurbulentFlowField & flowField, int i, int j, int k ) {
@@ -60,10 +70,20 @@ void WallDistanceStencil::apply ( TurbulentFlowField & flowField, int i, int j, 
 			minDistance = std::min(minDistance, distanceToStep(posX, posY));
 		}
 		
-		flowField.getWallDistance().getScalar(i, j, k) = minDistance;
+
 		
 	}
+
 	
+	else{
+
+		FLOAT minY = std::min(posY, _parameters.geometry.lengthY-posY);
+		FLOAT minX = std::min(posX, _parameters.geometry.lengthX-posX);
+		FLOAT minZ = std::min(posZ, _parameters.geometry.lengthZ-posZ);
+		minDistance = std::min(minY,std::min(minZ, minX));
+	}
+
+	flowField.getWallDistance().getScalar(i, j, k) = minDistance;
 }
 
 FLOAT WallDistanceStencil::distanceToStep(FLOAT posX, FLOAT posY) {
