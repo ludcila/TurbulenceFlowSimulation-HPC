@@ -54,11 +54,13 @@ if(this->_parameters.simulation.scenario=="channel"){
 		FLOAT a = 0.09*deltay;
 		FLOAT b = 0.41*flowField.getWallDistance().getScalar(i, j);
 
+		/*
 		if(this->_parameters.bfStep.xRatio!=0 && this->_parameters.bfStep.yRatio && xpos>this->_parameters.bfStep.xRatio*this->_parameters.geometry.lengthX && this->_parameters.meshsize->getPosY(i,j)<=this->_parameters.geometry.lengthY/2)
 		lm=b;
 		
 	
 		else
+		*/
 		lm = PetscMin(a, b);
 	
 }
