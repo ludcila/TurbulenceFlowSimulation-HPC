@@ -15,7 +15,7 @@ TurbulentSimulation::TurbulentSimulation(Parameters &parameters, TurbulentFlowFi
     _maxNuBoundaryIterator(_turbulentFlowField,parameters,_maxNuStencil),
 	_turbulentViscosityBoundaryStencil(parameters),
 	_turbulentViscosityBoundaryIterator(_turbulentFlowField, parameters, _turbulentViscosityBoundaryStencil, 1, 0),
-	_parallelManagerTurbulent(flowField, parameters)
+	_parallelManagerTurbulent(_turbulentFlowField, parameters)
 {
 }
 
@@ -43,8 +43,9 @@ void TurbulentSimulation::solveTimestep(){
 	// Iterate for velocities on the boundary
 	_wallVelocityIterator.iterate();
 
-	_parallelManagerTurbulent.communicateViscosity();
+	_parallelManagerTurbulent.communicateCenterLineVelocity();
 	_turbulentViscosityIterator.iterate();
+	_parallelManagerTurbulent.communicateViscosity();
 	_turbulentViscosityBoundaryIterator.iterate();
 }
 

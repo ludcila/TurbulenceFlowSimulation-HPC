@@ -25,7 +25,10 @@ loadLocalVelocity2D(  flowField, _localVelocity, i, j);
 loadLocalMeshsize2D(_parameters, _localMeshsize, i, j);
 FLOAT xpos = this->_parameters.meshsize->getPosX(i,j) + this->_parameters.meshsize->getDx(i,j)/2;
 int sizeY = this->_parameters.geometry.sizeY;
-FLOAT re=flowField.getVelocity().getVector(i,sizeY/2)[0]*xpos*this->_parameters.flow.Re;
+//FLOAT re=flowField.getVelocity().getVector(i,sizeY/2)[0]*xpos*this->_parameters.flow.Re;
+FLOAT re=flowField.getCenterLineVelocity()[i]*xpos*this->_parameters.flow.Re;
+//FLOAT re=flowField.getCenterLineVelocity()[0]*xpos*this->_parameters.flow.Re;
+//std::cout << std::endl <<_parameters.parallel.indices[1] << std::endl;
 
 
 
