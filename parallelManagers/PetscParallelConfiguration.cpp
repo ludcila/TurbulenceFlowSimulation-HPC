@@ -25,6 +25,12 @@ PetscParallelConfiguration::PetscParallelConfiguration(Parameters & parameters):
     if (nproc != nprocFromFile){
         handleError(1, "The number of processors specified in the configuration file doesn't match the communicator");
     }
+
+    set_centerline_flags();
+
+    MPI_Comm_split(PETSC_COMM_WORLD, _parameters.parallel.indices[0], rank, &_parameters.parallel.planeComm);
+
+
 }
 
 
@@ -144,4 +150,35 @@ void PetscParallelConfiguration::freeSizes(){
     for (int i = 0; i < dim; i++){
         delete[] _parameters.parallel.sizes[i];
     }
+}
+
+void PetscParallelConfiguration::set_centerline_flags()
+{
+  int center_processor;
+
+  _parameters.parallel.centerlineFlag=0;
+  _parameters.parallel.local_center_line_index=0;
+
+  if (_parameters.parallel.indices[0] < _parameters.bfStep.xRatio * _parameters.parallel.numProcessors[0] ) {
+    center_processor = floor ( ( ( _parameters.geometry.lengthY * ( 1 + _parameters.bfStep.yRatio ) ) / 2 ) / ( _parameters.geometry.lengthY / _parameters.parallel.numProcessors[1] ) );
+  }
+  else
+  {
+    center_processor = floor ( ( _parameters.geometry.lengthY / 2 ) / ( _parameters.geometry.lengthY / _parameters.parallel.numProcessors[1] ) );
+  }
+
+  _parameters.parallel.centerProcessor=center_processor;
+  if (center_processor==_parameters.parallel.indices[1])
+  {
+    _parameters.parallel.centerlineFlag=1;
+
+    if ( ( (center_processor + lrint( _parameters.bfStep.xRatio * _parameters.parallel.numProcessors[0] ) ) % 2 ) == 1 )
+    {
+      _parameters.parallel.local_center_line_index=_parameters.parallel.localSize[1];
+    }
+    else
+    {
+      _parameters.parallel.local_center_line_index=_parameters.parallel.localSize[1]/2;
+    }
+  }
 }

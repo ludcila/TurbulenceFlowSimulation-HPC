@@ -124,6 +124,12 @@ class ParallelParameters{
         int firstCorner[3];     //! Position of the first element. Used for plotting
 
         PetscInt * sizes[3];         //! Arrays with the sizes of the blocks in each direction.
+
+        int centerlineFlag;            //! ->1 if center line is in that processor and ->0 otherwise
+        int centerProcessor;
+        int local_center_line_index;
+
+        MPI_Comm planeComm;
 };
 
 class BFStepParameters{
