@@ -5,6 +5,7 @@
 #include "TurbulentFlowField.h"
 #include "stencils/TurbulenceFGHStencil.h"
 #include "stencils/TurbulentViscosityStencil.h"
+#include "stencils/TurbulentViscosityBoundaryStencil.h"
 #include "stencils/TurbulentVTKStencil.h"
 #include "stencils/MaxNuStencil.h"
 #include "parallelManagers/PetscParallelManagerTurbulent.h"
@@ -22,6 +23,8 @@ class TurbulentSimulation : public Simulation {
 		MaxNuStencil _maxNuStencil;
 		FieldIterator<TurbulentFlowField> _maxNuFieldIterator;
         GlobalBoundaryIterator<TurbulentFlowField> _maxNuBoundaryIterator;
+        GlobalBoundaryIterator<TurbulentFlowField> _turbulentViscosityBoundaryIterator;
+		TurbulentViscosityBoundaryStencil _turbulentViscosityBoundaryStencil;
 		PetscParallelManagerTurbulent _parallelManagerTurbulent;
 
 		/*

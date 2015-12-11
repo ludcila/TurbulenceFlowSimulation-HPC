@@ -44,6 +44,7 @@ stencils/VelocityBufferReadStencil.o \
 stencils/ViscosityBufferFillStencil.o\
 stencils/ViscosityBufferReadStencil.o\
 stencils/TurbulentViscosityStencil.o \
+stencils/TurbulentViscosityBoundaryStencil.o \
 parallelManagers/PetscParallelManager.o\
 parallelManagers/PetscParallelManagerTurbulent.o\
 parallelManagers/PetscParallelConfiguration.o\
