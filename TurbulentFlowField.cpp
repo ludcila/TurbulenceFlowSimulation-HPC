@@ -30,6 +30,13 @@ ScalarField & TurbulentFlowField::getWallDistance () {
     return _distance;
 }
 
+FLOAT TurbulentFlowField::getWallDistance(int i, int j) {
+	return _distance.getScalar(i, j);
+}
+FLOAT TurbulentFlowField::getWallDistance(int i, int j, int k) {
+	return _distance.getScalar(i, j, k);
+}
+
 FLOAT *& TurbulentFlowField::getCenterLineVelocity(){
 	  return _centerLineBuffer;
 }

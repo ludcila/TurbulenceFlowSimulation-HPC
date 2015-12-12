@@ -5,6 +5,7 @@
 #include "../Parameters.h"
 #include "../Stencil.h"
 #include "../TurbulentFlowField.h"
+#include "MixingLengthModel.h"
 
 
 
@@ -18,6 +19,8 @@ class TurbulentViscosityStencil : public FieldStencil<TurbulentFlowField> {
         FLOAT _localVelocity [ 27 * 3 ];
         // local meshsize
         FLOAT _localMeshsize [ 27 * 3 ];
+        MixingLengthModel * _mixingLength;
+        
     public:
 
         /** Constructor

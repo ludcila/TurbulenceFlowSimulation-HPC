@@ -52,6 +52,7 @@ parallelManagers/PetscParallelConfiguration.o\
 GlobalBoundaryFactory.o\
 stencils/BFStepInitStencil.o stencils/NeumannBoundaryStencils.o stencils/BFInputStencils.o stencils/ObstacleStencil.o\
 TurbulentSimulation.o\
+MixingLengthModel.o\
 SimulationFactory.o
 
 all: ns

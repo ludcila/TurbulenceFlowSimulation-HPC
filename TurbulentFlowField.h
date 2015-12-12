@@ -50,8 +50,10 @@ class TurbulentFlowField : public FlowField {
          */
         TurbulentFlowField (const Parameters & parameters);
 
-		    ScalarField & getTurbulentViscosity();
-		    ScalarField & getWallDistance();
+	    ScalarField & getTurbulentViscosity();
+	    ScalarField & getWallDistance();
+	    FLOAT getWallDistance(int i, int j);
+	    FLOAT getWallDistance(int i, int j, int k);
         FLOAT *& getCenterLineVelocity();
 
         ~TurbulentFlowField ();
