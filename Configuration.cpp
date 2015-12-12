@@ -427,10 +427,10 @@ void Configuration::loadParameters(Parameters & parameters, const MPI_Comm & com
                                                ->FirstChildElement("boundary_layer");
             if (node != NULL){
               readStringMandatory(temp, node);
-              if ((temp.compare("laminar")==0) || (temp.compare("turbulent")==0)){
+              if ((temp.compare("laminar")==0) || (temp.compare("turbulent")==0) || (temp.compare("kh")==0)){
                 parameters.turbulence.boundary_layer_equation=temp;
               } else {
-                handleError(1, "Unknown boundary layer thickness model! Currently supported: laminar, turbulent");
+                handleError(1, "Unknown boundary layer thickness model! Currently supported: laminar, turbulent, kh");
               }
 
             } else {
