@@ -21,6 +21,8 @@ int main (int argc, char *argv[]) {
     // ---------------------------------------------------
     int rank;   // This processor's identifier
     int nproc;  // Number of processors in the group
+    clock_t start, end; // Variables to measure elapsed time
+    clock_t process_start, process_end; // Variables to measure elapsed time for each running process
     PetscInitialize(&argc, &argv, "petsc_commandline_arg", PETSC_NULL);
     MPI_Comm_size(PETSC_COMM_WORLD, &nproc);
     MPI_Comm_rank(PETSC_COMM_WORLD, &rank);
@@ -58,7 +60,7 @@ int main (int argc, char *argv[]) {
     simulation->initializeFlowField();
     //flowField->getFlags().show();
 
-    /* Create a folder for the VTK output */
+    /* Create a folder for the VTK output */ // TODO: Shouldn't this part be executed only by the rank0 process?
 	time_t rawtime = time(NULL);
 	struct tm * timeinfo = localtime(&rawtime);
 	char buffer[80];
@@ -86,10 +88,20 @@ int main (int argc, char *argv[]) {
     simulation->plotVTK(timeSteps, foldername.str());
     timeVTKOut += parameters.vtk.interval;
 
+    // START: measure program time
+    if (rank == 0) {   
+    	start = clock(); 
+	}
     // time loop
     while (time < parameters.simulation.finalTime){
 
+      process_start = clock();	
+
       simulation->solveTimestep();
+
+      process_end = clock();
+
+      std::cout << "Elapsed time for process " << rank << ": " << (float)(process_end-process_start) / CLOCKS_PER_SEC << std::endl;
 
       time += parameters.timestep.dt;
 
@@ -110,8 +122,24 @@ int main (int argc, char *argv[]) {
 
     }
 
+    // STOP: finish measurement
+    if (rank == 0) {
+    	end = clock();
+    	std::cout << "TOTAL TIME: " << (float)(end-start) / CLOCKS_PER_SEC << std::endl;
+    }
     // TODO WS1: plot final output
     simulation->plotVTK(timeSteps, foldername.str());
 
+    if (rank == 0) {
+        /* Copy the output file in the results folder */
+        const char* fileName = "/MYJOB.out";
+        std::ifstream source("MYJOB.out", std::ios::binary);
+        std::ofstream dest(foldername.str().append(fileName).c_str(), std::ios::binary);
+        dest << source.rdbuf();
+        source.close();
+        dest.close();
+    }
+
     PetscFinalize();
+
 }

@@ -1,13 +1,13 @@
 #!/bin/bash
 # -------------------------------------------------
 # Typical commnad to submit a job to the node:
-# sbatch -D$PWD bash_jobARGS.job <config_file> e.g. sbatch -D$PWD bash_jobARGS.job conf_cavity.xml
+# sbatch bashJOB.job num_proc <config_file> e.g. sbatch bashJOB.job 1 conf_cavity.xml
 # -------------------------------------------------
 #SBATCH -o MYJOB.out
 #SBATCH -J MYJOB
 #SBATCH --get-user-env
 #SBATCH --partition=bdz
-#SBATCH --ntasks=8 # 8 nodes * 64 processes per node = 512
+#SBATCH --ntasks=4 # 8 nodes * 64 processes per node = 512
 #SBATCH --cpus-per-task=1 # one thread per process
 #SBATCH --mail-type=end
 #SBATCH --mail-user=something@tum.de
@@ -16,4 +16,4 @@
 source /etc/profile.d/modules.sh
 # -ppn = processes per node
 # -n   = total number of processes
-mpiexec.hydra -genv OMP_NUM_THREADS 1 -ppn 8 -n 8 $PWD/ns $PWD/$1
+mpiexec.hydra -genv OMP_NUM_THREADS 1 -n $1 ./ns $2
