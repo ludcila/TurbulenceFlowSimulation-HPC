@@ -4,6 +4,7 @@
 #include <petscksp.h>
 #include <float.h>
 #include <string>
+#include <time.h>
 #include "FlowField.h"
 #include "stencils/FGHStencil.h"
 #include "stencils/MovingWallStencils.h"
@@ -128,6 +129,11 @@ class Simulation {
     }
 
     virtual void solveTimestep(){
+        clock_t process_start, process_end; // Variables to measure elapsed time for each running process
+        clock_t petsc_start, petsc_end; // Variables to measure elapsed time for each running process
+
+        process_start = clock();
+
         // determine and set max. timestep which is allowed in this simulation
         setTimeStep();
         // compute fgh
@@ -136,8 +142,12 @@ class Simulation {
         _wallFGHIterator.iterate();
         // compute the right hand side
         _rhsIterator.iterate();
-        // solve for pressure 
-        _solver.solve();
+
+        petsc_start = clock();
+			// solve for pressure
+			_solver.solve();
+        petsc_end = clock();
+
         // TODO WS2: communicate pressure values
         _parallelManager.communicatePressure();
         // compute velocity
@@ -148,6 +158,13 @@ class Simulation {
 		_parallelManager.communicateVelocity();
         // Iterate for velocities on the boundary
         _wallVelocityIterator.iterate();
+
+        process_end = clock();
+
+        if (rank == 0) {
+        	std::cout << "Elapsed time for one time step"  << (float)(process_end-process_start) / CLOCKS_PER_SEC << std::endl;
+        	std::cout << "Elapsed time for one time step(without petsc) " << (float)(process_end-process_start-petsc_end+petsc_start) / CLOCKS_PER_SEC << std::endl;
+        }
     }
 
     virtual void plotVTK(int timeStep, std::string foldername){

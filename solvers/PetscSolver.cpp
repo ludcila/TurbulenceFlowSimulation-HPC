@@ -363,7 +363,8 @@ PetscErrorCode computeMatrix2D(KSP ksp, Mat A, Mat pc, MatStructure * matStructu
     Nx = parameters.geometry.sizeX + 2;
     Ny = parameters.geometry.sizeY + 2;
 
-    std::cout << "Limits= " << limitsX[0] << ", " << limitsX[1] << "; " << limitsY[0] << " , " << limitsY[1] << std::endl;
+    // TODO: No limits printed
+    //std::cout << "Limits= " << limitsX[0] << ", " << limitsX[1] << "; " << limitsY[0] << " , " << limitsY[1] << std::endl;
     // Loop for inner nodes
     for (j = limitsY[0]; j < limitsY[1]; j++){
         for (i = limitsX[0]; i < limitsX[1]; i++){
@@ -584,8 +585,9 @@ PetscErrorCode computeMatrix3D(KSP ksp, Mat A, Mat pc, MatStructure * matStructu
     Ny = parameters.geometry.sizeY + 2;
     Nz = parameters.geometry.sizeZ + 2;
 
+    // TODO No limits printed
     // Loop for inner nodes
-    std::cout << "Limits: " << limitsX[0] << ", " << limitsX[1] << ", " << limitsY[0] << ", " << limitsY[1] << ", " << limitsZ[0] << ", " << limitsZ[1] << std::endl;
+    //std::cout << "Limits: " << limitsX[0] << ", " << limitsX[1] << ", " << limitsY[0] << ", " << limitsY[1] << ", " << limitsZ[0] << ", " << limitsZ[1] << std::endl;
     for (k = limitsZ[0]; k < limitsZ[1]; k++){
         for (j = limitsY[0]; j < limitsY[1]; j++){
             for (i = limitsX[0]; i < limitsX[1]; i++){

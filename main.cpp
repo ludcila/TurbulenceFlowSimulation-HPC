@@ -22,7 +22,6 @@ int main (int argc, char *argv[]) {
     int rank;   // This processor's identifier
     int nproc;  // Number of processors in the group
     clock_t start, end; // Variables to measure elapsed time
-    clock_t process_start, process_end; // Variables to measure elapsed time for each running process
     PetscInitialize(&argc, &argv, "petsc_commandline_arg", PETSC_NULL);
     MPI_Comm_size(PETSC_COMM_WORLD, &nproc);
     MPI_Comm_rank(PETSC_COMM_WORLD, &rank);
@@ -95,13 +94,7 @@ int main (int argc, char *argv[]) {
     // time loop
     while (time < parameters.simulation.finalTime){
 
-      process_start = clock();	
-
       simulation->solveTimestep();
-
-      process_end = clock();
-
-      std::cout << "Elapsed time for process " << rank << ": " << (float)(process_end-process_start) / CLOCKS_PER_SEC << std::endl;
 
       time += parameters.timestep.dt;
 
