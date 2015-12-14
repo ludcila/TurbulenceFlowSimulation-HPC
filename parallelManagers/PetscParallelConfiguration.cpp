@@ -40,21 +40,21 @@ void PetscParallelConfiguration::locateNeighbors(){
     int k = _parameters.parallel.indices[2];
 
     if (_parameters.geometry.dim == 2){
-        _parameters.parallel.leftNb   = computeRankFromIndices(i-1, j, 0);
-        _parameters.parallel.rightNb  = computeRankFromIndices(i+1, j, 0);
-        _parameters.parallel.bottomNb = computeRankFromIndices(i, j-1, 0);
-        _parameters.parallel.topNb    = computeRankFromIndices(i, j+1, 0);
+        _parameters.parallel.leftNb   = computeRankFromIndices(_parameters, i-1, j, 0);
+        _parameters.parallel.rightNb  = computeRankFromIndices(_parameters, i+1, j, 0);
+        _parameters.parallel.bottomNb = computeRankFromIndices(_parameters, i, j-1, 0);
+        _parameters.parallel.topNb    = computeRankFromIndices(_parameters, i, j+1, 0);
 
         // The following two are not used in this case
         _parameters.parallel.frontNb = MPI_PROC_NULL;
         _parameters.parallel.backNb  = MPI_PROC_NULL;
     } else {
-        _parameters.parallel.leftNb   = computeRankFromIndices(i-1, j, k);
-        _parameters.parallel.rightNb  = computeRankFromIndices(i+1, j, k);
-        _parameters.parallel.bottomNb = computeRankFromIndices(i, j-1, k);
-        _parameters.parallel.topNb    = computeRankFromIndices(i, j+1, k);
-        _parameters.parallel.frontNb  = computeRankFromIndices(i, j, k-1);
-        _parameters.parallel.backNb   = computeRankFromIndices(i, j, k+1);
+        _parameters.parallel.leftNb   = computeRankFromIndices(_parameters, i-1, j, k);
+        _parameters.parallel.rightNb  = computeRankFromIndices(_parameters, i+1, j, k);
+        _parameters.parallel.bottomNb = computeRankFromIndices(_parameters, i, j-1, k);
+        _parameters.parallel.topNb    = computeRankFromIndices(_parameters, i, j+1, k);
+        _parameters.parallel.frontNb  = computeRankFromIndices(_parameters, i, j, k-1);
+        _parameters.parallel.backNb   = computeRankFromIndices(_parameters, i, j, k+1);
     }
 
     // If periodic boundaries declared, let the process itself deal with it, without communication
@@ -73,16 +73,16 @@ void PetscParallelConfiguration::createIndices(){
 }
 
 
-int PetscParallelConfiguration::computeRankFromIndices(int i, int j, int k) const {
+int PetscParallelConfiguration::computeRankFromIndices(Parameters & parameters, int i, int j, int k) {
 
-    if( i < 0 || i >= _parameters.parallel.numProcessors[0] ||
-        j < 0 || j >= _parameters.parallel.numProcessors[1] ||
-        k < 0 || k >= _parameters.parallel.numProcessors[2] ){
+    if( i < 0 || i >= parameters.parallel.numProcessors[0] ||
+        j < 0 || j >= parameters.parallel.numProcessors[1] ||
+        k < 0 || k >= parameters.parallel.numProcessors[2] ){
         return MPI_PROC_NULL;
     }
-    int nrank = i + j*_parameters.parallel.numProcessors[0];
-    if (_parameters.geometry.dim == 3){
-        nrank += k * _parameters.parallel.numProcessors[0] * _parameters.parallel.numProcessors[1];
+    int nrank = i + j*parameters.parallel.numProcessors[0];
+    if (parameters.geometry.dim == 3){
+        nrank += k * parameters.parallel.numProcessors[0] * parameters.parallel.numProcessors[1];
     }
     return nrank;
 }

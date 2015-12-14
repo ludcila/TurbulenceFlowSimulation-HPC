@@ -132,6 +132,7 @@ class ParallelParameters{
         MPI_Comm planeComm;                 //! used for center line velocity communication -> new communicator
         int plane_rank;                     //! used for cneter line velocity communication -> new ranks
         int plane_root;                     //! used for cneter line velocity communication -> root processor for the Bcasting the velocities
+
 };
 
 class BFStepParameters{

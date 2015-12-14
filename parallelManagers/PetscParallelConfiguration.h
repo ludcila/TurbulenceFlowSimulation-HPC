@@ -25,15 +25,6 @@ class PetscParallelConfiguration {
          */
         void createIndices();
 
-        /** Returns the rank of the process with the indices provided
-         * @param i Intex in the X directon
-         * @param j Intex in the Y directon
-         * @param k Intex in the Z directon
-         * @return Rank of the process with that index, assuming that they are ordered
-         * lexicographically, or MPI_PROC_NULL if outside the domain
-         */
-        int computeRankFromIndices(int i, int j, int k) const;
-
         /** Compute local sizes and sizes in all directions. Requires deallocation of sizes
          */
         void computeSizes();
@@ -52,6 +43,16 @@ class PetscParallelConfiguration {
 
         /** Destructor */
         ~PetscParallelConfiguration();
+
+        /** Returns the rank of the process with the indices provided
+         * @param i Intex in the X directon
+         * @param j Intex in the Y directon
+         * @param k Intex in the Z directon
+         * @return Rank of the process with that index, assuming that they are ordered
+         * lexicographically, or MPI_PROC_NULL if outside the domain
+         */
+        static int computeRankFromIndices(Parameters & parameters, int i, int j, int k);
+
 };
 
 #endif
