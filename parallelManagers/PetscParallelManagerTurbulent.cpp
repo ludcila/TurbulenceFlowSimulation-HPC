@@ -1,4 +1,5 @@
 #include "PetscParallelManagerTurbulent.h"
+#include "PetscParallelConfiguration.h"
 
 PetscParallelManagerTurbulent::PetscParallelManagerTurbulent(TurbulentFlowField &flowField, Parameters &parameters) :
   //parents' constructor
@@ -72,16 +73,29 @@ void PetscParallelManagerTurbulent::communicateViscosity() {
 
 void PetscParallelManagerTurbulent::communicateCenterLineVelocity() {
   // buffer fill . iterate  for centerline
-  if (_parameters.parallel.centerlineFlag)
+/*  if (_parameters.parallel.centerlineFlag)
   {
       _centerLineVelocityFillIterator.iterate();
   }
+
+  */
+  if (_parameters.parallel.centerlineFlag && _parameters.geometry.dim == 2)
+    {
+  	for(int i = 0; i < _flowField.getCellsX(); i++) {
+  		_centerLineBuffer[i] = _flowField.getVelocity().getVector(i, _parameters.parallel.local_center_line_index[1])[0];
+  	}
+    } else if (_parameters.parallel.centerlineFlag && _parameters.geometry.dim == 3) {
+  	for(int i = 0; i < _flowField.getCellsX(); i++) {
+  		_centerLineBuffer[i] = _flowField.getVelocity().getVector(i, _parameters.parallel.local_center_line_index[1],  _parameters.parallel.local_center_line_index[2])[0];
+  	}
+    }
+
   // communicate the center line velocity
   MPI_Bcast(
       _centerLineBuffer,
       _parameters.parallel.localSize[0]+2,
       (sizeof(FLOAT) == sizeof(float) ? MPI_FLOAT : MPI_DOUBLE),
-      _parameters.parallel.centerProcessor,
+      _parameters.parallel.plane_root,
       _parameters.parallel.planeComm);
 
   _turbulentFlowField.getCenterLineVelocity()=_centerLineBuffer;

@@ -49,6 +49,7 @@ stencils/TurbulentViscosityBoundaryStencil.o \
 parallelManagers/PetscParallelManager.o\
 parallelManagers/PetscParallelManagerTurbulent.o\
 parallelManagers/PetscParallelConfiguration.o\
+parallelManagers/PetscParallelConfigurationTurbulent.o\
 GlobalBoundaryFactory.o\
 stencils/BFStepInitStencil.o stencils/NeumannBoundaryStencils.o stencils/BFInputStencils.o stencils/ObstacleStencil.o\
 TurbulentSimulation.o\

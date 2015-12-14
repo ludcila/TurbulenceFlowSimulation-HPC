@@ -4,7 +4,6 @@
 #include "../Parameters.h"
 #include "../Definitions.h"
 #include <mpi.h>
-#include <math.h>
 
 
 /** Class used to set parameters relevant to the parallel distribution. All functions modify the
@@ -12,9 +11,11 @@
  */
 class PetscParallelConfiguration {
 
-    private:
+    protected:
 
         Parameters & _parameters;   //! Reference to the parameters
+
+    private:
 
         /** Locates the six neighbors of the current process
          */
@@ -41,12 +42,6 @@ class PetscParallelConfiguration {
          * class
          */
         void freeSizes();
-
-        /**
-        This function is to set flags in each processor to indicate if the centerline
-        is in that processor or not.
-        */
-        void set_centerline_flags();
 
     public:
 

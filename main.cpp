@@ -7,6 +7,7 @@
 #include "Simulation.h"
 #include "TurbulentSimulation.h"
 #include "parallelManagers/PetscParallelConfiguration.h"
+#include "parallelManagers/PetscParallelConfigurationTurbulent.h"
 #include "MeshsizeFactory.h"
 #include <time.h>
 #include <iomanip>
@@ -32,9 +33,15 @@ int main (int argc, char *argv[]) {
     Configuration configuration(argv[1]);
     Parameters parameters;
     configuration.loadParameters(parameters);
-    PetscParallelConfiguration parallelConfiguration(parameters);
+    PetscParallelConfiguration * parallelConfiguration;
+    if (parameters.simulation.type=="dns")
+      parallelConfiguration = new  PetscParallelConfiguration (parameters);
+    else if (parameters.simulation.type=="turbulence")
+      parallelConfiguration = new  PetscParallelConfigurationTurbulent (parameters);
+
+
     MeshsizeFactory::getInstance().initMeshsize(parameters);
-    
+
     SimulationFactory simulationFactory(parameters);
     Simulation *simulation = simulationFactory.getSimulation();
 
@@ -52,7 +59,7 @@ int main (int argc, char *argv[]) {
     std::cout << std::endl;
     std::cout << "Min. meshsizes: " << parameters.meshsize->getDxMin() << ", " << parameters.meshsize->getDyMin() << ", " << parameters.meshsize->getDzMin() << std::endl;
     #endif
-    
+
     // call initialization of simulation (initialize flow field)
     if(simulation == NULL){ handleError(1, "simulation==NULL!"); }
     simulation->initializeFlowField();
@@ -114,4 +121,5 @@ int main (int argc, char *argv[]) {
     simulation->plotVTK(timeSteps, foldername.str());
 
     PetscFinalize();
+    delete parallelConfiguration;
 }
