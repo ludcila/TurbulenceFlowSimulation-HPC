@@ -15,7 +15,7 @@ TurbulentViscosityStencil::TurbulentViscosityStencil ( const Parameters & parame
 {
 	// Choose mixing length model from the beginning,
 	// to avoid checking inside every call to "apply"
-	if(_parameters.simulation.scenario == "channel") {
+	if(_parameters.simulation.scenario == "channel" && (_parameters.bfStep.xRatio <= 0 || _parameters.bfStep.yRatio <= 0)) {
 		if (_parameters.turbulence.boundary_layer_equation == "laminar") {
 			_mixingLength = new LmLaminarFlatPlate(_parameters);
 		} else if(_parameters.turbulence.boundary_layer_equation == "turbulent") {
