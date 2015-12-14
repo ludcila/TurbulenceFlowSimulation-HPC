@@ -4,7 +4,6 @@
 #include <petscksp.h>
 #include <float.h>
 #include <string>
-#include <time.h>
 #include "FlowField.h"
 #include "stencils/FGHStencil.h"
 #include "stencils/MovingWallStencils.h"
@@ -26,7 +25,7 @@
 #include "LinearSolver.h"
 #include "solvers/SORSolver.h"
 #include "solvers/PetscSolver.h"
-
+#include "SimpleTimer.h"
 
 
 class Simulation {
@@ -129,10 +128,10 @@ class Simulation {
     }
 
     virtual void solveTimestep(){
-        clock_t process_start, process_end; // Variables to measure elapsed time for each running process
-        clock_t petsc_start, petsc_end; // Variables to measure elapsed time for each running process
+	SimpleTimer timer;
+        FLOAT time_beforePetsc, time_afterPetsc, totalTime; // Variables to measure elapsed time for each running process
 
-        process_start = clock();
+        timer.start();
 
         // determine and set max. timestep which is allowed in this simulation
         setTimeStep();
@@ -143,10 +142,10 @@ class Simulation {
         // compute the right hand side
         _rhsIterator.iterate();
 
-        petsc_start = clock();
+        time_beforePetsc = timer.getTimeAndContinue();
 			// solve for pressure
 			_solver.solve();
-        petsc_end = clock();
+        time_afterPetsc = timer.getTimeAndContinue();
 
         // TODO WS2: communicate pressure values
         _parallelManager.communicatePressure();
@@ -159,11 +158,11 @@ class Simulation {
         // Iterate for velocities on the boundary
         _wallVelocityIterator.iterate();
 
-        process_end = clock();
+        totalTime = timer.getTimeAndRestart();
 
-        if (rank == 0) {
-        	std::cout << "Elapsed time for one time step"  << (float)(process_end-process_start) / CLOCKS_PER_SEC << std::endl;
-        	std::cout << "Elapsed time for one time step(without petsc) " << (float)(process_end-process_start-petsc_end+petsc_start) / CLOCKS_PER_SEC << std::endl;
+        if (_parameters.parallel.rank == 0) {
+        	std::cout << "Elapsed time for one time step: " << totalTime << std::endl;
+        	std::cout << "Elapsed time for one time step(without petsc): " << totalTime - time_afterPetsc + time_beforePetsc << std::endl;
         }
     }
 
