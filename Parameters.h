@@ -126,10 +126,12 @@ class ParallelParameters{
         PetscInt * sizes[3];         //! Arrays with the sizes of the blocks in each direction.
 
         int centerlineFlag;            //! ->1 if center line is in that processor and ->0 otherwise
-        int centerProcessor;
-        int local_center_line_index;
+        int centerProcessor[3];
+        int local_center_line_index[3];
 
         MPI_Comm planeComm;
+        int plane_rank;
+        int plane_root;
 };
 
 class BFStepParameters{

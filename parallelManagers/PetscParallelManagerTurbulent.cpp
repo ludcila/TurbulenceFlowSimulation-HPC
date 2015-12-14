@@ -1,4 +1,5 @@
 #include "PetscParallelManagerTurbulent.h"
+#include "PetscParallelConfiguration.h"
 
 PetscParallelManagerTurbulent::PetscParallelManagerTurbulent(TurbulentFlowField &flowField, Parameters &parameters) :
   //parents' constructor
@@ -81,7 +82,7 @@ void PetscParallelManagerTurbulent::communicateCenterLineVelocity() {
       _centerLineBuffer,
       _parameters.parallel.localSize[0]+2,
       (sizeof(FLOAT) == sizeof(float) ? MPI_FLOAT : MPI_DOUBLE),
-      _parameters.parallel.centerProcessor,
+      _parameters.parallel.plane_root,
       _parameters.parallel.planeComm);
 
   _turbulentFlowField.getCenterLineVelocity()=_centerLineBuffer;
