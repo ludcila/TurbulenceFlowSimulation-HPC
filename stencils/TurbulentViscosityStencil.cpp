@@ -10,154 +10,49 @@
 
 
 
-TurbulentViscosityStencil::TurbulentViscosityStencil ( const Parameters & parameters ) : FieldStencil<TurbulentFlowField> ( parameters ) {
-
+TurbulentViscosityStencil::TurbulentViscosityStencil ( const Parameters & parameters ) :
+	FieldStencil<TurbulentFlowField> ( parameters )
+{
+	// Choose mixing length model from the beginning,
+	// to avoid checking inside every call to "apply"
+	if(_parameters.simulation.scenario == "channel" && (_parameters.bfStep.xRatio <= 0 || _parameters.bfStep.yRatio <= 0)) {
+		if (_parameters.turbulence.boundary_layer_equation == "laminar") {
+			_mixingLength = new LmLaminarFlatPlate(_parameters);
+		} else if(_parameters.turbulence.boundary_layer_equation == "turbulent") {
+			_mixingLength = new LmTurbulentFlatPlate(_parameters);
+		} else if(_parameters.turbulence.boundary_layer_equation == "kh") {
+			_mixingLength = new LmKh(_parameters);
+		}
+	} else {
+		_mixingLength = new LmKh(_parameters);
+		if(_parameters.turbulence.boundary_layer_equation != "kh") {
+			std::cout << "!!! Warning: Using Lm = Kh as mixing length" << std::endl;
+		}
+	}
 }
 
 TurbulentViscosityStencil::~TurbulentViscosityStencil () {
-	
+	delete _mixingLength;	
 }
 
 void TurbulentViscosityStencil::apply ( TurbulentFlowField & flowField, int i, int j ) {
-FLOAT lm;
-FLOAT deltay;
-loadLocalVelocity2D(  flowField, _localVelocity, i, j);
-loadLocalMeshsize2D(_parameters, _localMeshsize, i, j);
-FLOAT xpos = this->_parameters.meshsize->getPosX(i,j) + this->_parameters.meshsize->getDx(i,j);
-int sizeY = this->_parameters.geometry.sizeY;
-FLOAT re=flowField.getVelocity().getVector(i,sizeY/2)[0]*xpos*this->_parameters.flow.Re;
 
+	FLOAT lm = _mixingLength->at(flowField, i, j);
+	loadLocalVelocity2D(  flowField, _localVelocity, i, j);
+	loadLocalMeshsize2D(_parameters, _localMeshsize, i, j);
+	FLOAT SdotS = computeSdotS2D(_localVelocity, _localMeshsize);
 
-
-//i set the thickness of the boundary layer for the channel case
-if(this->_parameters.simulation.scenario=="channel"){
-
-	if (this->_parameters.turbulence.boundary_layer_equation=="laminar"){
-	deltay=4.91*xpos/(pow(re, 1/2.0));
-	}
-
-	else 	deltay=0.382*xpos/(pow(re, 1/5.0));
+	flowField.getTurbulentViscosity().getScalar(i, j) = lm * lm * sqrt(2 * SdotS);
 
 }
- 
-//if we are in the cavity case, we can apply empirical laws like the Blasius', 'cause they are meant for flate plates, so we just need wall distance
-if(this->_parameters.simulation.scenario=="cavity"){
-	
-	lm=0.41*PetscMin(xpos,this->_parameters.meshsize->getPosY(i,j));
-
-	if(i>this->_parameters.geometry.sizeX/2.0 && j<=this->_parameters.geometry.sizeY/2.0)
-	lm=0.41*PetscMin(this->_parameters.geometry.lengthX-xpos,this->_parameters.meshsize->getPosY(i,j));
-
-	if(i>this->_parameters.geometry.sizeX/2.0 && j>this->_parameters.geometry.sizeY/2.0)
-	lm=0.41*PetscMin(this->_parameters.geometry.lengthX-xpos,this->_parameters.geometry.lengthY-this->_parameters.meshsize->getPosY(i,j));
-
-	if(i<=this->_parameters.geometry.sizeX/2.0 && j>this->_parameters.geometry.sizeY/2.0)
-	lm=0.41*PetscMin(xpos,this->_parameters.geometry.lengthY-this->_parameters.meshsize->getPosY(i,j));
-
-
-}
-
-//now we determine lm for the channel case
-
-if(this->_parameters.simulation.scenario=="channel"){
-
-	if(j>this->_parameters.geometry.sizeY/2.0)
-	lm=PetscMin(0.09*deltay,0.41*(this->_parameters.geometry.lengthY-this->_parameters.meshsize->getPosY(i,j)));
-
-	 if(j<=this->_parameters.geometry.sizeY/2.0 && this->_parameters.bfStep.xRatio!=0)
-		{
-		if(xpos<=this->_parameters.bfStep.xRatio*this->_parameters.geometry.lengthX)
-		lm=PetscMin(0.09*deltay,0.41*(-this->_parameters.meshsize->getPosY(i,j)+this->_parameters.bfStep.yRatio*this->_parameters.geometry.lengthY/2.0));
-
-		else lm=0.41*this->_parameters.meshsize->getPosY(i,j);
-		}
-	
-	else lm=PetscMin(0.09*deltay,0.41*this->_parameters.meshsize->getPosY(i,j));
-	
-		FLOAT a = 0.09*deltay;
-	FLOAT b = 0.41*flowField.getWallDistance().getScalar(i, j);
-	lm = PetscMin(a, b);
-	
-}
-
-
-flowField.getTurbulentViscosity().getScalar(i,j)=lm*lm*sqrt(2*computeSdotS2D(_localVelocity, _localMeshsize));
-
-
-}
-
-
 
 void TurbulentViscosityStencil::apply ( TurbulentFlowField & flowField, int i, int j, int k ) {
-FLOAT lm;
-FLOAT deltay;
-FLOAT deltaz;
-loadLocalVelocity3D(  flowField, _localVelocity, i, j , k);
-loadLocalMeshsize3D(_parameters, _localMeshsize, i, j , k);
-FLOAT xpos = this->_parameters.meshsize->getPosX(i,j,k) + this->_parameters.meshsize->getDx(i,j,k);
-int sizeY = this->_parameters.geometry.sizeY;
-int sizeZ = this->_parameters.geometry.sizeZ;
-FLOAT re=flowField.getVelocity().getVector(i,sizeY/2,sizeZ/2)[0]*xpos*this->_parameters.flow.Re;
-//FLOAT re=this->_parameters.flow.Re;
 
+	FLOAT lm = _mixingLength->at(flowField, i, j, k);
+	loadLocalVelocity3D(  flowField, _localVelocity, i, j, k);
+	loadLocalMeshsize3D(_parameters, _localMeshsize, i, j, k);
+	FLOAT SdotS = computeSdotS3D(_localVelocity, _localMeshsize);
 
-
-//i set the thickness of the boundary layer for the channel case
-if(this->_parameters.simulation.scenario=="channel"){
-
-	if (this->_parameters.turbulence.boundary_layer_equation=="laminar"){
-	deltay=4.91*xpos/(pow(re, 1/2.0));
-	}
-
-	else 	deltay=0.382*xpos/(pow(re, 1/5.0));
-deltaz=deltay;
-}
- 
-
-//if we are in the cavity case, we can apply empirical laws like the Blasius', 'cause they are meant for flate plates, so we just need wall distance
-if(this->_parameters.simulation.scenario=="cavity"){
-	
-	if(i<=this->_parameters.geometry.sizeX/2.0 && j<=this->_parameters.geometry.sizeY/2.0 && k<=this->_parameters.geometry.sizeZ/2.0)
-	lm=0.41*PetscMin(this->_parameters.meshsize->getPosZ(i,j,k),PetscMin(xpos,this->_parameters.meshsize->getPosY(i,j,k)));
-
-	if(i>this->_parameters.geometry.sizeX/2.0 && j<=this->_parameters.geometry.sizeY/2.0 && k<=this->_parameters.geometry.sizeZ/2.0)
-	lm=0.41*PetscMin(this->_parameters.meshsize->getPosZ(i,j,k),PetscMin(this->_parameters.geometry.lengthX-xpos,this->_parameters.meshsize->getPosY(i,j,k)));
-
-	if(i>this->_parameters.geometry.sizeX/2.0 && j>this->_parameters.geometry.sizeY/2.0 && k<=this->_parameters.geometry.sizeZ/2.0)
-	lm=0.41*PetscMin(this->_parameters.meshsize->getPosZ(i,j,k),PetscMin(this->_parameters.geometry.lengthX-xpos,this->_parameters.geometry.lengthY-this->_parameters.meshsize->getPosY(i,j,k)));
-
-	if(i<=this->_parameters.geometry.sizeX/2.0 && j>this->_parameters.geometry.sizeY/2.0 && k<=this->_parameters.geometry.sizeZ/2.0)
-	lm=0.41*PetscMin(this->_parameters.meshsize->getPosZ(i,j,k),PetscMin(xpos,this->_parameters.geometry.lengthY-this->_parameters.meshsize->getPosY(i,j,k)));
-
-	if(i<=this->_parameters.geometry.sizeX/2.0 && j<=this->_parameters.geometry.sizeY/2.0 && k>this->_parameters.geometry.sizeZ/2.0)
-	lm=0.41*PetscMin(this->_parameters.geometry.lengthZ-this->_parameters.meshsize->getPosZ(i,j,k),PetscMin(xpos,this->_parameters.meshsize->getPosY(i,j,k)));
-
-	if(i>this->_parameters.geometry.sizeX/2.0 && j<=this->_parameters.geometry.sizeY/2.0 && k>this->_parameters.geometry.sizeZ/2.0)
-	lm=0.41*PetscMin(this->_parameters.geometry.lengthZ-this->_parameters.meshsize->getPosZ(i,j,k),PetscMin(this->_parameters.geometry.lengthX-xpos,this->_parameters.meshsize->getPosY(i,j,k)));
-
-	if(i>this->_parameters.geometry.sizeX/2.0 && j>this->_parameters.geometry.sizeY/2.0 && k>this->_parameters.geometry.sizeZ/2.0)
-	lm=0.41*PetscMin(this->_parameters.geometry.lengthZ-this->_parameters.meshsize->getPosZ(i,j,k),PetscMin(this->_parameters.geometry.lengthX-xpos,this->_parameters.geometry.lengthY-this->_parameters.meshsize->getPosY(i,j,k)));
-
-	if(i<=this->_parameters.geometry.sizeX/2.0 && j>this->_parameters.geometry.sizeY/2.0 && k>this->_parameters.geometry.sizeZ/2.0)
-	lm=0.41*PetscMin(this->_parameters.geometry.lengthZ-this->_parameters.meshsize->getPosZ(i,j,k),PetscMin(xpos,this->_parameters.geometry.lengthY-this->_parameters.meshsize->getPosY(i,j,k)));
-}
-
-//now we determine lm for the channel case
-
-if(this->_parameters.simulation.scenario=="channel"){
-	
-	FLOAT a = 0.09*deltay;
-	FLOAT b = 0.41*flowField.getWallDistance().getScalar(i, j, k);
-	lm = PetscMin(a, b);
-
+	flowField.getTurbulentViscosity().getScalar(i, j, k) = lm * lm * sqrt(2 * SdotS);
 
 }
-FLOAT ss = computeSdotS3D(_localVelocity, _localMeshsize);
-
-//std::cout << i << " " << j << " " << k << " " << ss << std::endl;
-flowField.getTurbulentViscosity().getScalar(i,j,k)=lm*lm*sqrt(2*computeSdotS3D(_localVelocity, _localMeshsize));
-
-
-}
-
-

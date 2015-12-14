@@ -43,13 +43,17 @@ stencils/VelocityBufferFillStencil.o \
 stencils/VelocityBufferReadStencil.o \
 stencils/ViscosityBufferFillStencil.o\
 stencils/ViscosityBufferReadStencil.o\
+stencils/CenterLineVelocityBufferFillStencil.o\
 stencils/TurbulentViscosityStencil.o \
+stencils/TurbulentViscosityBoundaryStencil.o \
 parallelManagers/PetscParallelManager.o\
 parallelManagers/PetscParallelManagerTurbulent.o\
 parallelManagers/PetscParallelConfiguration.o\
+parallelManagers/PetscParallelConfigurationTurbulent.o\
 GlobalBoundaryFactory.o\
 stencils/BFStepInitStencil.o stencils/NeumannBoundaryStencils.o stencils/BFInputStencils.o stencils/ObstacleStencil.o\
 TurbulentSimulation.o\
+MixingLengthModel.o\
 SimulationFactory.o
 
 all: ns

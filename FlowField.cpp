@@ -128,3 +128,5 @@ void FlowField::getPressureAndVelocity(FLOAT &pressure, FLOAT* const velocity, i
 
     pressure = getPressure().getScalar(i,j,k);
 }
+
+FlowField::~FlowField (){}

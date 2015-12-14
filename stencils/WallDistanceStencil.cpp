@@ -22,21 +22,23 @@ void WallDistanceStencil::apply ( TurbulentFlowField & flowField, int i, int j )
 	FLOAT dy = _parameters.meshsize->getDy(i, j);
 	FLOAT posX = fabs(_parameters.meshsize->getPosX(i, j) + 0.5*dx);
 	FLOAT posY = fabs(_parameters.meshsize->getPosY(i, j) + 0.5*dy);
-	FLOAT minDistance;
 	
-	if(this->_parameters.simulation.scenario == "channel") {
+	// Min distance to top or bottom wall
+	FLOAT minDistance = std::min(posY, _parameters.geometry.lengthY-posY);
 	
-		FLOAT minDistance = std::min(posY, _parameters.geometry.lengthY-posY);
+	if(this->_parameters.simulation.scenario == "channel" && _parameters.bfStep.xRatio > 0 && _parameters.bfStep.yRatio > 0) {
 		
 		// Consider the backward facing step
-		if(_parameters.bfStep.xRatio > 0 && _parameters.bfStep.yRatio > 0) {
-			minDistance = std::min(minDistance, distanceToStep(posX, posY));
-		}
+		minDistance = std::min(minDistance, distanceToStep(posX, posY));
 		
-		flowField.getWallDistance().getScalar(i, j) = minDistance;
+	} else if(this->_parameters.simulation.scenario == "cavity") {
 		
+		// Consider also the lateral walls
+		FLOAT minX = std::min(posX, _parameters.geometry.lengthX-posX);
+		minDistance = std::min(minDistance, minX);
 	}
-	
+
+	flowField.getWallDistance().getScalar(i, j) = minDistance;
 }
 
 void WallDistanceStencil::apply ( TurbulentFlowField & flowField, int i, int j, int k ) {
@@ -47,23 +49,25 @@ void WallDistanceStencil::apply ( TurbulentFlowField & flowField, int i, int j, 
 	FLOAT posX = fabs(_parameters.meshsize->getPosX(i, j, k) + 0.5*dx);
 	FLOAT posY = fabs(_parameters.meshsize->getPosY(i, j, k) + 0.5*dy);
 	FLOAT posZ = fabs(_parameters.meshsize->getPosZ(i, j, k) + 0.5*dz);
-	FLOAT minDistance;
+	FLOAT minY = std::min(posY, _parameters.geometry.lengthY-posY);
+	FLOAT minZ = std::min(posZ, _parameters.geometry.lengthZ-posZ);
 	
-	if(this->_parameters.simulation.scenario == "channel") {
+	// Min distance to top, bottom, front or back wall
+	FLOAT minDistance = std::min(minY, minZ);
 	
-		FLOAT minY = std::min(posY, _parameters.geometry.lengthY-posY);
-		FLOAT minZ = std::min(posZ, _parameters.geometry.lengthZ-posZ);
-		minDistance = std::min(minY, minZ);
+	if(this->_parameters.simulation.scenario == "channel" && _parameters.bfStep.xRatio > 0 && _parameters.bfStep.yRatio > 0) {
 		
 		// Consider the backward facing step
-		if(_parameters.bfStep.xRatio > 0 && _parameters.bfStep.yRatio > 0) {
-			minDistance = std::min(minDistance, distanceToStep(posX, posY));
-		}
+		minDistance = std::min(minDistance, distanceToStep(posX, posY));
 		
-		flowField.getWallDistance().getScalar(i, j, k) = minDistance;
-		
+	} else if(this->_parameters.simulation.scenario == "cavity") {
+
+		// Consider also the lateral walls
+		FLOAT minX = std::min(posX, _parameters.geometry.lengthX-posX);
+		minDistance = std::min(minDistance, minX);
 	}
-	
+
+	flowField.getWallDistance().getScalar(i, j, k) = minDistance;
 }
 
 FLOAT WallDistanceStencil::distanceToStep(FLOAT posX, FLOAT posY) {

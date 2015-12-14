@@ -28,7 +28,7 @@ class FlowField {
 
         ScalarField _RHS;      //! Right hand side for the Poisson equation
 
-    public:	
+    public:
 
         /** Constructor for the 2D flow field
          *
@@ -109,6 +109,8 @@ class FlowField {
 
         void getPressureAndVelocity(FLOAT &pressure, FLOAT* const velocity, int i, int j);
         void getPressureAndVelocity(FLOAT &pressure, FLOAT* const velocity, int i, int j, int k);
+
+        virtual ~FlowField ();
 };
 
 #endif
