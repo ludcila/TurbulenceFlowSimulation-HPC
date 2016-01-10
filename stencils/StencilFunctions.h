@@ -77,7 +77,45 @@ inline void loadLocalTurbulentViscosity3D(TurbulentFlowField & flowField, FLOAT 
     }
 }
 
+// load local Kinetic Energy for 2D
+inline void loadLocalKineticEnergy2D(TurbulentFlowField & flowField, FLOAT * const localKineticEnergy, int i, int j){
+    for (int row = -1; row <= 1; row++ ){
+        for ( int column = -1; column <= 1; column ++ ){
+            localKineticEnergy[39 + 9*row + 3*column] = flowField.getKineticEnergy().getScalar(i + column, j + row);
+        }
+    }
+}
 
+// load local Kinetic energy for 3D
+inline void loadLocalKineticEnergy3D(TurbulentFlowField & flowField, FLOAT * const localKineticEnergy, int i, int j, int k){
+    for ( int layer = -1; layer <= 1; layer ++ ){
+        for ( int row = -1; row <= 1; row++ ){
+            for ( int column = -1; column <= 1; column ++ ){
+                localKineticEnergy[39 + 27*layer + 9*row + 3*column] = flowField.getKineticEnergy().getScalar(i + column, j + row, k + layer);
+            }
+        }
+    }
+}
+
+// load local Dissipation rate for 2D
+inline void loadLocalDissipationRate2D(TurbulentFlowField & flowField, FLOAT * const localDissipationRate, int i, int j){
+    for (int row = -1; row <= 1; row++ ){
+        for ( int column = -1; column <= 1; column ++ ){
+            localDissipationRate[39 + 9*row + 3*column] = flowField.getDissipationRate().getScalar(i + column, j + row);
+        }
+    }
+}
+
+// load local Dissipation rate for 3D
+inline void loadLocalDissipationRate3D(TurbulentFlowField & flowField, FLOAT * const localDissipationRate, int i, int j, int k){
+    for ( int layer = -1; layer <= 1; layer ++ ){
+        for ( int row = -1; row <= 1; row++ ){
+            for ( int column = -1; column <= 1; column ++ ){
+                localDissipationRate[39 + 27*layer + 9*row + 3*column] = flowField.getDissipationRate().getScalar(i + column, j + row, k + layer);
+            }
+        }
+    }
+}
 // Maps an index and a component to the corresponding value in the cube.
 inline int mapd (int i, int j, int k, int component){
    return 39 + 27*k + 9*j + 3*i + component;
@@ -1112,6 +1150,71 @@ inline FLOAT dy_dvdz_dwdy ( const FLOAT * const lv, const Parameters & parameter
 	return diffusive_term(r1, r2, r3, p1, p2, p3, p4, nu0, nu1, nu2, nu3, nu4, nu5, nu6, d1, d2, h1, h2, h3);
 
 
+}
+
+
+
+
+//here follow the derivatives for the kinetic energy and dissipation rate//
+
+inline FLOAT dkdx ( const FLOAT * const lk, const FLOAT * const lm ) {
+    
+
+    // evaluate dkdx in the right side by a central difference
+    const int index0 = mapd(0,0,0,0);
+    const int index1 = mapd(1,0,0,0);
+    return  ( lk [index1] - lk [index0] ) / (lm[index0]/2+lm[index1]/2);
+    
+}
+
+inline FLOAT dedx ( const FLOAT * const le, const FLOAT * const lm ) {
+    
+
+    // evaluate dedx in the right side by a central difference
+    const int index0 = mapd(0,0,0,0);
+    const int index1 = mapd(1,0,0,0);
+    return  ( le [index1] - le [index0] ) / (lm[index0]/2+lm[index1]/2);
+    
+}
+
+inline FLOAT dkdy ( const FLOAT * const lk, const FLOAT * const lm ) {
+    
+
+    // evaluate dkdy in the top side by a central difference
+    const int index0 = mapd(0,0,0,0);
+    const int index1 = mapd(0,1,0,0);
+    return  ( lk [index1] - lk [index0] ) / (lm[index0]/2+lm[index1]/2);
+    
+}
+
+inline FLOAT dedy ( const FLOAT * const le, const FLOAT * const lm ) {
+    
+
+    // evaluate dedy in the top side by a central difference
+    const int index0 = mapd(0,0,0,0);
+    const int index1 = mapd(0,1,0,0);
+    return  ( le [index1] - le [index0] ) / (lm[index0]/2+lm[index1]/2);
+    
+}
+
+inline FLOAT dkdz ( const FLOAT * const lk, const FLOAT * const lm ) {
+    
+
+    // evaluate dkdz in the front side by a central difference
+    const int index0 = mapd(0,0,0,0);
+    const int index1 = mapd(0,0,1,0);
+    return  ( lk [index1] - lk [index0] ) / (lm[index0]/2+lm[index1]/2);
+    
+}
+
+inline FLOAT dedz ( const FLOAT * const le, const FLOAT * const lm ) {
+    
+
+    // evaluate dedz in the front side by a central difference
+    const int index0 = mapd(0,0,0,0);
+    const int index1 = mapd(0,0,1,0);
+    return  ( le [index1] - le [index0] ) / (lm[index0]/2+lm[index1]/2);
+    
 }
 
 inline FLOAT computeF2D(const FLOAT * const localVelocity, const FLOAT * const localMeshsize, const Parameters & parameters, FLOAT dt){
