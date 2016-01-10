@@ -143,7 +143,9 @@ class BFStepParameters{
 
 class TurbulenceParameters{
     public:
-        std::string boundary_layer_equation;
+    	std::string model;
+        std::string boundaryLayerEquation; // for mixing length model
+        std::string boundaryConditions; // for k-epsilon model
 };
 
 //@}

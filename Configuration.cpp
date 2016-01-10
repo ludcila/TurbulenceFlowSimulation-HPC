@@ -419,24 +419,65 @@ void Configuration::loadParameters(Parameters & parameters, const MPI_Comm & com
 
         //------------------------------------------------------
         // TODO WS2: Turbulence
-          // Turbulence parameters
-          std::string temp;
-          if (parameters.simulation.type.compare("turbulence") == 0)
-          {
-            node = confFile.FirstChildElement()->FirstChildElement("simulation")\
-                                               ->FirstChildElement("boundary_layer");
-            if (node != NULL){
-              readStringMandatory(temp, node);
-              if ((temp.compare("laminar")==0) || (temp.compare("turbulent")==0) || (temp.compare("kh")==0)){
-                parameters.turbulence.boundary_layer_equation=temp;
-              } else {
-                handleError(1, "Unknown boundary layer thickness model! Currently supported: laminar, turbulent, kh");
-              }
-
-            } else {
-                handleError (1, "Error; boundary layer equation type is not specified");
-            }
-          }
+        // Turbulence parameters
+      
+		const char * attr;
+		std::string attrStr;
+		if (parameters.simulation.type.compare("turbulence") == 0) {
+			
+			node = confFile.FirstChildElement()->FirstChildElement("simulation")->FirstChildElement("turbulence");
+			
+			if(node != NULL) {
+			
+				parameters.turbulence.model = node->Attribute("model");
+				
+				// K-epsilon turbulence model
+				if(parameters.turbulence.model.compare("keps") == 0) {
+					
+					attr = node->Attribute("boundaryConditions");
+					if(attr) {
+						attrStr = std::string(attr);
+						if(attrStr.compare("wallFunctions") == 0 || attrStr.compare("lowRe") == 0) {
+							parameters.turbulence.boundaryConditions = attrStr;
+						} else {
+							handleError (1, "Error: boundary conditions for k and eps not valid!");
+						}
+					} else {
+						handleError (1, "Error: turbulence parameters not correctly specified!");
+					}
+				
+				}
+				
+				// Turbulence model based on mixing length
+				else if(parameters.turbulence.model.compare("mixingLength") == 0) {
+					
+					attr = node->Attribute("boundaryLayer");
+					if(attr) {
+						attrStr = std::string(attr);
+						if(attrStr.compare("laminar") == 0 || attrStr.compare("turbulent") == 0 || attrStr.compare("kh") == 0) {
+							parameters.turbulence.boundaryLayerEquation = attrStr;
+						} else {
+							handleError(1, "Error: Unknown boundary layer thickness model! Currently supported: laminar, turbulent, kh");
+						}
+					} else {
+						handleError (1, "Error: turbulence parameters not correctly specified!");
+					}
+				
+				}
+				
+				// Undefined model, return error
+				else {
+					handleError (1, "Error: turbulence model not recognized!");
+				}
+				
+			
+			} else {
+			
+				handleError (1, "Error: turbulence model and parameters need to be specified!");
+			
+			}
+			
+		}
 
         //------------------------------------------------------
     }
@@ -497,6 +538,8 @@ void Configuration::loadParameters(Parameters & parameters, const MPI_Comm & com
     MPI_Bcast(parameters.walls.vectorBack,   3, MY_MPI_FLOAT, 0, communicator);
 
     // TODO WS2: broadcast turbulence parameters
-    broadcastString (parameters.turbulence.boundary_layer_equation, communicator);
+    broadcastString (parameters.turbulence.model, communicator);
+    broadcastString (parameters.turbulence.boundaryConditions, communicator);
+    broadcastString (parameters.turbulence.boundaryLayerEquation, communicator);
 
 }
