@@ -16,6 +16,8 @@
 class MaxNuStencil : public FieldStencil<TurbulentFlowField>, public BoundaryStencil<TurbulentFlowField> {
 
     private:
+	
+	const Parameters & _parameters;
 
         FLOAT _maxValue;  //! Stores the maximum module of every component
 

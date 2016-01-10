@@ -4,7 +4,7 @@
 
 
 MaxNuStencil::MaxNuStencil (const Parameters & parameters) :
-    FieldStencil<TurbulentFlowField> (parameters), BoundaryStencil<TurbulentFlowField> (parameters) {
+    FieldStencil<TurbulentFlowField> (parameters), BoundaryStencil<TurbulentFlowField> (parameters),_parameters(parameters) {
     reset();
 }
 
@@ -60,8 +60,8 @@ void MaxNuStencil::applyBackWall   ( TurbulentFlowField & flowField, int i, int 
 void MaxNuStencil::cellMaxValue(TurbulentFlowField & flowField, int i, int j){
     FLOAT  viscosity = flowField.getTurbulentViscosity().getScalar(i, j);
    
-    if (viscosity > _maxValue){
-        _maxValue = viscosity;
+    if (viscosity/_parameters.meshsize->getDy(i, j) > _maxValue){
+        _maxValue = viscosity/_parameters.meshsize->getDy(i, j);
     }
    
 }
@@ -69,8 +69,8 @@ void MaxNuStencil::cellMaxValue(TurbulentFlowField & flowField, int i, int j){
 void MaxNuStencil::cellMaxValue(TurbulentFlowField & flowField, int i, int j, int k){
     FLOAT  viscosity= flowField.getTurbulentViscosity().getScalar(i, j, k);
    
-    if (viscosity > _maxValue){
-        _maxValue = viscosity;
+    if (viscosity/_parameters.meshsize->getDy(i, j, k) > _maxValue){
+        _maxValue = viscosity/_parameters.meshsize->getDy(i, j, k);
     }
 }
 
