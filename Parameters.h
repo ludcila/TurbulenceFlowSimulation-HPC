@@ -146,6 +146,10 @@ class TurbulenceParameters{
     	std::string model;
         std::string boundaryLayerEquation; // for mixing length model
         std::string boundaryConditions; // for k-epsilon model
+	FLOAT cmu=0.09;
+	FLOAT ceps=0.07;
+	FLOAT c1=0.126;
+	FLOAT c2=1.92;
 };
 
 //@}
