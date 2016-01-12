@@ -1345,9 +1345,9 @@ return
 
 inline FLOAT computefmu2D( TurbulentFlowField & flowField ,const FLOAT * const localK,const FLOAT * const localeps, const Parameters & parameters, int i, int j){
 
-FLOAT Ret= localK(mapd[0,0,0,0])*localK(mapd[0,0,0,0])*parameters.flow.Re/localeps(mapd[0,0,0,0]);
+FLOAT Ret= localK[mapd(0,0,0,0)]*localK[mapd(0,0,0,0)]*parameters.flow.Re/localeps[mapd(0,0,0,0)];
 
-FLOAT Redelta=sqrt(localK(mapd[0,0,0,0]))*flowfield.getwalldistance(i, j)*parameters.flow.Re;
+FLOAT Redelta=sqrt(localK[mapd(0,0,0,0)])*flowField.getWallDistance(i, j)*parameters.flow.Re;
 
 return ((1-exp(-0.0165*Redelta))*(1-exp(-0.0165*Redelta))*(1+20.5/Ret) );
 
@@ -1355,9 +1355,9 @@ return ((1-exp(-0.0165*Redelta))*(1-exp(-0.0165*Redelta))*(1+20.5/Ret) );
 
 inline FLOAT computefmu3D( TurbulentFlowField & flowField ,const FLOAT * const localK,const FLOAT * const localeps, const Parameters & parameters, int i, int j, int k){
 
-FLOAT Ret= localK(mapd[0,0,0,0])*localK(mapd[0,0,0,0])*parameters.flow.Re/localeps(mapd[0,0,0,0]);
+FLOAT Ret= localK[mapd(0,0,0,0)]*localK[mapd(0,0,0,0)]*parameters.flow.Re/localeps[mapd(0,0,0,0)];
 
-FLOAT Redelta=sqrt(localK(mapd[0,0,0,0]))*flowfield.getwalldistance(i, j, k)*parameters.flow.Re;
+FLOAT Redelta=sqrt(localK[mapd(0,0,0,0)])*flowField.getWallDistance(i, j, k)*parameters.flow.Re;
 
 return ((1-exp(-0.0165*Redelta))*(1-exp(-0.0165*Redelta))*(1+20.5/Ret) );
 
@@ -1373,82 +1373,82 @@ return (1+pow(0.05/computefmu2D( flowField , localK, localeps, parameters, i,  j
 inline FLOAT computef13D( TurbulentFlowField & flowField ,const FLOAT * const localK,const FLOAT * const localeps, const Parameters & parameters, int i, int j, int k){
 
 
-return (1+pow(0.05/computefmu2D( flowField , localK, localeps, parameters, i,  j, k),3) );
+return (1+pow(0.05/computefmu3D( flowField , localK, localeps, parameters, i,  j, k),3) );
 
 }
 
 inline FLOAT computef2( const FLOAT * const localK,const FLOAT * const localeps, const Parameters & parameters){
 
-FLOAT Ret= localK(mapd[0,0,0,0])*localK(mapd[0,0,0,0])*parameters.flow.Re/localeps(mapd[0,0,0,0]);
+FLOAT Ret= localK[mapd(0,0,0,0)]*localK[mapd(0,0,0,0)]*parameters.flow.Re/localeps[mapd(0,0,0,0)];
 
 return (1-exp(-Ret*Ret) );
 
 }
 
 
-inline FLOAT RHSK2D(const FLOAT * const localVelocity, const FLOAT * const localMeshsize, const FLOAT * const localK,const FLOAT * const localeps, const FLOAT * const localTurbulentViscosity ){
+inline FLOAT RHSK2D(const FLOAT * const localVelocity, const FLOAT * const localMeshsize, const FLOAT * const localK,const FLOAT * const localeps, const FLOAT * const localTurbulentViscosity, FLOAT dt ){
 return 
-	( localK(mapd[0,0,0,0])+
- dt * ( d2kdx
-+d2kdy
-- dukdx
--dvkdy
-+2*localTurbulentViscosity(mapd[0,0,0,0])*computeSdotS2D(const FLOAT * const localVelocity, const FLOAT * const localMeshsize)
--localeps(mapd[0,0,0,0]) ));
+	( localK[mapd(0,0,0,0)]+
+ dt * ( d2kdx()
++d2kdy()
+- dukdx()
+-dvkdy()
++2*localTurbulentViscosity[mapd(0,0,0,0)]*computeSdotS2D( localVelocity,  localMeshsize)
+-localeps[mapd(0,0,0,0)] ));
 }
 
-inline FLOAT RHSK3D(const FLOAT * const localVelocity, const FLOAT * const localMeshsize, const FLOAT * const localK,const FLOAT * const localeps, const FLOAT * const localTurbulentViscosity ){
+inline FLOAT RHSK3D(const FLOAT * const localVelocity, const FLOAT * const localMeshsize, const FLOAT * const localK,const FLOAT * const localeps, const FLOAT * const localTurbulentViscosity, FLOAT dt ){
 return 
-	( localK(mapd[0,0,0,0])+
- dt * ( d2kdx
-+d2kdy
-+d2kdz
-- dukdx
--dvkdy
--dwkdz
-+2*localTurbulentViscosity(mapd[0,0,0,0])*computeSdotS3D(const FLOAT * const localVelocity, const FLOAT * const localMeshsize)
--localeps(mapd[0,0,0,0]) ));
+	( localK[mapd(0,0,0,0)]+
+ dt * ( d2kdx()
++d2kdy()
++d2kdz()
+- dukdx()
+-dvkdy()
+-dwkdz()
++2*localTurbulentViscosity[mapd(0,0,0,0)]*computeSdotS3D( localVelocity,  localMeshsize)
+-localeps[mapd(0,0,0,0)] ));
 }
 
-inline FLOAT RHSeps2D( TurbulentFlowField & flowField , const FLOAT * const localVelocity, const FLOAT * const localMeshsize, const FLOAT * const localK,const FLOAT * const localeps, const FLOAT * const localTurbulentViscosity,const Parameters & parameters, int i, int j ){
+inline FLOAT RHSeps2D( TurbulentFlowField & flowField , const FLOAT * const localVelocity, const FLOAT * const localMeshsize, const FLOAT * const localK,const FLOAT * const localeps, const FLOAT * const localTurbulentViscosity,const Parameters & parameters, int i, int j, FLOAT dt ){
 
 FLOAT ceps= parameters.turbulence.ceps;
-FLOAT ceps= parameters.turbulence.cmu;
-FLOAT ceps= parameters.turbulence.c1;
-FLOAT ceps= parameters.turbulence.c2;
+FLOAT cmu= parameters.turbulence.cmu;
+FLOAT c1= parameters.turbulence.c1;
+FLOAT c2= parameters.turbulence.c2;
 FLOAT f1= computef12D( flowField , localK,localeps, parameters, i, j);
 FLOAT f2= computef2( localK,localeps, parameters);
 
 
 return 
-	( localeps(mapd[0,0,0,0])+
- dt * (ceps/cmu d2epsdx
-+ceps/cmu d2epsdy
-- duepsdx
--dvepsdy
-+2*c1*f1*computeSdotS2D(const FLOAT * const localVelocity, const FLOAT * const localMeshsize)
--c2*f2*localeps(mapd[0,0,0,0])*localeps(mapd[0,0,0,0])/localK(mapd[0,0,0,0]));
+	( localeps[mapd(0,0,0,0)]+
+ dt * (ceps/cmu* d2epsdx()
++ceps/cmu* d2epsdy()
+- duepsdx()
+-dvepsdy()
++2*c1*f1*computeSdotS2D( localVelocity,  localMeshsize)
+-c2*f2*localeps[mapd(0,0,0,0)]*localeps[mapd(0,0,0,0)]/localK[mapd(0,0,0,0)]) );
 }
 
-inline FLOAT RHSeps3D(const FLOAT * const localVelocity, const FLOAT * const localMeshsize, const FLOAT * const localK,const FLOAT * const localeps, const FLOAT * const localTurbulentViscosity, const Parameters & parameters ){
+inline FLOAT RHSeps3D(TurbulentFlowField & flowField , const FLOAT * const localVelocity, const FLOAT * const localMeshsize, const FLOAT * const localK,const FLOAT * const localeps, const FLOAT * const localTurbulentViscosity, const Parameters & parameters, int i, int j, int k, FLOAT dt ){
 
 FLOAT ceps= parameters.turbulence.ceps;
-FLOAT ceps= parameters.turbulence.cmu;
-FLOAT ceps= parameters.turbulence.c1;
-FLOAT ceps= parameters.turbulence.c2;
-FLOAT f1= computef12D( flowField , localK,localeps, parameters, i, j, k);
+FLOAT cmu= parameters.turbulence.cmu;
+FLOAT c1= parameters.turbulence.c1;
+FLOAT c2= parameters.turbulence.c2;
+FLOAT f1= computef13D( flowField , localK,localeps, parameters, i, j ,k);
 FLOAT f2= computef2( localK,localeps, parameters);
 
 return 
-	( localeps(mapd[0,0,0,0])+
- dt * (ceps/cmu d2epsdx
-+ceps/cmu d2epsdy
-+ceps/cmu d2epsdz
-- duepsdx
--dvepsdy
--dwepsdy
-+2*c1*f1*computeSdotS3D(const FLOAT * const localVelocity, const FLOAT * const localMeshsize)
--c2*f2*localeps(mapd[0,0,0,0])*localeps(mapd[0,0,0,0])/localK(mapd[0,0,0,0]));
+	( localeps[mapd(0,0,0,0)]+
+ dt * (ceps/cmu* d2epsdx()
++ceps/cmu* d2epsdy()
++ceps/cmu* d2epsdz()
+- duepsdx()
+-dvepsdy()
+-dwepsdz()
++2*c1*f1*computeSdotS3D( localVelocity,  localMeshsize)
+-c2*f2*localeps[mapd(0,0,0,0)]*localeps[mapd(0,0,0,0)]/localK[mapd(0,0,0,0)]));
 }
 
 
