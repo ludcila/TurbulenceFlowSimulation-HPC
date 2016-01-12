@@ -1,3 +1,8 @@
+#ifndef _TURBULENT_VTK_STENCIL_H_
+#define _TURBULENT_VTK_STENCIL_H_
+
+
+
 #include <string>
 #include "VTKStencil.h"
 #include "TurbulentFlowField.h"
@@ -27,3 +32,5 @@ class TurbulentVTKStencil : public VTKStencil, public FieldStencil<TurbulentFlow
 		void clearStringStreams();
 		
 };
+
+#endif
