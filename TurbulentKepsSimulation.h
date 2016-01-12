@@ -3,9 +3,9 @@
 
 #include "Simulation.h"
 #include "TurbulentFlowField.h"
-#include "stencils/TurbulenceFGHKepsStencil.h"
 #include "stencils/TurbulentViscosityKepsStencil.h"
 #include "stencils/TurbulentVTKStencil.h"
+#include "stencils/TurbulenceFGHStencil.h"
 #include "stencils/MaxNuStencil.h"
 #include "parallelManagers/PetscParallelManagerTurbulent.h"
 
@@ -14,7 +14,7 @@ class TurbulentKepsSimulation : public Simulation {
 	protected:
 		TurbulentFlowField &_turbulentFlowField;
     	FieldIterator<TurbulentFlowField> _turbulentFghIterator;
-		TurbulenceFGHKepsStencil _turbulentFghStencil; // K-eps
+		TurbulenceFGHStencil _turbulentFghStencil; // K-eps
     	FieldIterator<TurbulentFlowField> _turbulentVtkIterator;
 		TurbulentVTKStencil _turbulentVtkStencil;
 		TurbulentViscosityKepsStencil _turbulentViscosityStencil; // K-eps

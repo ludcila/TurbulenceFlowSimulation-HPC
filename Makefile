@@ -32,7 +32,7 @@ NSOBJ = FlowField.o TurbulentFlowField.o LinearSolver.o Meshsize.o\
 stencils/MaxUStencil.o stencils/MovingWallStencils.o stencils/PeriodicBoundaryStencils.o\
 stencils/FGHStencil.o solvers/SORSolver.o solvers/PetscSolver.o \
 stencils/TurbulenceFGHStencil.o\
-stencils/TurbulenceFGHKepsStencil.o\
+stencils/KepsBoundaryStencil.o\
 stencils/RHSStencil.o stencils/VelocityStencil.o \
 stencils/VTKStencil.o \
 stencils/TurbulentVTKStencil.o \

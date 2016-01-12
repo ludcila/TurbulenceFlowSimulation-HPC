@@ -14,12 +14,15 @@ class TurbulentViscosityKepsStencil : public FieldStencil<TurbulentFlowField> {
 	
     private:
 
-        // A local velocity variable that will be used to approximate derivatives. Size matches 3D
-        // case, but can be used for 2D as well.
-        FLOAT _localVelocity [ 27 * 3 ];
-        // local meshsize
-        FLOAT _localMeshsize [ 27 * 3 ];
+      
+          FLOAT _localVelocity           [ 27 * 3 ];
+        FLOAT _localMeshsize           [ 27 * 3 ];
+        FLOAT _localTurbulentViscosity [ 27 * 3 ]; 
+	FLOAT _localK [27*3];
+	FLOAT _localeps[27*3];
+
         MixingLengthModel * _mixingLength;
+        
         
     public:
 
