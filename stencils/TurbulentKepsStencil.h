@@ -16,6 +16,7 @@ class TurbulentKepsStencil : public FieldStencil<TurbulentFlowField> {
 		FLOAT _localTurbulentViscosity [ 27 * 3 ]; 
 		FLOAT _localK                  [ 27 * 3 ];
 		FLOAT _localeps                [ 27 * 3 ];
+		FLOAT _localfmu                [ 27 * 3 ];
 
     public:
 

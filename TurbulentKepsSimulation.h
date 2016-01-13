@@ -31,8 +31,8 @@ class TurbulentKepsSimulation : public Simulation {
         GlobalBoundaryIterator<TurbulentFlowField> _kepsBoundaryIterator;
         //GlobalBoundaryIterator<TurbulentFlowField> _turbulentViscosityBoundaryIterator;
 		//TurbulentViscosityBoundaryStencil _turbulentViscosityBoundaryStencil;
-	FieldIterator<TurbulentFlowField> _fmuIterator;
-	FmuStencil _fmuStencil;
+		FieldIterator<TurbulentFlowField> _fmuIterator;
+		FmuStencil _fmuStencil;
 		PetscParallelManagerTurbulent _parallelManagerTurbulent;
 
 	public:
