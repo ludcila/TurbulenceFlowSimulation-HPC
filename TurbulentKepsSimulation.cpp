@@ -8,8 +8,12 @@ TurbulentKepsSimulation::TurbulentKepsSimulation(Parameters &parameters, Turbule
 	_turbulentFghIterator(_turbulentFlowField, parameters, _turbulentFghStencil),
 	_turbulentViscosityStencil(parameters),
 	_turbulentViscosityIterator(_turbulentFlowField, parameters, _turbulentViscosityStencil, 1, 0),
+	_turbulentKepsStencil(parameters),
+	_turbulentKepsIterator(_turbulentFlowField, parameters, _turbulentKepsStencil, 1, 0),
 	_turbulentVtkStencil(parameters),
 	_turbulentVtkIterator(_turbulentFlowField, parameters, _turbulentVtkStencil, 1, 0),
+	_kepsBoundaryStencil(parameters),
+	_kepsBoundaryIterator(_turbulentFlowField, parameters, _kepsBoundaryStencil, 1, 0),
 	_maxNuStencil(parameters),
     _maxNuFieldIterator(_turbulentFlowField,parameters,_maxNuStencil),
     _maxNuBoundaryIterator(_turbulentFlowField,parameters,_maxNuStencil),
@@ -17,37 +21,44 @@ TurbulentKepsSimulation::TurbulentKepsSimulation(Parameters &parameters, Turbule
 {
 }
 
-// TODO: Changes for turbulent simulation not implemented yet!
 void TurbulentKepsSimulation::solveTimestep(){
 
 	// determine and set max. timestep which is allowed in this simulation
 	setTimeStep();
-	// compute fgh
-	_turbulentFghIterator.iterate();
-	// set global boundary values
-	_wallFGHIterator.iterate();
-	// compute the right hand side
-	_rhsIterator.iterate();
-	// solve for pressure
-	_solver.solve();
-	// TODO WS2: communicate pressure values
-	_parallelManagerTurbulent.communicatePressure();
-	// compute velocity
-	_velocityIterator.iterate();
-	// set obstacle boundaries
-	_obstacleIterator.iterate();
-	// TODO WS2: communicate velocity values
-	_parallelManagerTurbulent.communicateVelocity();
-	// Iterate for velocities on the boundary
-	_wallVelocityIterator.iterate();
-
-	_parallelManagerTurbulent.communicateCenterLineVelocity();
+	
+	// compute k, eps, and viscosity
+	_kepsBoundaryIterator.iterate();
+	_turbulentKepsIterator.iterate();
 	_turbulentViscosityIterator.iterate();
 	_parallelManagerTurbulent.communicateViscosity();
-	//_turbulentViscosityBoundaryIterator.iterate();
+	
+	// compute fgh
+	_turbulentFghIterator.iterate();
+	_wallFGHIterator.iterate();
+	
+	// compute the right hand side
+	_rhsIterator.iterate();
+	
+	// solve for pressure
+	_solver.solve();
+	
+	// communicate pressure values
+	_parallelManagerTurbulent.communicatePressure();
+	
+	// compute velocity
+	_velocityIterator.iterate();
+	
+	// set obstacle boundaries
+	_obstacleIterator.iterate();
+	
+	// communicate velocity values
+	_parallelManagerTurbulent.communicateVelocity();
+	
+	// Iterate for velocities on the boundary
+	_wallVelocityIterator.iterate();
+	
 }
 
-// TODO: Changes for turbulent simulation not implemented yet!
 void TurbulentKepsSimulation::setTimeStep(){
 
 	const FLOAT cinematicviscosity=1.0/_parameters.flow.Re;
@@ -73,7 +84,7 @@ void TurbulentKepsSimulation::setTimeStep(){
 	}
 
 	localMin = std::min(_parameters.timestep.dt,
-		                            std::min(std::min(1.0/(cinematicviscosity+_maxNuStencil.getMaxValue())/(2*factor),
+		                            std::min(std::min(1.0/_maxNuStencil.getMaxValue(),
 		                            1.0 / _maxUStencil.getMaxValues()[0]),
 		                            1.0 / _maxUStencil.getMaxValues()[1]));
 
@@ -99,4 +110,19 @@ void TurbulentKepsSimulation::initializeFlowField() {
 	WallDistanceStencil wds(_parameters);
 	FieldIterator<TurbulentFlowField> it(_turbulentFlowField, _parameters, wds);
 	it.iterate();
+	FLOAT eps0 = _turbulentFlowField.getDissipationRate().getScalar(1, 2);
+	eps0 = 1; // hardcode initialization for now
+    if (_parameters.geometry.dim==2){
+		const int sizex = _flowField.getNx();
+		const int sizey = _flowField.getNy();
+		for (int i =1 ;i < sizex+3;i++) {
+			for (int j =1 ;i < sizey+3;i++) {
+				_turbulentFlowField.getDissipationRate().getScalar(i,j) = eps0;
+			}
+		}
+    } else {
+		const int sizex = _flowField.getNx();
+		const int sizez = _flowField.getNz();
+		const int sizey = _flowField.getNy();
+    }
 };

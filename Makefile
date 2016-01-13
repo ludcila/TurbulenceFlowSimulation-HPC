@@ -18,7 +18,7 @@ endif
 # compiler on Ubuntu
 #
 #
-CC = mpiCC
+CC = mpiCC 
 CFLAGS =  -Werror -O3
 SRCDIR = ./
 INCLUDE = -I. -Istencils ${PETSC_CC_INCLUDES}
@@ -33,6 +33,7 @@ stencils/MaxUStencil.o stencils/MovingWallStencils.o stencils/PeriodicBoundarySt
 stencils/FGHStencil.o solvers/SORSolver.o solvers/PetscSolver.o \
 stencils/TurbulenceFGHStencil.o\
 stencils/KepsBoundaryStencil.o\
+stencils/TurbulentKepsStencil.o\
 stencils/RHSStencil.o stencils/VelocityStencil.o \
 stencils/VTKStencil.o \
 stencils/TurbulentVTKStencil.o \

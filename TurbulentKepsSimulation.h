@@ -6,6 +6,8 @@
 #include "stencils/TurbulentViscosityKepsStencil.h"
 #include "stencils/TurbulentVTKStencil.h"
 #include "stencils/TurbulenceFGHStencil.h"
+#include "stencils/TurbulentKepsStencil.h"
+#include "stencils/KepsBoundaryStencil.h"
 #include "stencils/MaxNuStencil.h"
 #include "parallelManagers/PetscParallelManagerTurbulent.h"
 
@@ -17,11 +19,15 @@ class TurbulentKepsSimulation : public Simulation {
 		TurbulenceFGHStencil _turbulentFghStencil; // K-eps
     	FieldIterator<TurbulentFlowField> _turbulentVtkIterator;
 		TurbulentVTKStencil _turbulentVtkStencil;
-		TurbulentViscosityKepsStencil _turbulentViscosityStencil; // K-eps
+		TurbulentViscosityKepsStencil _turbulentViscosityStencil; // Viscosity in K-eps
+		TurbulentKepsStencil _turbulentKepsStencil; // K and eps
 		FieldIterator<TurbulentFlowField> _turbulentViscosityIterator;
+		FieldIterator<TurbulentFlowField> _turbulentKepsIterator;
 		MaxNuStencil _maxNuStencil;
 		FieldIterator<TurbulentFlowField> _maxNuFieldIterator;
         GlobalBoundaryIterator<TurbulentFlowField> _maxNuBoundaryIterator;
+        KepsBoundaryStencil _kepsBoundaryStencil;
+        GlobalBoundaryIterator<TurbulentFlowField> _kepsBoundaryIterator;
         //GlobalBoundaryIterator<TurbulentFlowField> _turbulentViscosityBoundaryIterator;
 		//TurbulentViscosityBoundaryStencil _turbulentViscosityBoundaryStencil;
 		PetscParallelManagerTurbulent _parallelManagerTurbulent;
