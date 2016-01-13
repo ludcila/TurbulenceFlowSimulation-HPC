@@ -15,11 +15,12 @@ class TurbulentViscosityKepsStencil : public FieldStencil<TurbulentFlowField> {
     private:
 
       
-          FLOAT _localVelocity           [ 27 * 3 ];
+        FLOAT _localVelocity           [ 27 * 3 ];
         FLOAT _localMeshsize           [ 27 * 3 ];
         FLOAT _localTurbulentViscosity [ 27 * 3 ]; 
-	FLOAT _localK [27*3];
-	FLOAT _localeps[27*3];
+	FLOAT _localK    	       [ 27 * 3 ];
+	FLOAT _localeps                [ 27 * 3 ];
+	FLOAT _localfmu                [ 27 * 3 ];
 
         MixingLengthModel * _mixingLength;
         

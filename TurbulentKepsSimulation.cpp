@@ -13,6 +13,8 @@ TurbulentKepsSimulation::TurbulentKepsSimulation(Parameters &parameters, Turbule
 	_maxNuStencil(parameters),
     _maxNuFieldIterator(_turbulentFlowField,parameters,_maxNuStencil),
     _maxNuBoundaryIterator(_turbulentFlowField,parameters,_maxNuStencil),
+    _fmuStencil(parameters),
+    _fmuIterator(_turbulentFlowField, parameters,_fmuStencil,1,0),
 	_parallelManagerTurbulent(_turbulentFlowField, parameters)
 {
 }
