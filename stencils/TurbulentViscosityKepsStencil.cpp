@@ -25,14 +25,16 @@ void TurbulentViscosityKepsStencil::apply ( TurbulentFlowField & flowField, int 
     loadLocalVelocity2D           ( flowField  , _localVelocity          , i, j);
     loadLocalMeshsize2D           ( _parameters, _localMeshsize          , i, j);
     loadLocalTurbulentViscosity2D ( flowField  , _localTurbulentViscosity, i, j);
-    loadLocalKineticEnergy2D(flowField,  _localK, i, j);
-    loadLocalDissipationRate2D(flowField,  _localeps, i, j);
+    loadLocalKineticEnergy2D      ( flowField  ,_localK  , i, j);
+    loadLocalDissipationRate2D    ( flowField  ,_localeps, i, j);
+    loadLocalFmu2D                ( flowField  ,_localfmu, i, j);
 
-
-flowField.getTurbulentViscosity().getScalar(i, j) = _parameters.turbulence.cmu*
-computefmu2D( flowField , _localK, _localeps, _parameters, i,  j)*
-RHSK2D( _localVelocity, _localMeshsize, _localK,_localeps,  _localTurbulentViscosity, _parameters.timestep.dt )*RHSK2D( _localVelocity, _localMeshsize, _localK,_localeps,  _localTurbulentViscosity, _parameters.timestep.dt)/
-RHSeps2D( flowField , _localVelocity, _localMeshsize, _localK, _localeps, _localTurbulentViscosity, _parameters,  i,  j, _parameters.timestep.dt );
+flowField.getTurbulentViscosity().getScalar(i, j) =
+	  _parameters.turbulence.cmu
+	 *computefmu2D( flowField , _localK, _localeps, _parameters, i,  j)
+	 *RHSK2D( _localVelocity, _localMeshsize, _localK,_localeps,  _localTurbulentViscosity, _parameters.timestep.dt )
+	 *RHSK2D( _localVelocity, _localMeshsize, _localK,_localeps,  _localTurbulentViscosity, _parameters.timestep.dt)
+	 /RHSeps2D( flowField , _localVelocity, _localMeshsize, _localK, _localeps, _localTurbulentViscosity, _parameters, _localfmu,  i,  j, _parameters.timestep.dt );
 }
 
 
@@ -45,15 +47,19 @@ void TurbulentViscosityKepsStencil::apply ( TurbulentFlowField & flowField, int 
 
     if ((obstacle & OBSTACLE_SELF) == 0){   // If the cell is fluid
 
-        loadLocalVelocity3D(  flowField, _localVelocity,                      i, j, k);
-        loadLocalMeshsize3D(_parameters, _localMeshsize,                      i, j, k);
-        loadLocalTurbulentViscosity3D ( flowField , _localTurbulentViscosity, i, j, k);
-	loadLocalKineticEnergy3D(flowField,  _localK, i, j, k);
-        loadLocalDissipationRate3D(flowField,  _localeps, i, j, k);
-        flowField.getTurbulentViscosity().getScalar(i, j, k) = _parameters.turbulence.cmu*
-	computefmu3D( flowField , _localK, _localeps, _parameters, i,  j, k)*
-	RHSK3D( _localVelocity, _localMeshsize, _localK,_localeps,  _localTurbulentViscosity, _parameters.timestep.dt )*RHSK3D   ( _localVelocity, _localMeshsize, _localK,_localeps,  _localTurbulentViscosity, _parameters.timestep.dt)/
-	RHSeps3D( flowField , _localVelocity, _localMeshsize, _localK, _localeps, _localTurbulentViscosity, _parameters,  i,  j, k,    _parameters.timestep.dt );
+        loadLocalVelocity3D		( flowField , _localVelocity	      , i, j, k);
+        loadLocalMeshsize3D		(_parameters, _localMeshsize	      , i, j, k);
+        loadLocalTurbulentViscosity3D 	( flowField , _localTurbulentViscosity, i, j, k);
+	loadLocalKineticEnergy3D	( flowField , _localK  , i, j, k);
+        loadLocalDissipationRate3D	( flowField , _localeps, i, j, k);
+    	loadLocalFmu3D                  ( flowField , _localfmu, i, j, k);
+
+        flowField.getTurbulentViscosity().getScalar(i, j, k) =
+	 _parameters.turbulence.cmu
+	*computefmu3D( flowField , _localK, _localeps, _parameters, i,  j, k)
+	*RHSK3D( _localVelocity, _localMeshsize, _localK,_localeps,  _localTurbulentViscosity, _parameters.timestep.dt )
+	*RHSK3D( _localVelocity, _localMeshsize, _localK,_localeps,  _localTurbulentViscosity, _parameters.timestep.dt)
+	/RHSeps3D( flowField , _localVelocity, _localMeshsize, _localK, _localeps, _localTurbulentViscosity, _parameters, _localfmu , i, j, k,  _parameters.timestep.dt );
     }
 
 }
