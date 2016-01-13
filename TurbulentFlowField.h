@@ -18,6 +18,7 @@ class TurbulentFlowField : public FlowField {
         ScalarField _nitau;
 	ScalarField _kinetic;
 	ScalarField _dissip;
+	ScalarField _fmu;
         FLOAT *_centerLineBuffer;
 
     public:
@@ -56,6 +57,7 @@ class TurbulentFlowField : public FlowField {
 	    ScalarField & getWallDistance();
 	    ScalarField & getKineticEnergy();
 	    ScalarField & getDissipationRate();
+	    ScalarField & getFmu();
 	    FLOAT getWallDistance(int i, int j);
 	    FLOAT getWallDistance(int i, int j, int k);
         FLOAT *& getCenterLineVelocity();

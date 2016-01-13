@@ -5,7 +5,8 @@ TurbulentFlowField::TurbulentFlowField ( int Nx, int Ny ) :
 	_nitau( ScalarField ( Nx + 3, Ny + 3 ) ),
 	_distance( ScalarField ( Nx + 3, Ny + 3 ) ),
 	_kinetic( ScalarField ( Nx + 3, Ny + 3 ) ),
-	_dissip( ScalarField ( Nx + 3, Ny + 3 ) ) {}
+	_dissip( ScalarField ( Nx + 3, Ny + 3 ) ) ,
+	_fmu( ScalarField ( Nx + 3, Ny + 3 ) ){}
 	//_centerLineBuffer ( new FLOAT[Nx + 3] )
 
 
@@ -14,7 +15,8 @@ TurbulentFlowField::TurbulentFlowField ( int Nx, int Ny, int Nz ) :
 	_nitau( ScalarField ( Nx + 3, Ny + 3, Nz+3 ) ),
 	_distance( ScalarField ( Nx + 3, Ny + 3, Nz+3 ) ),
 	_kinetic( ScalarField ( Nx + 3, Ny + 3, Nz+3 ) ),
-	_dissip( ScalarField ( Nx + 3, Ny + 3, Nz+3 ) )  {}
+	_dissip( ScalarField ( Nx + 3, Ny + 3, Nz+3 ) ) ,  
+	_fmu( ScalarField ( Nx + 3, Ny + 3, Nz+3 ) ){}
 	//_centerLineBuffer ( new FLOAT[Nx + 3] )
 
 
@@ -27,7 +29,9 @@ TurbulentFlowField::TurbulentFlowField (const Parameters & parameters):
 	_kinetic(parameters.geometry.dim==2?ScalarField(_size_x + 3, _size_y + 3):
                       ScalarField(_size_x + 3, _size_y + 3, _size_z + 3)),
 	_dissip(parameters.geometry.dim==2?ScalarField(_size_x + 3, _size_y + 3):
-                      ScalarField(_size_x + 3, _size_y + 3, _size_z + 3)) {}
+                      ScalarField(_size_x + 3, _size_y + 3, _size_z + 3)), 
+	_fmu(parameters.geometry.dim==2?ScalarField(_size_x + 3, _size_y + 3):
+                      ScalarField(_size_x + 3, _size_y + 3, _size_z + 3)){}
 	//_centerLineBuffer ( new FLOAT[_size_x + 3] )
 
 ScalarField & TurbulentFlowField::getTurbulentViscosity () {
@@ -44,6 +48,10 @@ ScalarField & TurbulentFlowField::getKineticEnergy () {
 
 ScalarField & TurbulentFlowField::getDissipationRate () {
     return _dissip;
+}
+
+ScalarField & TurbulentFlowField::getFmu () {
+    return _fmu;
 }
 
 FLOAT TurbulentFlowField::getWallDistance(int i, int j) {
