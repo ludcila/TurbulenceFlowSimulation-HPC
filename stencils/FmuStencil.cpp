@@ -19,10 +19,10 @@ void FmuStencil::apply ( TurbulentFlowField & flowField,  int i, int j ){
 
 void FmuStencil::apply ( TurbulentFlowField & flowField, int i, int j, int k ){
 
-    loadLocalMeshsize3D       ( _parameters, _localMeshsize   , i, j, k);
-    loadLocalKineticEnergy3D  ( flowField  ,  _localK         , i, j, k);
-    loadLocalDissipationRate3D( flowField  ,  _localeps       , i, j, k);
+    loadLocalMeshsize3D       ( _parameters, _localMeshsize  , i, j, k);
+    loadLocalKineticEnergy3D  ( flowField  , _localK         , i, j, k);
+    loadLocalDissipationRate3D( flowField  , _localeps       , i, j, k);
 
 
-    flowField.getFmu().getScalar(i,j,k) = computefmu2D(flowField, _localK,_localeps,_parameters,i,j,k);
+    flowField.getFmu().getScalar(i,j,k) = computefmu3D(flowField, _localK,_localeps,_parameters,i,j,k);
 }
