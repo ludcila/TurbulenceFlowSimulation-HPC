@@ -29,6 +29,8 @@ void TurbulentKepsSimulation::solveTimestep(){
 	setTimeStep();
 	
 	// compute k, eps, and viscosity
+std::cout<<"------------------------------------"<<std::endl;
+	_turbulentFlowField.getFmu().show();
 	_fmuIterator.iterate();
 	_kepsBoundaryIterator.iterate();
 	_turbulentKepsIterator.iterate();
