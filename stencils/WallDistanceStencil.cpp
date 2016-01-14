@@ -76,10 +76,10 @@ FLOAT WallDistanceStencil::distanceToStep(FLOAT posX, FLOAT posY) {
 	FLOAT distanceToStep;
 	if(posX < stepWidth) {
 		// above the step
-		distanceToStep = posY - stepHeight;
+		distanceToStep = std::abs(posY - stepHeight);
 	} else if(posX > stepWidth && posY < stepHeight) {
 		// right of the step
-		distanceToStep = posX - stepWidth;
+		distanceToStep = std::abs(posX - stepWidth);
 	} else {
 		// diagonal to the step (compute distance to corner)
 		distanceToStep = sqrt((posX - stepWidth)*(posX - stepWidth) + (posY - stepHeight)*(posY - stepHeight));
