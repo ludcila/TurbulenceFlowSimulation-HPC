@@ -29,12 +29,12 @@ void TurbulentViscosityKepsStencil::apply ( TurbulentFlowField & flowField, int 
     loadLocalDissipationRate2D    ( flowField  ,_localeps, i, j);
     loadLocalFmu2D                ( flowField  ,_localfmu, i, j);
 
-flowField.getTurbulentViscosity().getScalar(i, j) =
+flowField.getTurbulentViscosity().getScalar(i, j) = 1.0/_parameters.flow.Re+	
 	  _parameters.turbulence.cmu
-	 *computefmu2D( flowField , _localK, _localeps, _parameters, i,  j)
-	 *RHSK2D( _localVelocity, _localMeshsize, _localK,_localeps,  _localTurbulentViscosity, _parameters.timestep.dt )
-	 *RHSK2D( _localVelocity, _localMeshsize, _localK,_localeps,  _localTurbulentViscosity, _parameters.timestep.dt)
-	 /RHSeps2D( flowField , _localVelocity, _localMeshsize, _localK, _localeps, _localTurbulentViscosity, _parameters, _localfmu,  i,  j, _parameters.timestep.dt );
+  	 *flowField.getKineticEnergy().getScalar(i,j)
+	 *flowField.getKineticEnergy().getScalar(i,j)
+	 /flowField.getDissipationRate().getScalar(i,j);	
+
 }
 
 
