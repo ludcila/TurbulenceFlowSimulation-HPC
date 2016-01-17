@@ -1307,7 +1307,7 @@ inline FLOAT d2epsdy(const FLOAT * const localeps,const FLOAT* lt, const FLOAT* 
      FLOAT lt_1=(lt[mapd(0,0,0,0)]*lm[mapd(0, 1,0,1)]+lt[mapd(0, 1,0,0)]*lm[mapd(0,0,0,1)])/(lm[mapd(0,0,0,1)]+lm[mapd(0, 1,0,1)]);
      FLOAT lt_2=(lt[mapd(0,0,0,0)]*lm[mapd(0,-1,0,1)]+lt[mapd(0,-1,0,0)]*lm[mapd(0,0,0,1)])/(lm[mapd(0,0,0,1)]+lm[mapd(0,-1,0,1)]);
      FLOAT fmu_1=(fmu[mapd(0,0,0,0)]*lm[mapd(0, 1,0,1)]+fmu[mapd(0,1,0,0)]*lm[mapd(0, 0,0,1)])/(lm[mapd(0,0,0,1)]+lm[mapd(0, 1,0,1)]);
-     FLOAT fmu_2=(fmu[mapd(0,0,0,0)]*lm[mapd(0,-1,0,1)]+fmu[mapd(0,0,0,0)]*lm[mapd(0,-1,0,1)])/(lm[mapd(0,0,0,1)]+lm[mapd(0,-1,0,1)]);
+     FLOAT fmu_2=(fmu[mapd(0,0,0,0)]*lm[mapd(0,-1,0,1)]+fmu[mapd(0,-1,0,0)]*lm[mapd(0,0,0,1)])/(lm[mapd(0,0,0,1)]+lm[mapd(0,-1,0,1)]);
 	
      return (lt_1*fmu_1*(localeps[mapd(0,1,0,0)]-localeps[mapd(0, 0,0,0)])/d1-
 	     lt_2*fmu_2*(localeps[mapd(0,0,0,0)]-localeps[mapd(0,-1,0,0)])/d2)/lm[mapd(0,0,0,1)];
@@ -1483,7 +1483,7 @@ return ((1-exp(-0.0165*Redelta))*(1-exp(-0.0165*Redelta))*(1+20.5/Ret) );
 inline FLOAT computef12D( TurbulentFlowField & flowField ,const FLOAT * const localK,const FLOAT * const localeps, const Parameters & parameters, int i, int j){
 
 
-return (1+pow(0.05/computefmu2D( flowField , localK, localeps, parameters, i, j),3) );
+return (1+pow(0.05/flowField.getFmu().getScalar(i,j),3) );
 
 }
 
