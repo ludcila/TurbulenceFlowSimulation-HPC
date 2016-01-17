@@ -73,7 +73,7 @@ void MaxNuStencil::cellMaxValue(TurbulentFlowField & flowField, int i, int j, in
     FLOAT dx2 = _parameters.meshsize->getDx(i, j, k) * _parameters.meshsize->getDx(i, j, k);
     FLOAT dy2 = _parameters.meshsize->getDy(i, j, k) * _parameters.meshsize->getDy(i, j, k);
     FLOAT dz2 = _parameters.meshsize->getDz(i, j, k) * _parameters.meshsize->getDz(i, j, k);
-    FLOAT newVal = (2 * viscosity * (1.0 / dx2 + 1.0 / dy2 + 1.0 / dz2));
+    FLOAT newVal = (3 * viscosity * (1.0 / dx2 + 1.0 / dy2 + 1.0 / dz2));
     if (newVal > _maxValue){
         _maxValue = newVal;
     }
