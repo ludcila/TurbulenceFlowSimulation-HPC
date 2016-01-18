@@ -7,27 +7,44 @@ KepsBoundaryStencil::KepsBoundaryStencil ( const Parameters & parameters ) :
 // 2D stencils
 
 void KepsBoundaryStencil::applyLeftWall ( TurbulentFlowField & flowField, int i, int j ){
-    flowField.getKineticEnergy().getScalar(i, j) = 0.003*pow(flowField.getVelocity().getVector(i,j)[0],2);
-    flowField.getDissipationRate().getScalar(i, j) = _parameters.turbulence.cmu*pow( flowField.getKineticEnergy().getScalar(i, j),3/2 )/(0.03*_parameters.geometry.lengthY);
+    flowField.getKineticEnergy().getScalar(i, j) = 0.003 * _parameters.walls.vectorLeft[0];
+    // flowField.getKineticEnergy().getScalar(i, j) = 0.003*pow(flowField.getVelocity().getVector(i,j)[0],2);
+    flowField.getDissipationRate().getScalar(i, j) = _parameters.turbulence.cmu*pow( flowField.getKineticEnergy().getScalar(i, j), 1.5 )/(0.03*_parameters.geometry.lengthY);
+    flowField.getTurbulentViscosity().getScalar(i, j) = 
+    	_parameters.turbulence.cmu 
+    	* flowField.getKineticEnergy().getScalar(i, j)
+    	* flowField.getKineticEnergy().getScalar(i, j)
+    	/ flowField.getDissipationRate().getScalar(i, j);
 }
 
 
 void KepsBoundaryStencil::applyRightWall ( TurbulentFlowField & flowField, int i, int j ){
-     flowField.getKineticEnergy().getScalar(i, j) =  flowField.getKineticEnergy().getScalar(i-1, j);
+	flowField.getKineticEnergy().getScalar(i, j) =  flowField.getKineticEnergy().getScalar(i-1, j);
     flowField.getDissipationRate().getScalar(i, j) =  flowField.getDissipationRate().getScalar(i-1, j);
+    flowField.getTurbulentViscosity().getScalar(i, j) = flowField.getTurbulentViscosity().getScalar(i-1, j);
 }
 
 
 void KepsBoundaryStencil::applyBottomWall ( TurbulentFlowField & flowField, int i, int j ){
 
- flowField.getKineticEnergy().getScalar(i, j) =-flowField.getKineticEnergy().getScalar(i, j+1) * _parameters.meshsize->getDy(i, j)/_parameters.meshsize->getDy(i, j+1); ;
+	flowField.getKineticEnergy().getScalar(i, j) = 0;
     flowField.getDissipationRate().getScalar(i, j) =  flowField.getDissipationRate().getScalar(i, j+1);
+    flowField.getTurbulentViscosity().getScalar(i, j) = 
+    	_parameters.turbulence.cmu 
+    	* flowField.getKineticEnergy().getScalar(i, j)
+    	* flowField.getKineticEnergy().getScalar(i, j)
+    	/ flowField.getDissipationRate().getScalar(i, j);
 }
 
 void KepsBoundaryStencil::applyTopWall ( TurbulentFlowField & flowField, int i, int j ){
 
-flowField.getKineticEnergy().getScalar(i, j) =-flowField.getKineticEnergy().getScalar(i, j-1) * _parameters.meshsize->getDy(i, j)/_parameters.meshsize->getDy(i, j-1); ;
+flowField.getKineticEnergy().getScalar(i, j) = 0;
     flowField.getDissipationRate().getScalar(i, j) =  flowField.getDissipationRate().getScalar(i, j-1);
+    flowField.getTurbulentViscosity().getScalar(i, j) = 
+    	_parameters.turbulence.cmu 
+    	* flowField.getKineticEnergy().getScalar(i, j)
+    	* flowField.getKineticEnergy().getScalar(i, j)
+    	/ flowField.getDissipationRate().getScalar(i, j);
 }
 
 

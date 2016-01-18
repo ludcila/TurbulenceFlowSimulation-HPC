@@ -65,6 +65,7 @@ PetscParallelManager::~PetscParallelManager() {
 	delete [] _pressureSendBufferTopWall;
 	delete [] _pressureRecvBufferTopWall;
 	delete [] _pressureSendBufferBottomWall;
+	delete [] _pressureRecvBufferBottomWall;
 	delete [] _pressureSendBufferFrontWall;
 	delete [] _pressureRecvBufferFrontWall;
 	delete [] _pressureSendBufferBackWall;

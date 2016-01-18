@@ -1265,6 +1265,7 @@ inline FLOAT d2kdz(const FLOAT * const localK,const FLOAT* lt, const FLOAT * con
      return (lt_1*(localK[mapd(1,0,0,0)]-localK[mapd( 0,0,0,0)])/d1-
 	     lt_2*(localK[mapd(0,0,0,0)]-localK[mapd(-1,0,0,0)])/d2)/lm[mapd(0,0,0,2)];
 }
+/*
 inline FLOAT dukdx(const FLOAT * const localK,const FLOAT * const lv, const FLOAT * const lm){
      FLOAT k1=(localK[mapd(0,0,0,0)]*lm[mapd(1,0,0,0)]+localK[mapd(1,0,0,0)]*lm[mapd(0,0,0,0)])/
 	      (lm[mapd(0,0,0,0)]+lm[mapd(1,0,0,0)]);
@@ -1273,6 +1274,8 @@ inline FLOAT dukdx(const FLOAT * const localK,const FLOAT * const lv, const FLOA
 
      return (lv[mapd(0,0,0,0)]*k1-lv[mapd(-1,0,0,0)]*k2)/lm[mapd(0,0,0,0)];
 }
+
+
 inline FLOAT dvkdy(const FLOAT * const localK,const FLOAT * const lv, const FLOAT * const lm){
      FLOAT k1=(localK[mapd(0,0,0,0)]*lm[mapd(0,1,0,1)]+localK[mapd(0,1,0,0)]*lm[mapd(0,0,0,1)])/
 	      (lm[mapd(0,0,0,1)]+lm[mapd(0,1,0,1)]);
@@ -1281,6 +1284,7 @@ inline FLOAT dvkdy(const FLOAT * const localK,const FLOAT * const lv, const FLOA
 
      return (lv[mapd(0,0,0,1)]*k1-lv[mapd(0,-1,0,1)]*k2)/lm[mapd(0,0,0,1)];
 }
+*/
 inline FLOAT dwkdz(const FLOAT * const localK,const FLOAT * const lv, const FLOAT * const lm){
      FLOAT k1=(localK[mapd(0,0,0,0)]*lm[mapd(0,0,1,2)]+localK[mapd(0,0,1,0)]*lm[mapd(0,0,0,2)])/
 	      (lm[mapd(0,0,0,2)]+lm[mapd(0,0,1,2)]);
@@ -1290,6 +1294,35 @@ inline FLOAT dwkdz(const FLOAT * const localK,const FLOAT * const lv, const FLOA
      return (lv[mapd(0,0,0,2)]*k1-lv[mapd(0,0,-1,2)]*k2)/lm[mapd(0,0,0,2)];
 }
 
+
+inline FLOAT dukdx(const FLOAT * const localK,const FLOAT * const lv, const FLOAT * const lm, FLOAT gamma){
+	
+	FLOAT uk1 = lv[mapd( 0,0,0,0)] * ( localK[mapd( 0,0,0,0)]*lm[mapd( 1,0,0,0)] + localK[mapd(1,0,0,0)]*lm[mapd( 0,0,0,0)] ) / ( lm[mapd( 1,0,0,0)] + lm[mapd(0,0,0,0)] );
+	FLOAT uk2 = lv[mapd(-1,0,0,0)] * ( localK[mapd(-1,0,0,0)]*lm[mapd( 0,0,0,0)] + localK[mapd(0,0,0,0)]*lm[mapd(-1,0,0,0)] ) / ( lm[mapd(-1,0,0,0)] + lm[mapd(0,0,0,0)] );
+	FLOAT uk3 = fabs(lv[mapd( 0,0,0,0)]) * ( localK[mapd( 0,0,0,0)]/lm[mapd( 0,0,0,0)] - localK[mapd(1,0,0,0)]/lm[mapd(1,0,0,0)] );
+	FLOAT uk4 = fabs(lv[mapd(-1,0,0,0)]) * ( localK[mapd(-1,0,0,0)]/lm[mapd(-1,0,0,0)] - localK[mapd(0,0,0,0)]/lm[mapd(0,0,0,0)] );
+	FLOAT dx = lm[mapd(0,0,0,0)];
+	
+	return
+	1.0 / dx * (uk1 - uk2) + 0.5 * gamma * (uk3 - uk4);
+	
+}
+
+inline FLOAT dvkdy(const FLOAT * const localK,const FLOAT * const lv, const FLOAT * const lm, FLOAT gamma){
+	
+	FLOAT vk1 = lv[mapd(0, 0,0,1)] * ( localK[mapd(0, 0,0,0)]*lm[mapd(0,1,0,1)] + localK[mapd(0,1,0,0)]*lm[mapd(0, 0,0,1)] ) / ( lm[mapd(0, 1,0,1)] + lm[mapd(0,0,0,1)] );
+	FLOAT vk2 = lv[mapd(0,-1,0,1)] * ( localK[mapd(0,-1,0,0)]*lm[mapd(0,0,0,1)] + localK[mapd(0,0,0,0)]*lm[mapd(0,-1,0,1)] ) / ( lm[mapd(0,-1,0,1)] + lm[mapd(0,0,0,1)] );
+	FLOAT vk3 = fabs(lv[mapd(0, 0,0,1)]) * ( localK[mapd(0, 0,0,0)]/lm[mapd(0, 0,0,1)] - localK[mapd(0,1,0,0)]/lm[mapd(0,1,0,1)] );
+	FLOAT vk4 = fabs(lv[mapd(0,-1,0,1)]) * ( localK[mapd(0,-1,0,0)]/lm[mapd(0,-1,0,1)] - localK[mapd(0,0,0,0)]/lm[mapd(0,0,0,1)] );
+	FLOAT dy = lm[mapd(0,0,0,1)];
+	
+	return
+	1.0 / dy * (vk1 - vk2) + 0.5 * gamma * (vk3 - vk4);
+	
+}
+
+
+
 inline FLOAT d2epsdx(const FLOAT * const localeps,const FLOAT* lt, const FLOAT* fmu, const FLOAT * const lm){
      FLOAT d1=0.5*(lm[mapd(0,0,0,0)]+lm[mapd( 1,0,0,0)]);
      FLOAT d2=0.5*(lm[mapd(0,0,0,0)]+lm[mapd(-1,0,0,0)]);
@@ -1298,8 +1331,11 @@ inline FLOAT d2epsdx(const FLOAT * const localeps,const FLOAT* lt, const FLOAT* 
      FLOAT fmu_1=(fmu[mapd(0,0,0,0)] *lm[mapd(1,0,0,0)]+fmu[mapd(1,0,0,0)]*lm[mapd( 0,0,0,0)])/(lm[mapd( 1,0,0,0)]+lm[mapd(0,0,0,0)]);
      FLOAT fmu_2=(fmu[mapd(-1,0,0,0)]*lm[mapd(0,0,0,0)]+fmu[mapd(0,0,0,0)]*lm[mapd(-1,0,0,0)])/(lm[mapd(-1,0,0,0)]+lm[mapd(0,0,0,0)]);
 	
-     return (lt_1*fmu_1*(localeps[mapd(1,0,0,0)]-localeps[mapd( 0,0,0,0)])/d1-
-	     lt_2*fmu_2*(localeps[mapd(0,0,0,0)]-localeps[mapd(-1,0,0,0)])/d2)/lm[mapd(0,0,0,0)];
+     FLOAT fnu_1=(lt[mapd(0,0,0,0)]*fmu[mapd(0,0,0,0)] *lm[mapd(1,0,0,0)]+lt[mapd(1,0,0,0)]*fmu[mapd(1,0,0,0)]*lm[mapd( 0,0,0,0)])/(lm[mapd( 1,0,0,0)]+lm[mapd(0,0,0,0)]);
+     FLOAT fnu_2=(lt[mapd(-1,0,0,0)]*fmu[mapd(-1,0,0,0)]*lm[mapd(0,0,0,0)]+lt[mapd(0,0,0,0)]*fmu[mapd(0,0,0,0)]*lm[mapd(-1,0,0,0)])/(lm[mapd(-1,0,0,0)]+lm[mapd(0,0,0,0)]);
+	
+     return (fnu_1*(localeps[mapd(1,0,0,0)]-localeps[mapd( 0,0,0,0)])/d1-
+	     fnu_2*(localeps[mapd(0,0,0,0)]-localeps[mapd(-1,0,0,0)])/d2)/lm[mapd(0,0,0,0)];
 }
 inline FLOAT d2epsdy(const FLOAT * const localeps,const FLOAT* lt, const FLOAT* fmu, const FLOAT * const lm){
      FLOAT d1=0.5*(lm[mapd(0,0,0,1)]+lm[mapd(0, 1,0,1)]);
@@ -1323,6 +1359,7 @@ inline FLOAT d2epsdz(const FLOAT * const localeps,const FLOAT* lt, const FLOAT* 
      return (lt_1*fmu_1*(localeps[mapd(1,0,0,0)]-localeps[mapd( 0,0,0,0)])/d1-
 	     lt_2*fmu_2*(localeps[mapd(0,0,0,0)]-localeps[mapd(-1,0,0,0)])/d2)/lm[mapd(0,0,0,2)];
 }
+/*
 inline FLOAT duepsdx(const FLOAT * const localeps,const FLOAT * const lv, const FLOAT * const lm){
      FLOAT eps1=(localeps[mapd(0,0,0,0)]*lm[mapd(1,0,0,0)]+localeps[mapd(1,0,0,0)]*lm[mapd(0,0,0,0)])/
 	      (lm[mapd(0,0,0,0)]+lm[mapd(1,0,0,0)]);
@@ -1339,6 +1376,7 @@ inline FLOAT dvepsdy(const FLOAT * const localeps,const FLOAT * const lv, const 
 
      return (lv[mapd(0,0,0,1)]*eps1-lv[mapd(0,-1,0,1)]*eps2)/lm[mapd(0,0,0,1)];
 }
+*/
 inline FLOAT dwepsdz(const FLOAT * const localeps,const FLOAT * const lv, const FLOAT * const lm){
      FLOAT eps1=(localeps[mapd(0,0,0,0)]*lm[mapd(0,0,1,2)]+localeps[mapd(0,0,1,0)]*lm[mapd(0,0,0,2)])/
 	      (lm[mapd(0,0,0,2)]+lm[mapd(0,0,1,2)]);
@@ -1346,6 +1384,33 @@ inline FLOAT dwepsdz(const FLOAT * const localeps,const FLOAT * const lv, const 
 	      (lm[mapd(0,0,0,2)]+lm[mapd(0,0,-1,2)]);
 
      return (lv[mapd(0,0,0,2)]*eps1-lv[mapd(0,0,-1,2)]*eps2)/lm[mapd(0,0,0,2)];
+}
+
+
+inline FLOAT duepsdx(const FLOAT * const localeps,const FLOAT * const lv, const FLOAT * const lm, FLOAT gamma){
+	
+	FLOAT ue1 = lv[mapd( 0,0,0,0)] * ( localeps[mapd( 0,0,0,0)]*lm[mapd( 1,0,0,0)] + localeps[mapd(1,0,0,0)]*lm[mapd( 0,0,0,0)] ) / ( lm[mapd( 1,0,0,0)] + lm[mapd(0,0,0,0)] );
+	FLOAT ue2 = lv[mapd(-1,0,0,0)] * ( localeps[mapd(-1,0,0,0)]*lm[mapd( 0,0,0,0)] + localeps[mapd(0,0,0,0)]*lm[mapd(-1,0,0,0)] ) / ( lm[mapd(-1,0,0,0)] + lm[mapd(0,0,0,0)] );
+	FLOAT ue3 = fabs(lv[mapd( 0,0,0,0)]) * ( localeps[mapd( 0,0,0,0)]/lm[mapd( 0,0,0,0)] - localeps[mapd(1,0,0,0)]/lm[mapd(1,0,0,0)] );
+	FLOAT ue4 = fabs(lv[mapd(-1,0,0,0)]) * ( localeps[mapd(-1,0,0,0)]/lm[mapd(-1,0,0,0)] - localeps[mapd(0,0,0,0)]/lm[mapd(0,0,0,0)] );
+	FLOAT dx = lm[mapd(0,0,0,0)];
+	
+	return
+	1.0 / dx * (ue1 - ue2) + 0.5 * gamma * (ue3 - ue4);
+	
+}
+
+inline FLOAT dvepsdy(const FLOAT * const localeps,const FLOAT * const lv, const FLOAT * const lm, FLOAT gamma){
+	
+	FLOAT ve1 = lv[mapd(0, 0,0,1)] * ( localeps[mapd(0, 0,0,0)]*lm[mapd(0,1,0,1)] + localeps[mapd(0,1,0,0)]*lm[mapd(0, 0,0,1)] ) / ( lm[mapd(0, 1,0,1)] + lm[mapd(0,0,0,1)] );
+	FLOAT ve2 = lv[mapd(0,-1,0,1)] * ( localeps[mapd(0,-1,0,0)]*lm[mapd(0,0,0,1)] + localeps[mapd(0,0,0,0)]*lm[mapd(0,-1,0,1)] ) / ( lm[mapd(0,-1,0,1)] + lm[mapd(0,0,0,1)] );
+	FLOAT ve3 = fabs(lv[mapd(0, 0,0,1)]) * ( localeps[mapd(0, 0,0,0)]/lm[mapd(0, 0,0,1)] - localeps[mapd(0,1,0,0)]/lm[mapd(0,1,0,1)] );
+	FLOAT ve4 = fabs(lv[mapd(0,-1,0,1)]) * ( localeps[mapd(0,-1,0,0)]/lm[mapd(0,-1,0,1)] - localeps[mapd(0,0,0,0)]/lm[mapd(0,0,0,1)] );
+	FLOAT dy = lm[mapd(0,0,0,1)];
+	
+	return
+	1.0 / dy * (ve1 - ve2) + 0.5 * gamma * (ve3 - ve4);
+	
 }
 
 
@@ -1431,6 +1496,29 @@ inline FLOAT computeH3DTurbulence(const FLOAT * const localVelocity, const FLOAT
                     + parameters.environment.gz );
 }
 
+inline FLOAT computeF2DTurbulenceKeps(const FLOAT * const localVelocity, const FLOAT * const localK, const FLOAT * const localMeshsize, const FLOAT * const localTurbulentViscosity, const Parameters & parameters, FLOAT dt){
+    return localVelocity [mapd(0,0,0,0)]
+        + dt * (
+        	2*dxdudx(localVelocity, parameters, localMeshsize, localTurbulentViscosity)
+    		+ dy_dudy_dvdx (localVelocity, parameters, localMeshsize, localTurbulentViscosity)
+    		- 2.0/3.0 * dkdx(localK, localMeshsize)
+            - du2dx(localVelocity, parameters, localMeshsize)
+            - duvdy(localVelocity, parameters, localMeshsize)
+            + parameters.environment.gx);
+}
+
+inline FLOAT computeG2DTurbulenceKeps(const FLOAT * const localVelocity, const FLOAT * const localK, const FLOAT * const localMeshsize, const FLOAT * const localTurbulentViscosity, const Parameters & parameters, FLOAT dt){
+    return localVelocity [mapd(0,0,0,1)]
+        + dt * (
+        	dx_dudy_dvdx(localVelocity, parameters, localMeshsize, localTurbulentViscosity)
+        	+ 2* dydvdy(localVelocity, parameters, localMeshsize, localTurbulentViscosity)
+        	- 2.0/3.0 * dkdy(localK, localMeshsize)
+            - duvdx(localVelocity, parameters, localMeshsize)
+            - dv2dy(localVelocity, parameters, localMeshsize)
+            + parameters.environment.gy);
+}
+
+
 inline FLOAT computeSdotS3D(const FLOAT * const localVelocity, const FLOAT * const localMeshsize){
 return 
 	(
@@ -1503,31 +1591,31 @@ return (1-exp(-Ret*Ret) );
 }
 
 
-inline FLOAT RHSK2D(const FLOAT * const localVelocity, const FLOAT * const localMeshsize, const FLOAT * const localK,const FLOAT * const localeps, const FLOAT * const localTurbulentViscosity, FLOAT dt ){
+inline FLOAT RHSK2D(const FLOAT * const localVelocity, const FLOAT * const localMeshsize, const FLOAT * const localK,const FLOAT * const localeps, const FLOAT * const localTurbulentViscosity, FLOAT dt, FLOAT gamma){
 return 
 ( localK[mapd(0,0,0,0)]
 + dt * ( d2kdx(localK,localTurbulentViscosity,localMeshsize)
 + d2kdy(localK,localTurbulentViscosity,localMeshsize)
-- dukdx(localK,localVelocity,localMeshsize)
-- dvkdy(localK,localVelocity,localMeshsize)
-+ 0.5*localTurbulentViscosity[mapd(0,0,0,0)]*computeSdotS2D( localVelocity,  localMeshsize)
+- dukdx(localK,localVelocity,localMeshsize, gamma)
+- dvkdy(localK,localVelocity,localMeshsize, gamma)
++ 2*localTurbulentViscosity[mapd(0,0,0,0)]*computeSdotS2D( localVelocity,  localMeshsize)
 - localeps[mapd(0,0,0,0)] ));
 }
 
-inline FLOAT RHSK3D(const FLOAT * const localVelocity, const FLOAT * const localMeshsize, const FLOAT * const localK,const FLOAT * const localeps, const FLOAT * const localTurbulentViscosity, FLOAT dt ){
+inline FLOAT RHSK3D(const FLOAT * const localVelocity, const FLOAT * const localMeshsize, const FLOAT * const localK,const FLOAT * const localeps, const FLOAT * const localTurbulentViscosity, FLOAT dt, FLOAT gamma){
 return 
 ( localK[mapd(0,0,0,0)]
 + dt * ( d2kdx(localK,localTurbulentViscosity,localMeshsize)
 + d2kdy(localK,localTurbulentViscosity,localMeshsize)
 + d2kdz(localK,localTurbulentViscosity,localMeshsize)
-- dukdx(localK,localVelocity,localMeshsize)
-- dvkdy(localK,localVelocity,localMeshsize)
+- dukdx(localK,localVelocity,localMeshsize, gamma)
+- dvkdy(localK,localVelocity,localMeshsize, gamma)
 - dwkdz(localK,localVelocity,localMeshsize)
-+ 0.5*localTurbulentViscosity[mapd(0,0,0,0)]*computeSdotS3D( localVelocity,  localMeshsize)
++ 2*localTurbulentViscosity[mapd(0,0,0,0)]*computeSdotS3D( localVelocity,  localMeshsize)
 - localeps[mapd(0,0,0,0)] ));
 }
 
-inline FLOAT RHSeps2D( TurbulentFlowField & flowField , const FLOAT * const localVelocity, const FLOAT * const localMeshsize, const FLOAT * const localK,const FLOAT * const localeps, const FLOAT * const localTurbulentViscosity,const Parameters & parameters,const FLOAT * const localfmu, int i, int j, FLOAT dt ){
+inline FLOAT RHSeps2D( TurbulentFlowField & flowField , const FLOAT * const localVelocity, const FLOAT * const localMeshsize, const FLOAT * const localK,const FLOAT * const localeps, const FLOAT * const localTurbulentViscosity,const Parameters & parameters,const FLOAT * const localfmu, int i, int j, FLOAT dt, FLOAT gamma){
 
 FLOAT ceps= parameters.turbulence.ceps;
 FLOAT cmu= parameters.turbulence.cmu;
@@ -1541,13 +1629,13 @@ return
 ( localeps[mapd(0,0,0,0)]
 + dt * (ceps/cmu* d2epsdx(localeps,localTurbulentViscosity,localfmu,localMeshsize)
 + ceps/cmu* d2epsdy(localeps,localTurbulentViscosity,localfmu,localMeshsize)
-- duepsdx(localeps,localVelocity,localMeshsize)
-- dvepsdy(localeps,localVelocity,localMeshsize)
-+ 0.5*c1*f1*localK[mapd(0,0,0,0)]*computeSdotS2D(localVelocity, localMeshsize)
+- duepsdx(localeps,localVelocity,localMeshsize, gamma)
+- dvepsdy(localeps,localVelocity,localMeshsize, gamma)
++ 2*c1*f1*localK[mapd(0,0,0,0)]*computeSdotS2D(localVelocity, localMeshsize)
 - c2*f2*localeps[mapd(0,0,0,0)]*localeps[mapd(0,0,0,0)]/localK[mapd(0,0,0,0)]) );
 }
 
-inline FLOAT RHSeps3D(TurbulentFlowField & flowField , const FLOAT * const localVelocity, const FLOAT * const localMeshsize, const FLOAT * const localK,const FLOAT * const localeps, const FLOAT * const localTurbulentViscosity, const Parameters & parameters, const FLOAT * const localfmu, int i, int j, int k, FLOAT dt ){
+inline FLOAT RHSeps3D(TurbulentFlowField & flowField , const FLOAT * const localVelocity, const FLOAT * const localMeshsize, const FLOAT * const localK,const FLOAT * const localeps, const FLOAT * const localTurbulentViscosity, const Parameters & parameters, const FLOAT * const localfmu, int i, int j, int k, FLOAT dt, FLOAT gamma){
 
 FLOAT ceps= parameters.turbulence.ceps;
 FLOAT cmu= parameters.turbulence.cmu;
@@ -1561,10 +1649,10 @@ return
 + dt * (ceps/cmu* d2epsdx(localeps,localTurbulentViscosity,localfmu,localMeshsize)
 + ceps/cmu* d2epsdy(localeps,localTurbulentViscosity,localfmu,localMeshsize)
 + ceps/cmu* d2epsdz(localeps,localTurbulentViscosity,localfmu,localMeshsize)
-- duepsdx(localeps,localVelocity,localMeshsize)
-- dvepsdy(localeps,localVelocity,localMeshsize)
+- duepsdx(localeps,localVelocity,localMeshsize, gamma)
+- dvepsdy(localeps,localVelocity,localMeshsize, gamma)
 - dwepsdz(localeps,localVelocity,localMeshsize)
-+ 0.5*c1*f1*localK[mapd(0,0,0,0)]*computeSdotS3D( localVelocity,  localMeshsize)
++ 2*c1*f1*localK[mapd(0,0,0,0)]*computeSdotS3D( localVelocity,  localMeshsize)
 - c2*f2*localeps[mapd(0,0,0,0)]*localeps[mapd(0,0,0,0)]/localK[mapd(0,0,0,0)]));
 }
 

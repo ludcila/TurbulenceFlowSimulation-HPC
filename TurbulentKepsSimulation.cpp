@@ -39,9 +39,11 @@ void TurbulentKepsSimulation::solveTimestep(){
 
 	_kepsBoundaryIterator.iterate();
 
+	_fmuIterator.iterate();
+
 	_turbulentViscosityIterator.iterate();
 
-	_parallelManagerTurbulent.communicateViscosity();
+	//_parallelManagerTurbulent.communicateViscosity();
 	
 	// compute fgh
 	_turbulentFghIterator.iterate();
@@ -59,14 +61,14 @@ void TurbulentKepsSimulation::solveTimestep(){
 	// compute velocity
 	_velocityIterator.iterate();
 	
-	// set obstacle boundaries
-	_obstacleIterator.iterate();
-	
 	// communicate velocity values
 	_parallelManagerTurbulent.communicateVelocity();
 	
 	// Iterate for velocities on the boundary
 	_wallVelocityIterator.iterate();
+	
+	// set obstacle boundaries
+	_obstacleIterator.iterate();
 	
 }
 
@@ -108,6 +110,10 @@ void TurbulentKepsSimulation::setTimeStep(){
 
 	_parameters.timestep.dt = globalMin;
 	_parameters.timestep.dt *= _parameters.timestep.tau;
+	
+	// To be moved to somewhere else, in case the formula works
+	_parameters.turbulence.gamma = _parameters.timestep.dt * std::max(_maxUStencil.getMaxValues()[0], _maxUStencil.getMaxValues()[1]);
+	_parameters.turbulence.gamma = 1;
 
 }
 
@@ -121,15 +127,16 @@ void TurbulentKepsSimulation::initializeFlowField() {
 	WallDistanceStencil wds(_parameters);
 	FieldIterator<TurbulentFlowField> it(_turbulentFlowField, _parameters, wds);
 	it.iterate();
-	FLOAT eps0 = _turbulentFlowField.getDissipationRate().getScalar(1, 2);
 	// Hardcoding initial values to 1 for now !!!! 
+	FLOAT kin = 0.003;
+	FLOAT epsin = _parameters.turbulence.cmu * pow(kin, 1.5) / 0.03 / _parameters.geometry.lengthY;
     if (_parameters.geometry.dim==2){
 		const int sizex = _flowField.getNx();
 		const int sizey = _flowField.getNy();
 		for (int i =1 ;i < sizex+3; i++) {
 			for (int j =1 ;j < sizey+3; j++) {
-				_turbulentFlowField.getDissipationRate().getScalar(i,j) = 1;
-				_turbulentFlowField.getKineticEnergy().getScalar(i,j) = 1;
+				_turbulentFlowField.getDissipationRate().getScalar(i,j) = epsin;
+				_turbulentFlowField.getKineticEnergy().getScalar(i,j) = kin;
 			}
 		}
     } else {

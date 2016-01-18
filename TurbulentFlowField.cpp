@@ -93,4 +93,8 @@ void TurbulentFlowField::swapKeps() {
 
 TurbulentFlowField::~TurbulentFlowField (){
 	//delete [] _centerLineBuffer;
+	delete _dissip;
+	delete _dissipNew;
+	delete _kinetic;
+	delete _kineticNew; 
 }

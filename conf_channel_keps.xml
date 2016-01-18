@@ -1,21 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <configuration>
-    <flow Re="13750" />
+    <flow Re="20000" />
     <simulation finalTime="10.0" >
       <type>turbulence</type>
       <turbulence model="keps" boundaryConditions="lowRe" />
       <!--turbulence model="mixingLength" boundaryLayer="turbulent" /-->    
       <scenario>channel</scenario>
     </simulation>
-    <backwardFacingStep xRatio="0.3" yRatio="0.2" />
+    <backwardFacingStep xRatio="0.25" yRatio="0.5" />
     <timestep dt="1" tau="0.5" />
     <solver gamma="0.5" />
     <geometry
       dim="2"
       lengthX="5.0" lengthY="1.0" lengthZ="1.0"
-      sizeX="40" sizeY="200" sizeZ="1"
+      sizeX="100" sizeY="50" sizeZ="1"
       stretchX="false" stretchY="false" stretchZ="false"
     >
+    
+	<!-- 
+		Known bugs and other notes:
+		1) Stretched mesh not working yet!
+		2) For the BFStep scenario, not all sizeX, sizeY combinations are stable (try to make cells "squary")!
+		3) 3D not implemented yet
+		4) To remove the step, set both xRatio and yRatio to 0
+	-->
+	
       <mesh>uniform</mesh>
       <!--mesh>stretched</mesh-->
     </geometry>
@@ -40,7 +49,7 @@
             <vector x="0" y="0" z="0" />
         </back>
     </walls>
-    <vtk interval="0.0001">channel_result_keps</vtk>
+    <vtk interval="0.01">channel_result_keps</vtk>
     <stdOut interval="0.0001" />
     <parallel numProcessorsX="1" numProcessorsY="1" numProcessorsZ="1" />
 </configuration>

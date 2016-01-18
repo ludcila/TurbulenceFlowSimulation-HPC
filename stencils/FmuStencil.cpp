@@ -6,12 +6,16 @@ FieldStencil<TurbulentFlowField> ( parameters ){}
 
 void FmuStencil::apply ( TurbulentFlowField & flowField,  int i, int j ){
 
-    loadLocalMeshsize2D       ( _parameters, _localMeshsize   , i, j);
-    loadLocalKineticEnergy2D  ( flowField  ,  _localK         , i, j);
-    loadLocalDissipationRate2D( flowField  ,  _localeps       , i, j);
 
+	const int obstacle = flowField.getFlags().getValue(i, j);
 
-    flowField.getFmu().getScalar(i,j) = computefmu2D(flowField, _localK,_localeps,_parameters,i,j);
+	/* fluid cells */
+	if ((obstacle & OBSTACLE_SELF) == 0) {
+		loadLocalMeshsize2D       ( _parameters, _localMeshsize   , i, j);
+		loadLocalKineticEnergy2D  ( flowField  ,  _localK         , i, j);
+		loadLocalDissipationRate2D( flowField  ,  _localeps       , i, j);
+    	flowField.getFmu().getScalar(i,j) = computefmu2D(flowField, _localK,_localeps,_parameters,i,j);
+	}
 
 
 }

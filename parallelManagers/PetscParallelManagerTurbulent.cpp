@@ -45,6 +45,7 @@ PetscParallelManagerTurbulent::~PetscParallelManagerTurbulent(){
   delete [] _viscositySendBufferTopWall;
   delete [] _viscosityRecvBufferTopWall;
   delete [] _viscositySendBufferBottomWall;
+  delete [] _viscosityRecvBufferBottomWall;
   delete [] _viscositySendBufferFrontWall;
   delete [] _viscosityRecvBufferFrontWall;
   delete [] _viscositySendBufferBackWall;

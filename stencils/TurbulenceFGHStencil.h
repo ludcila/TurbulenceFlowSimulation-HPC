@@ -16,6 +16,7 @@ class TurbulenceFGHStencil : public FieldStencil<TurbulentFlowField>
         FLOAT _localVelocity           [ 27 * 3 ];
         FLOAT _localMeshsize           [ 27 * 3 ];
         FLOAT _localTurbulentViscosity [ 27 * 3 ];      //    TODO shoud I change it to 27 instead of 27*3
+        FLOAT _localK [ 27 * 3 ];
 
     public:
         //constructor

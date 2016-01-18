@@ -38,6 +38,7 @@ stencils/TurbulentKepsStencil.o\
 stencils/RHSStencil.o stencils/VelocityStencil.o \
 stencils/VTKStencil.o \
 stencils/TurbulentVTKStencil.o \
+stencils/TurbulentKepsVTKStencil.o \
 stencils/WallDistanceStencil.o\
 stencils/MaxNuStencil.o\
 stencils/PressureBufferFillStencil.o \

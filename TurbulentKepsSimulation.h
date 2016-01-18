@@ -4,7 +4,7 @@
 #include "Simulation.h"
 #include "TurbulentFlowField.h"
 #include "stencils/TurbulentViscosityKepsStencil.h"
-#include "stencils/TurbulentVTKStencil.h"
+#include "stencils/TurbulentKepsVTKStencil.h"
 #include "stencils/TurbulenceFGHStencil.h"
 #include "stencils/TurbulentKepsStencil.h"
 #include "stencils/KepsBoundaryStencil.h"
@@ -19,7 +19,7 @@ class TurbulentKepsSimulation : public Simulation {
     	FieldIterator<TurbulentFlowField> _turbulentFghIterator;
 		TurbulenceFGHStencil _turbulentFghStencil; // K-eps
     	FieldIterator<TurbulentFlowField> _turbulentVtkIterator;
-		TurbulentVTKStencil _turbulentVtkStencil;
+		TurbulentKepsVTKStencil _turbulentVtkStencil;
 		TurbulentViscosityKepsStencil _turbulentViscosityStencil; // Viscosity in K-eps
 		TurbulentKepsStencil _turbulentKepsStencil; // K and eps
 		FieldIterator<TurbulentFlowField> _turbulentViscosityIterator;
