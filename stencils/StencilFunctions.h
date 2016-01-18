@@ -1297,27 +1297,37 @@ inline FLOAT dwkdz(const FLOAT * const localK,const FLOAT * const lv, const FLOA
 
 inline FLOAT dukdx(const FLOAT * const localK,const FLOAT * const lv, const FLOAT * const lm, FLOAT gamma){
 	
+	FLOAT dx = lm[mapd(0,0,0,0)];		
+	
 	FLOAT uk1 = lv[mapd( 0,0,0,0)] * ( localK[mapd( 0,0,0,0)]*lm[mapd( 1,0,0,0)] + localK[mapd(1,0,0,0)]*lm[mapd( 0,0,0,0)] ) / ( lm[mapd( 1,0,0,0)] + lm[mapd(0,0,0,0)] );
 	FLOAT uk2 = lv[mapd(-1,0,0,0)] * ( localK[mapd(-1,0,0,0)]*lm[mapd( 0,0,0,0)] + localK[mapd(0,0,0,0)]*lm[mapd(-1,0,0,0)] ) / ( lm[mapd(-1,0,0,0)] + lm[mapd(0,0,0,0)] );
-	FLOAT uk3 = fabs(lv[mapd( 0,0,0,0)]) * ( localK[mapd( 0,0,0,0)]/lm[mapd( 0,0,0,0)] - localK[mapd(1,0,0,0)]/lm[mapd(1,0,0,0)] );
-	FLOAT uk4 = fabs(lv[mapd(-1,0,0,0)]) * ( localK[mapd(-1,0,0,0)]/lm[mapd(-1,0,0,0)] - localK[mapd(0,0,0,0)]/lm[mapd(0,0,0,0)] );
-	FLOAT dx = lm[mapd(0,0,0,0)];
+	FLOAT centralDiff = (uk1 - uk2) / dx;
 	
-	return
-	1.0 / dx * (uk1 - uk2) + 0.5 * gamma * (uk3 - uk4);
+	FLOAT uk3 = lv[mapd( 0,0,0,0)] * ( localK[mapd( 0,0,0,0)]/lm[mapd( 0,0,0,0)] + localK[mapd(1,0,0,0)]/lm[mapd(1,0,0,0)] );
+	FLOAT uk4 = lv[mapd(-1,0,0,0)] * ( localK[mapd(-1,0,0,0)]/lm[mapd(-1,0,0,0)] + localK[mapd(0,0,0,0)]/lm[mapd(0,0,0,0)] );
+	FLOAT uk5 = fabs(lv[mapd( 0,0,0,0)]) * ( localK[mapd( 0,0,0,0)]/lm[mapd( 0,0,0,0)] - localK[mapd(1,0,0,0)]/lm[mapd(1,0,0,0)] );
+	FLOAT uk6 = fabs(lv[mapd(-1,0,0,0)]) * ( localK[mapd(-1,0,0,0)]/lm[mapd(-1,0,0,0)] - localK[mapd(0,0,0,0)]/lm[mapd(0,0,0,0)] );
+	FLOAT donorCell = 0.5 * (uk3 - uk4 + uk5 - uk6);
+
+	return (1-gamma) * centralDiff + gamma * donorCell;
 	
 }
 
 inline FLOAT dvkdy(const FLOAT * const localK,const FLOAT * const lv, const FLOAT * const lm, FLOAT gamma){
 	
-	FLOAT vk1 = lv[mapd(0, 0,0,1)] * ( localK[mapd(0, 0,0,0)]*lm[mapd(0,1,0,1)] + localK[mapd(0,1,0,0)]*lm[mapd(0, 0,0,1)] ) / ( lm[mapd(0, 1,0,1)] + lm[mapd(0,0,0,1)] );
-	FLOAT vk2 = lv[mapd(0,-1,0,1)] * ( localK[mapd(0,-1,0,0)]*lm[mapd(0,0,0,1)] + localK[mapd(0,0,0,0)]*lm[mapd(0,-1,0,1)] ) / ( lm[mapd(0,-1,0,1)] + lm[mapd(0,0,0,1)] );
-	FLOAT vk3 = fabs(lv[mapd(0, 0,0,1)]) * ( localK[mapd(0, 0,0,0)]/lm[mapd(0, 0,0,1)] - localK[mapd(0,1,0,0)]/lm[mapd(0,1,0,1)] );
-	FLOAT vk4 = fabs(lv[mapd(0,-1,0,1)]) * ( localK[mapd(0,-1,0,0)]/lm[mapd(0,-1,0,1)] - localK[mapd(0,0,0,0)]/lm[mapd(0,0,0,1)] );
 	FLOAT dy = lm[mapd(0,0,0,1)];
 	
-	return
-	1.0 / dy * (vk1 - vk2) + 0.5 * gamma * (vk3 - vk4);
+	FLOAT vk1 = lv[mapd(0, 0,0,1)] * ( localK[mapd(0, 0,0,0)]*lm[mapd(0,1,0,1)] + localK[mapd(0,1,0,0)]*lm[mapd(0, 0,0,1)] ) / ( lm[mapd(0, 1,0,1)] + lm[mapd(0,0,0,1)] );
+	FLOAT vk2 = lv[mapd(0,-1,0,1)] * ( localK[mapd(0,-1,0,0)]*lm[mapd(0,0,0,1)] + localK[mapd(0,0,0,0)]*lm[mapd(0,-1,0,1)] ) / ( lm[mapd(0,-1,0,1)] + lm[mapd(0,0,0,1)] );
+	FLOAT centralDiff = (vk1 - vk2) / dy;
+	
+	FLOAT vk3 = lv[mapd(0, 0,0,1)] * ( localK[mapd(0, 0,0,0)]/lm[mapd(0, 0,0,1)] + localK[mapd(0,1,0,0)]/lm[mapd(0,1,0,1)] );
+	FLOAT vk4 = lv[mapd(0,-1,0,1)] * ( localK[mapd(0,-1,0,0)]/lm[mapd(0,-1,0,1)] + localK[mapd(0,0,0,0)]/lm[mapd(0,0,0,1)] );
+	FLOAT vk5 = fabs(lv[mapd(0, 0,0,1)]) * ( localK[mapd(0, 0,0,0)]/lm[mapd(0, 0,0,1)] - localK[mapd(0,1,0,0)]/lm[mapd(0,1,0,1)] );
+	FLOAT vk6 = fabs(lv[mapd(0,-1,0,1)]) * ( localK[mapd(0,-1,0,0)]/lm[mapd(0,-1,0,1)] - localK[mapd(0,0,0,0)]/lm[mapd(0,0,0,1)] );
+	FLOAT donorCell = 0.5 * (vk3 - vk4 + vk5 - vk6);
+	
+	return (1-gamma) * centralDiff + gamma * donorCell;
 	
 }
 
@@ -1388,28 +1398,38 @@ inline FLOAT dwepsdz(const FLOAT * const localeps,const FLOAT * const lv, const 
 
 
 inline FLOAT duepsdx(const FLOAT * const localeps,const FLOAT * const lv, const FLOAT * const lm, FLOAT gamma){
+
+	FLOAT dx = lm[mapd(0,0,0,0)];
 	
 	FLOAT ue1 = lv[mapd( 0,0,0,0)] * ( localeps[mapd( 0,0,0,0)]*lm[mapd( 1,0,0,0)] + localeps[mapd(1,0,0,0)]*lm[mapd( 0,0,0,0)] ) / ( lm[mapd( 1,0,0,0)] + lm[mapd(0,0,0,0)] );
 	FLOAT ue2 = lv[mapd(-1,0,0,0)] * ( localeps[mapd(-1,0,0,0)]*lm[mapd( 0,0,0,0)] + localeps[mapd(0,0,0,0)]*lm[mapd(-1,0,0,0)] ) / ( lm[mapd(-1,0,0,0)] + lm[mapd(0,0,0,0)] );
-	FLOAT ue3 = fabs(lv[mapd( 0,0,0,0)]) * ( localeps[mapd( 0,0,0,0)]/lm[mapd( 0,0,0,0)] - localeps[mapd(1,0,0,0)]/lm[mapd(1,0,0,0)] );
-	FLOAT ue4 = fabs(lv[mapd(-1,0,0,0)]) * ( localeps[mapd(-1,0,0,0)]/lm[mapd(-1,0,0,0)] - localeps[mapd(0,0,0,0)]/lm[mapd(0,0,0,0)] );
-	FLOAT dx = lm[mapd(0,0,0,0)];
+	FLOAT centralDiff = (ue1 - ue2) / dx;
 	
-	return
-	1.0 / dx * (ue1 - ue2) + 0.5 * gamma * (ue3 - ue4);
+	FLOAT ue3 = lv[mapd( 0,0,0,0)] * ( localeps[mapd( 0,0,0,0)]/lm[mapd( 0,0,0,0)] + localeps[mapd(1,0,0,0)]/lm[mapd(1,0,0,0)] );
+	FLOAT ue4 = lv[mapd(-1,0,0,0)] * ( localeps[mapd(-1,0,0,0)]/lm[mapd(-1,0,0,0)] + localeps[mapd(0,0,0,0)]/lm[mapd(0,0,0,0)] );
+	FLOAT ue5 = fabs(lv[mapd( 0,0,0,0)]) * ( localeps[mapd( 0,0,0,0)]/lm[mapd( 0,0,0,0)] - localeps[mapd(1,0,0,0)]/lm[mapd(1,0,0,0)] );
+	FLOAT ue6 = fabs(lv[mapd(-1,0,0,0)]) * ( localeps[mapd(-1,0,0,0)]/lm[mapd(-1,0,0,0)] - localeps[mapd(0,0,0,0)]/lm[mapd(0,0,0,0)] );
+	FLOAT donorCell = 0.5 * (ue3 - ue4 + ue5 - ue6);
+	
+	return (1-gamma) * centralDiff + gamma * donorCell;
 	
 }
 
 inline FLOAT dvepsdy(const FLOAT * const localeps,const FLOAT * const lv, const FLOAT * const lm, FLOAT gamma){
+
+	FLOAT dy = lm[mapd(0,0,0,1)];
 	
 	FLOAT ve1 = lv[mapd(0, 0,0,1)] * ( localeps[mapd(0, 0,0,0)]*lm[mapd(0,1,0,1)] + localeps[mapd(0,1,0,0)]*lm[mapd(0, 0,0,1)] ) / ( lm[mapd(0, 1,0,1)] + lm[mapd(0,0,0,1)] );
 	FLOAT ve2 = lv[mapd(0,-1,0,1)] * ( localeps[mapd(0,-1,0,0)]*lm[mapd(0,0,0,1)] + localeps[mapd(0,0,0,0)]*lm[mapd(0,-1,0,1)] ) / ( lm[mapd(0,-1,0,1)] + lm[mapd(0,0,0,1)] );
-	FLOAT ve3 = fabs(lv[mapd(0, 0,0,1)]) * ( localeps[mapd(0, 0,0,0)]/lm[mapd(0, 0,0,1)] - localeps[mapd(0,1,0,0)]/lm[mapd(0,1,0,1)] );
-	FLOAT ve4 = fabs(lv[mapd(0,-1,0,1)]) * ( localeps[mapd(0,-1,0,0)]/lm[mapd(0,-1,0,1)] - localeps[mapd(0,0,0,0)]/lm[mapd(0,0,0,1)] );
-	FLOAT dy = lm[mapd(0,0,0,1)];
+	FLOAT centralDiff = (ve1 - ve2) / dy;
+		
+	FLOAT ve3 = lv[mapd(0, 0,0,1)] * ( localeps[mapd(0, 0,0,0)]/lm[mapd(0, 0,0,1)] + localeps[mapd(0,1,0,0)]/lm[mapd(0,1,0,1)] );
+	FLOAT ve4 = lv[mapd(0,-1,0,1)] * ( localeps[mapd(0,-1,0,0)]/lm[mapd(0,-1,0,1)] + localeps[mapd(0,0,0,0)]/lm[mapd(0,0,0,1)] );
+	FLOAT ve5 = fabs(lv[mapd(0, 0,0,1)]) * ( localeps[mapd(0, 0,0,0)]/lm[mapd(0, 0,0,1)] - localeps[mapd(0,1,0,0)]/lm[mapd(0,1,0,1)] );
+	FLOAT ve6 = fabs(lv[mapd(0,-1,0,1)]) * ( localeps[mapd(0,-1,0,0)]/lm[mapd(0,-1,0,1)] - localeps[mapd(0,0,0,0)]/lm[mapd(0,0,0,1)] );
+	FLOAT donorCell = 0.5 * (ve3 - ve4 + ve5 - ve6);
 	
-	return
-	1.0 / dy * (ve1 - ve2) + 0.5 * gamma * (ve3 - ve4);
+	return (1-gamma) * centralDiff + gamma * donorCell;
 	
 }
 
