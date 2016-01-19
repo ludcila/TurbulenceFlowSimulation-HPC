@@ -24,10 +24,11 @@ TurbulentKepsSimulation::TurbulentKepsSimulation(Parameters &parameters, Turbule
 }
 
 void TurbulentKepsSimulation::solveTimestep(){
-
+	_turbulentFlowField.getVelocity().getVector(1,1)[0]=-1;
+	_turbulentFlowField.getVelocity().getVector(1,42)[0]=-1;
 	// determine and set max. timestep which is allowed in this simulation
 	setTimeStep();
-	
+
 	// compute k, eps, and viscosity
 	_fmuIterator.iterate();
 
@@ -39,12 +40,8 @@ void TurbulentKepsSimulation::solveTimestep(){
 
 	_kepsBoundaryIterator.iterate();
 
-	_fmuIterator.iterate();
-
 	_turbulentViscosityIterator.iterate();
 
-	//_parallelManagerTurbulent.communicateViscosity();
-	
 	// compute fgh
 	_turbulentFghIterator.iterate();
 	_wallFGHIterator.iterate();
@@ -69,6 +66,7 @@ void TurbulentKepsSimulation::solveTimestep(){
 	
 	// set obstacle boundaries
 	_obstacleIterator.iterate();
+
 	
 }
 
@@ -137,6 +135,7 @@ void TurbulentKepsSimulation::initializeFlowField() {
 			for (int j =1 ;j < sizey+3; j++) {
 				_turbulentFlowField.getDissipationRate().getScalar(i,j) = epsin;
 				_turbulentFlowField.getKineticEnergy().getScalar(i,j) = kin;
+				_turbulentFlowField.getTurbulentViscosity().getScalar(i,j) = 1;
 			}
 		}
     } else {
