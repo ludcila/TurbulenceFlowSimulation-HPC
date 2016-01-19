@@ -128,13 +128,15 @@ void TurbulentKepsSimulation::initializeFlowField() {
 	FieldIterator<TurbulentFlowField> it(_turbulentFlowField, _parameters, wds);
 	it.iterate();
 	// Hardcoding initial values to 1 for now !!!! 
-	FLOAT kin = 0.003;
-	FLOAT epsin = _parameters.turbulence.cmu * pow(kin, 1.5) / 0.03 / _parameters.geometry.lengthY;
+	FLOAT kin =1.5* pow(_parameters.walls.vectorLeft[0]*0.05,2);
+	//FLOAT epsin = _parameters.turbulence.cmu * pow(kin, 1.5) / 0.03 / _parameters.geometry.lengthY;
+	FLOAT epsin= 0.09/(0.038*_parameters.geometry.lengthY)*pow(kin,1.5);
     if (_parameters.geometry.dim==2){
 		const int sizex = _flowField.getNx();
 		const int sizey = _flowField.getNy();
 		for (int i =1 ;i < sizex+3; i++) {
 			for (int j =1 ;j < sizey+3; j++) {
+				_turbulentFlowField.getTurbulentViscosity().getScalar(i,j)=1;
 				_turbulentFlowField.getDissipationRate().getScalar(i,j) = epsin;
 				_turbulentFlowField.getKineticEnergy().getScalar(i,j) = kin;
 			}
