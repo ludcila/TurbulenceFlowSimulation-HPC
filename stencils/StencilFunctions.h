@@ -1220,7 +1220,7 @@ inline FLOAT dkdz ( const FLOAT * const lk, const FLOAT * const lm ) {
     // evaluate dkdz in the front side by a central difference
     const int index0 = mapd(0,0,0,0);
     const int index1 = mapd(0,0,1,0);
-    return  ( lk [mapd(0,0,1,0)] - lk [mapd(0,0,0,0)] ) / (lm[mapd(0,0,1,2)]/2+lm[mapd(0,0,1,2)]/2);
+    return  ( lk [mapd(0,0,1,0)] - lk [mapd(0,0,0,0)] ) / (lm[mapd(0,0,1,2)]/2+lm[mapd(0,0,0,2)]/2);
     
 }
 
