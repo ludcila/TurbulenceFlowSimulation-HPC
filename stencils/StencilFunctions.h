@@ -247,8 +247,8 @@ inline FLOAT dvdx ( const FLOAT * const lv, const FLOAT * const lm ) {
     FLOAT dxM = lm[mapd(-1,0,0,0)];
     FLOAT dxP = lm[mapd(1,0,0,0)];
     
-	FLOAT velleft = ((v0+v1)*dx + (v2+v3)*dxP) / (2*(dx+dxP));
-	FLOAT velright = ((v4+v5)*dx + (v2+v3)*dxM) / (2*(dx+dxM));
+	FLOAT velright = ((v0+v1)*dx + (v2+v3)*dxP) / (2*(dx+dxP));
+	FLOAT velleft = ((v4+v5)*dx + (v2+v3)*dxM) / (2*(dx+dxM));
 
 	return (velright-velleft) / dx;
 	
@@ -269,14 +269,14 @@ inline FLOAT dvdz ( const FLOAT * const lv, const FLOAT * const lm ) {
     FLOAT v5 = lv[mapd(0,0,-1,1)];
 
 	// cells length z
-    FLOAT dx = lm[mapd(0,0,0,0)];
-    FLOAT dxM = lm[mapd(-1,0,0,0)];
-    FLOAT dxP = lm[mapd(1,0,0,0)];
+    FLOAT dz = lm[mapd(0,0,0,2)];
+    FLOAT dzM = lm[mapd(0,0,-1,2)];
+    FLOAT dzP = lm[mapd(0,0,1,2)];
     
-	FLOAT velback = ((v0+v1)*dx + (v2+v3)*dxP) / (2*(dx+dxP));
-	FLOAT velfront = ((v4+v5)*dx + (v2+v3)*dxM) / (2*(dx+dxM));
+	FLOAT velfront = ((v0+v1)*dz + (v2+v3)*dzP) / (2*(dz+dzP));
+	FLOAT velback = ((v4+v5)*dz + (v2+v3)*dzM) / (2*(dz+dzM));
 
-	return (velfront-velback) / dx;
+	return (velfront-velback) / dz;
 	
 }
 
@@ -305,8 +305,8 @@ inline FLOAT dwdx ( const FLOAT * const lv, const FLOAT * const lm ) {
     FLOAT dxM = lm[mapd(-1,0,0,0)];
     FLOAT dxP = lm[mapd(1,0,0,0)];
     
-	FLOAT velleft = ((w0+w1)*dx + (w2+w3)*dxP) / (2*(dx+dxP));
-	FLOAT velright = ((w4+w5)*dx + (w2+w3)*dxM) / (2*(dx+dxM));
+	FLOAT velright = ((w0+w1)*dx + (w2+w3)*dxP) / (2*(dx+dxP));
+	FLOAT velleft = ((w4+w5)*dx + (w2+w3)*dxM) / (2*(dx+dxM));
 
 	return (velright-velleft) / dx;
 	
@@ -331,8 +331,8 @@ inline FLOAT dwdy ( const FLOAT * const lv, const FLOAT * const lm ) {
     FLOAT dyM = lm[mapd(0,-1,0,1)];
     FLOAT dyP = lm[mapd(0,1,0,1)];
     
-	FLOAT veldown = ((w0+w1)*dy + (w2+w3)*dyP) / (2*(dy+dyP));
-	FLOAT velup = ((w4+w5)*dy + (w2+w3)*dyM) / (2*(dy+dyM));
+	FLOAT velup = ((w0+w1)*dy + (w2+w3)*dyP) / (2*(dy+dyP));
+	FLOAT veldown = ((w4+w5)*dy + (w2+w3)*dyM) / (2*(dy+dyM));
 
 	return (velup-veldown) / dy;
 	
@@ -1253,13 +1253,17 @@ inline FLOAT d2kdy(const FLOAT * const localK,const FLOAT* lt, const FLOAT * con
 	     lt_2*(localK[mapd(0,0,0,0)]-localK[mapd(0,-1,0,0)])/d2)/lm[mapd(0,0,0,1)];
 }
 inline FLOAT d2kdz(const FLOAT * const localK,const FLOAT* lt, const FLOAT * const lm){
-     FLOAT d1=0.5*(lm[mapd(0,0,0,2)]+lm[mapd( 1,0,0,2)]);
-     FLOAT d2=0.5*(lm[mapd(0,0,0,2)]+lm[mapd(-1,0,0,2)]);
+     FLOAT d1=0.5*(lm[mapd(0,0,0,2)]+lm[mapd(0,0,1,2)]);
+     FLOAT d2=0.5*(lm[mapd(0,0,0,2)]+lm[mapd(0,0,-1,2)]);
      FLOAT lt_1=(lt[mapd(0,0, 0,0)]*lm[mapd(0,0,1,2)]+lt[mapd(0,0,1,0)]*lm[mapd(0,0, 0,2)])/(lm[mapd(0,0, 1,2)]+lm[mapd(0,0,0,2)]);
-     FLOAT lt_2=(lt[mapd(0,0,-1,0)]*lm[mapd(0,0,0,2)]+lt[mapd(0,0,0,0)]*lm[mapd(0,0,-1,2)])/(lm[mapd(0,0,-1,2)]+lm[mapd(0,0,0,2)]);
+     FLOAT lt_2=(lt[mapd(0,0,-1,0)]*lm[mapd(0,0,0,2)]+lt[mapd(0,0,0,0)]*lm[mapd(0,0,-1,2)]);
 	
-     return (lt_1*(localK[mapd(1,0,0,0)]-localK[mapd( 0,0,0,0)])/d1-
-	     lt_2*(localK[mapd(0,0,0,0)]-localK[mapd(-1,0,0,0)])/d2)/lm[mapd(0,0,0,2)];
+	FLOAT d = (lt_1*(localK[mapd(0,0,1,0)]-localK[mapd( 0,0,0,0)])/d1-
+	     lt_2*(localK[mapd(0,0,0,0)]-localK[mapd(0,0,-1,0)])/d2);
+	     
+	     std::cout << "d" << lt[mapd(0,0,-1,0)] << " " << lt[mapd(0,0,0,0)] << std::endl;
+     return (lt_1*(localK[mapd(0,0,1,0)]-localK[mapd( 0,0,0,0)])/d1-
+	     lt_2*(localK[mapd(0,0,0,0)]-localK[mapd(0,0,-1,0)])/d2)/lm[mapd(0,0,0,2)];
 }
 /*
 inline FLOAT dukdx(const FLOAT * const localK,const FLOAT * const lv, const FLOAT * const lm){
@@ -1377,8 +1381,8 @@ inline FLOAT d2epsdy(const FLOAT * const localeps,const FLOAT* lt, const FLOAT* 
 	     fnu_2*(localeps[mapd(0,0,0,0)]-localeps[mapd(0,-1,0,0)])/d2)/lm[mapd(0,0,0,1)];
 }
 inline FLOAT d2epsdz(const FLOAT * const localeps,const FLOAT* lt, const FLOAT* fmu, const FLOAT * const lm){
-     FLOAT d1=0.5*(lm[mapd(0,0,0,2)]+lm[mapd( 1,0,0,2)]);
-     FLOAT d2=0.5*(lm[mapd(0,0,0,2)]+lm[mapd(-1,0,0,2)]);
+     FLOAT d1=0.5*(lm[mapd(0,0,0,2)]+lm[mapd(0,0,-1,2)]);
+     FLOAT d2=0.5*(lm[mapd(0,0,0,2)]+lm[mapd(0,0, 1,2)]);
      //FLOAT lt_1=(lt[mapd(0,0, 0,0)]*lm[mapd(0,0,1,2)]+lt[mapd(0,0,1,0)]*lm[mapd(0,0, 0,2)])/(lm[mapd(0,0, 1,2)]+lm[mapd(0,0,0,2)]);
      //FLOAT lt_2=(lt[mapd(0,0,-1,0)]*lm[mapd(0,0,0,2)]+lt[mapd(0,0,0,0)]*lm[mapd(0,0,-1,2)])/(lm[mapd(0,0,-1,2)]+lm[mapd(0,0,0,2)]);
      //FLOAT fmu_1=(fmu[mapd(0,0, 0,0)]*lm[mapd(0,0,1,2)]+fmu[mapd(0,0,1,0)]*lm[mapd(0,0, 0,2)])/(lm[mapd(0,0, 1,2)]+lm[mapd(0,0,0,2)]);
