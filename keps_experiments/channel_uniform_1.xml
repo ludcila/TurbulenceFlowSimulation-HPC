@@ -4,7 +4,6 @@
     <simulation finalTime="20.0" >
       <type>turbulence</type>
       <turbulence model="keps" boundaryConditions="lowRe" gamma="1" />
-      <!--turbulence model="mixingLength" boundaryLayer="turbulent" /-->    
       <scenario>channel</scenario>
     </simulation>
     <backwardFacingStep xRatio="0" yRatio="0" />
