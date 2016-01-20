@@ -3,7 +3,7 @@
     <flow Re="2500" />
     <simulation finalTime="1" >
       <type>turbulence</type>
-      <boundary_layer>turbulent</boundary_layer>
+      <turbulence model="mixingLength" boundaryLayer="turbulent" />    
         <scenario>channel</scenario>
     </simulation>
     <backwardFacingStep xRatio="0" yRatio="0" />
