@@ -15,9 +15,10 @@ FLOAT computeVelocity3D (FlowField & flowField, int i, int j, int k, FLOAT stepS
         const FLOAT y = posY+0.5*dy - stepSize;
         const FLOAT z = posZ+0.5*dz;
 
-        return 36.0 * parameters.walls.vectorLeft[0] /
-                      (inletZSize * inletZSize * inletYSize * inletYSize) *
-                      y * (y - inletYSize) * z * (z - inletZSize);
+//        return 36.0 * parameters.walls.vectorLeft[0] /
+//                      (inletZSize * inletZSize * inletYSize * inletYSize) *
+//                      y * (y - inletYSize) * z * (z - inletZSize);
+	return parameters.walls.vectorLeft[0];
     } else {
         return 0.0;
     }
