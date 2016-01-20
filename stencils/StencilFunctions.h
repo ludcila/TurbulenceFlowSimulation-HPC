@@ -1679,7 +1679,7 @@ return (1+pow(0.05/flowField.getFmu().getScalar(i,j),3) );
 inline FLOAT computef13D( TurbulentFlowField & flowField ,const FLOAT * const localK,const FLOAT * const localeps, const Parameters & parameters, int i, int j, int k){
 
 
-return (1+pow(0.05/computefmu3D( flowField , localK, localeps, parameters, i,  j, k),3) );
+return (1+pow(0.05/flowField.getFmu().getScalar( i,  j, k),3) );
 
 }
 
