@@ -7,6 +7,7 @@
 #include "stencils/TurbulentKepsVTKStencil.h"
 #include "stencils/TurbulenceFGHStencil.h"
 #include "stencils/TurbulentKepsStencil.h"
+#include "stencils/KepsObstacleStencil.h"
 #include "stencils/KepsBoundaryStencil.h"
 #include "stencils/MaxNuStencil.h"
 #include "stencils/FmuStencil.h"
@@ -28,6 +29,8 @@ class TurbulentKepsSimulation : public Simulation {
 		FieldIterator<TurbulentFlowField> _maxNuFieldIterator;
         GlobalBoundaryIterator<TurbulentFlowField> _maxNuBoundaryIterator;
         KepsBoundaryStencil _kepsBoundaryStencil;
+        KepsObstacleStencil _kepsObstacleStencil;
+		FieldIterator<TurbulentFlowField> _kepsObstacleIterator;
         GlobalBoundaryIterator<TurbulentFlowField> _kepsBoundaryIterator;
         //GlobalBoundaryIterator<TurbulentFlowField> _turbulentViscosityBoundaryIterator;
 		//TurbulentViscosityBoundaryStencil _turbulentViscosityBoundaryStencil;

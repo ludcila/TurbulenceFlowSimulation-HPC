@@ -14,6 +14,8 @@ TurbulentKepsSimulation::TurbulentKepsSimulation(Parameters &parameters, Turbule
 	_turbulentVtkIterator(_turbulentFlowField, parameters, _turbulentVtkStencil, 1, 0),
 	_kepsBoundaryStencil(parameters),
 	_kepsBoundaryIterator(_turbulentFlowField, parameters, _kepsBoundaryStencil, 1, 0),
+	_kepsObstacleStencil(parameters),
+	_kepsObstacleIterator(_turbulentFlowField, parameters, _kepsObstacleStencil),
 	_maxNuStencil(parameters),
     _maxNuFieldIterator(_turbulentFlowField,parameters,_maxNuStencil),
     _maxNuBoundaryIterator(_turbulentFlowField,parameters,_maxNuStencil),
@@ -24,24 +26,26 @@ TurbulentKepsSimulation::TurbulentKepsSimulation(Parameters &parameters, Turbule
 }
 
 void TurbulentKepsSimulation::solveTimestep(){
-	_turbulentFlowField.getVelocity().getVector(1,1)[0]=-1;
-	_turbulentFlowField.getVelocity().getVector(1,42)[0]=-1;
+	
 	// determine and set max. timestep which is allowed in this simulation
 	setTimeStep();
 
 	// compute k, eps, and viscosity
 	_fmuIterator.iterate();
-
+	_kepsObstacleIterator.iterate();
 	_kepsBoundaryIterator.iterate();
+
+	_turbulentFlowField.getVelocity().getVector(1,1)[0]=-1; // temporarily hardcoded!!
+	_turbulentFlowField.getVelocity().getVector(1,_parameters.geometry.sizeY+2)[0]=-1;
 
 	_turbulentKepsIterator.iterate();
-
 	_turbulentFlowField.swapKeps();
-
 	_kepsBoundaryIterator.iterate();
+	_fmuIterator.iterate();
 
 	_turbulentViscosityIterator.iterate();
-
+	_kepsBoundaryIterator.iterate();
+	
 	// compute fgh
 	_turbulentFghIterator.iterate();
 	_wallFGHIterator.iterate();
@@ -66,6 +70,7 @@ void TurbulentKepsSimulation::solveTimestep(){
 	
 	// set obstacle boundaries
 	_obstacleIterator.iterate();
+
 
 	
 }
@@ -140,10 +145,8 @@ void TurbulentKepsSimulation::initializeFlowField() {
 		const int sizey = _flowField.getNy();
 		for (int i =1 ;i < sizex+3; i++) {
 			for (int j =1 ;j < sizey+3; j++) {
-				_turbulentFlowField.getTurbulentViscosity().getScalar(i,j)=1;
 				_turbulentFlowField.getDissipationRate().getScalar(i,j) = epsin;
 				_turbulentFlowField.getKineticEnergy().getScalar(i,j) = kin;
-				_turbulentFlowField.getTurbulentViscosity().getScalar(i,j) = 1;
 			}
 		}
     } else {
@@ -154,12 +157,15 @@ void TurbulentKepsSimulation::initializeFlowField() {
 		for (int i =1 ;i < sizex+3; i++) {
 			for (int j =1 ;j < sizey+3; j++) {
 				for(int k=1; k<sizez+3; k++){
-				_turbulentFlowField.getTurbulentViscosity().getScalar(i,j, k)=1;
 				_turbulentFlowField.getDissipationRate().getScalar(i,j, k) = epsin;
 				_turbulentFlowField.getKineticEnergy().getScalar(i,j, k) = kin;
-				_turbulentFlowField.getTurbulentViscosity().getScalar(i,j, k) = 1;
 				}
 			}
 		}
     }
+    
+    // Initialize turbulent viscosity by iterating it once
+	_fmuIterator.iterate();
+	_turbulentViscosityIterator.iterate();
+	
 };
