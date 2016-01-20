@@ -34,15 +34,10 @@ void TurbulentKepsSimulation::solveTimestep(){
 	_fmuIterator.iterate();
 	_kepsObstacleIterator.iterate();
 	_kepsBoundaryIterator.iterate();
-
-	_turbulentFlowField.getVelocity().getVector(1,1)[0]=-1; // temporarily hardcoded!!
-	_turbulentFlowField.getVelocity().getVector(1,_parameters.geometry.sizeY+2)[0]=-1;
-
 	_turbulentKepsIterator.iterate();
 	_turbulentFlowField.swapKeps();
 	_kepsBoundaryIterator.iterate();
 	_fmuIterator.iterate();
-
 	_turbulentViscosityIterator.iterate();
 	_kepsBoundaryIterator.iterate();
 	
@@ -71,8 +66,6 @@ void TurbulentKepsSimulation::solveTimestep(){
 	// set obstacle boundaries
 	_obstacleIterator.iterate();
 
-
-	
 }
 
 void TurbulentKepsSimulation::setTimeStep(){
