@@ -11,7 +11,7 @@
 #include "stencils/KepsBoundaryStencil.h"
 #include "stencils/MaxNuStencil.h"
 #include "stencils/FmuStencil.h"
-#include "parallelManagers/PetscParallelManagerTurbulent.h"
+#include "parallelManagers/PetscParallelManagerTurbulentKeps.h"
 
 class TurbulentKepsSimulation : public Simulation {
 
@@ -36,7 +36,7 @@ class TurbulentKepsSimulation : public Simulation {
 		//TurbulentViscosityBoundaryStencil _turbulentViscosityBoundaryStencil;
 		FieldIterator<TurbulentFlowField> _fmuIterator;
 		FmuStencil _fmuStencil;
-		PetscParallelManagerTurbulent _parallelManagerTurbulent;
+		PetscParallelManagerTurbulentKeps _parallelManagerTurbulent;
 
 	public:
 

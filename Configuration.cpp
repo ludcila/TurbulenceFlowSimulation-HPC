@@ -1,6 +1,7 @@
 #include "Configuration.h"
 #include "3rdparty/tinyxml2/tinyxml2.h"
 #include <string>
+#include <stdlib.h>
 #include "Parameters.h"
 
 void readFloatMandatory(FLOAT & storage, tinyxml2::XMLElement *node, const char* tag){
@@ -445,6 +446,11 @@ void Configuration::loadParameters(Parameters & parameters, const MPI_Comm & com
 					} else {
 						handleError (1, "Error: turbulence parameters not correctly specified!");
 					}
+					
+					attr = node->Attribute("gamma");
+					if(attr) {
+						parameters.turbulence.gamma = atof(attr);
+					}
 				
 				}
 				
@@ -541,5 +547,6 @@ void Configuration::loadParameters(Parameters & parameters, const MPI_Comm & com
     broadcastString (parameters.turbulence.model, communicator);
     broadcastString (parameters.turbulence.boundaryConditions, communicator);
     broadcastString (parameters.turbulence.boundaryLayerEquation, communicator);
+    MPI_Bcast(&(parameters.turbulence.gamma), 1, MY_MPI_FLOAT, 0, communicator);
 
 }

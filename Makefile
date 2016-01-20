@@ -58,6 +58,7 @@ stencils/TurbulentViscosityKepsStencil.o \
 stencils/TurbulentViscosityBoundaryStencil.o \
 parallelManagers/PetscParallelManager.o\
 parallelManagers/PetscParallelManagerTurbulent.o\
+parallelManagers/PetscParallelManagerTurbulentKeps.o\
 parallelManagers/PetscParallelConfiguration.o\
 parallelManagers/PetscParallelConfigurationTurbulent.o\
 GlobalBoundaryFactory.o\

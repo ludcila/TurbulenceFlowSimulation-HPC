@@ -37,9 +37,16 @@ void TurbulentKepsSimulation::solveTimestep(){
 	_turbulentKepsIterator.iterate();
 	_turbulentFlowField.swapKeps();
 	_kepsBoundaryIterator.iterate();
-	_fmuIterator.iterate();
+	
+	_parallelManagerTurbulent.communicateKineticEnergy();
+	_parallelManagerTurbulent.communicateDissipationRate();
+	
+	//_fmuIterator.iterate();
 	_turbulentViscosityIterator.iterate();
 	_kepsBoundaryIterator.iterate();
+	
+	
+	_parallelManagerTurbulent.communicateViscosity();
 	
 	// compute fgh
 	_turbulentFghIterator.iterate();
@@ -138,20 +145,20 @@ void TurbulentKepsSimulation::initializeFlowField() {
 		const int sizey = _flowField.getNy();
 		for (int i =1 ;i < sizex+3; i++) {
 			for (int j =1 ;j < sizey+3; j++) {
-				_turbulentFlowField.getDissipationRate().getScalar(i,j) = epsin;
-				_turbulentFlowField.getKineticEnergy().getScalar(i,j) = kin;
+				_turbulentFlowField.getDissipationRate().getScalar(i, j) = epsin;
+				_turbulentFlowField.getKineticEnergy().getScalar(i, j) = kin;
 			}
 		}
     } else {
 		const int sizex = _flowField.getNx();
-		const int sizez = _flowField.getNz();
 		const int sizey = _flowField.getNy();
+		const int sizez = _flowField.getNz();
 	
 		for (int i =1 ;i < sizex+3; i++) {
 			for (int j =1 ;j < sizey+3; j++) {
 				for(int k=1; k<sizez+3; k++){
-				_turbulentFlowField.getDissipationRate().getScalar(i,j, k) = epsin;
-				_turbulentFlowField.getKineticEnergy().getScalar(i,j, k) = kin;
+					_turbulentFlowField.getDissipationRate().getScalar(i, j, k) = epsin;
+					_turbulentFlowField.getKineticEnergy().getScalar(i, j, k) = kin;
 				}
 			}
 		}
