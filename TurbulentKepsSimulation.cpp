@@ -135,10 +135,10 @@ void TurbulentKepsSimulation::initializeFlowField() {
 	FLOAT epsin;
 
 	if (_parameters.geometry.dim==2)
-	 epsin= 0.09/(0.038*_parameters.geometry.lengthY)*pow(kin,1.5);
+	 epsin= 0.09/(0.038*_parameters.geometry.lengthY*(1-_parameters.bfStep.yRatio))*pow(kin,1.5);
 
 	else
-	 epsin= 0.09/(0.038*_parameters.geometry.lengthY*_parameters.geometry.lengthZ*2/(_parameters.geometry.lengthY+_parameters.geometry.lengthZ))*pow(kin,1.5);
+	 epsin= 0.09/(0.038*_parameters.geometry.lengthY*(1-_parameters.bfStep.yRatio)*_parameters.geometry.lengthZ*2/(_parameters.geometry.lengthY*(1-_parameters.bfStep.yRatio)+_parameters.geometry.lengthZ))*pow(kin,1.5);
 	
     if (_parameters.geometry.dim==2){
 		const int sizex = _flowField.getNx();
@@ -147,6 +147,8 @@ void TurbulentKepsSimulation::initializeFlowField() {
 			for (int j =1 ;j < sizey+3; j++) {
 				_turbulentFlowField.getDissipationRate().getScalar(i, j) = epsin;
 				_turbulentFlowField.getKineticEnergy().getScalar(i, j) = kin;
+				//_turbulentFlowField.getTurbulentViscosity().getScalar(i, j)=1;
+		_turbulentFlowField.getTurbulentViscosity().getScalar(i, j) = _parameters.turbulence.cmu*kin*kin/epsin*6;
 			}
 		}
     } else {
@@ -165,7 +167,7 @@ void TurbulentKepsSimulation::initializeFlowField() {
     }
     
     // Initialize turbulent viscosity by iterating it once
-	_fmuIterator.iterate();
-	_turbulentViscosityIterator.iterate();
+	//_fmuIterator.iterate();
+	//_turbulentViscosityIterator.iterate();
 	
 };
