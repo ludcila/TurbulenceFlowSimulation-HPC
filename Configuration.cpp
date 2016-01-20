@@ -450,6 +450,8 @@ void Configuration::loadParameters(Parameters & parameters, const MPI_Comm & com
 					attr = node->Attribute("gamma");
 					if(attr) {
 						parameters.turbulence.gamma = atof(attr);
+					} else {
+						parameters.turbulence.gamma = 1;
 					}
 				
 				}

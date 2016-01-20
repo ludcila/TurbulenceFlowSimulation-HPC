@@ -3,7 +3,7 @@
     <flow Re="20000" />
     <simulation finalTime="20.0" >
       <type>turbulence</type>
-      <turbulence model="keps" boundaryConditions="lowRe" />
+      <turbulence model="keps" boundaryConditions="lowRe" gamma="1" />
       <!--turbulence model="mixingLength" boundaryLayer="turbulent" /-->    
       <scenario>channel</scenario>
     </simulation>

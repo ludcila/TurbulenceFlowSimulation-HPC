@@ -115,8 +115,8 @@ void TurbulentKepsSimulation::setTimeStep(){
 	_parameters.timestep.dt *= _parameters.timestep.tau;
 	
 	// To be moved to somewhere else, in case the formula works
-	_parameters.turbulence.gamma = _parameters.timestep.dt * std::max(_maxUStencil.getMaxValues()[0], _maxUStencil.getMaxValues()[1]);
-	_parameters.turbulence.gamma = 1;
+	// _parameters.turbulence.gamma = _parameters.timestep.dt * std::max(_maxUStencil.getMaxValues()[0], _maxUStencil.getMaxValues()[1]);
+	// _parameters.turbulence.gamma = 1;
 
 }
 
