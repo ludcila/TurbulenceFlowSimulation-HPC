@@ -23,10 +23,13 @@ void FmuStencil::apply ( TurbulentFlowField & flowField,  int i, int j ){
 
 void FmuStencil::apply ( TurbulentFlowField & flowField, int i, int j, int k ){
 
+const int obstacle = flowField.getFlags().getValue(i, j, k);
+
+if ((obstacle & OBSTACLE_SELF) == 0) {
     loadLocalMeshsize3D       ( _parameters, _localMeshsize  , i, j, k);
     loadLocalKineticEnergy3D  ( flowField  , _localK         , i, j, k);
     loadLocalDissipationRate3D( flowField  , _localeps       , i, j, k);
 
 
-    flowField.getFmu().getScalar(i,j,k) = computefmu3D(flowField, _localK,_localeps,_parameters,i,j,k);
+    flowField.getFmu().getScalar(i,j,k) = computefmu3D(flowField, _localK,_localeps,_parameters,i,j,k);}
 }
