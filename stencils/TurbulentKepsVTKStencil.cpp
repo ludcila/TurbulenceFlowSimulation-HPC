@@ -27,6 +27,18 @@ void TurbulentKepsVTKStencil::apply(TurbulentFlowField & flowField, int i, int j
 
 void TurbulentKepsVTKStencil::apply(TurbulentFlowField & flowField, int i, int j, int k) {
 
+TurbulentVTKStencil::apply(flowField, i, j, k);
+
+	const int obstacle = flowField.getFlags().getValue(i, j, k);
+
+	if(obstacle & OBSTACLE_SELF) {
+		_turbulentKineticEnergyStringStream << "0.0" << std::endl;
+		_turbulentDissipationRateStringStream << "0.0" << std::endl;
+	} else {
+		_turbulentKineticEnergyStringStream << flowField.getKineticEnergy().getScalar(i, j, k) << std::endl;
+		_turbulentDissipationRateStringStream << flowField.getDissipationRate().getScalar(i, j, k) << std::endl;
+	}
+	
 	
 }
 
