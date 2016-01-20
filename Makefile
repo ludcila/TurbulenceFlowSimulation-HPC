@@ -48,6 +48,10 @@ stencils/VelocityBufferFillStencil.o \
 stencils/VelocityBufferReadStencil.o \
 stencils/ViscosityBufferFillStencil.o\
 stencils/ViscosityBufferReadStencil.o\
+stencils/KineticEnergyBufferReadStencil.o\
+stencils/KineticEnergyBufferFillStencil.o\
+stencils/DissipationRateBufferReadStencil.o\
+stencils/DissipationRateBufferFillStencil.o\
 stencils/CenterLineVelocityBufferFillStencil.o\
 stencils/TurbulentViscosityStencil.o \
 stencils/TurbulentViscosityKepsStencil.o \
