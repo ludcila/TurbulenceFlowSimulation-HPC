@@ -2,8 +2,6 @@
 #include "TurbulentKepsStencil.h"
 
 
-/* Note: not checking for obstacles! */
-
 TurbulentKepsStencil::TurbulentKepsStencil ( const Parameters & parameters ) : FieldStencil<TurbulentFlowField> ( parameters ) {}
 
 void TurbulentKepsStencil::apply ( TurbulentFlowField & flowField, int i, int j ){
@@ -26,32 +24,6 @@ void TurbulentKepsStencil::apply ( TurbulentFlowField & flowField, int i, int j 
 		flowField.getDissipationRateNew().getScalar(i, j) =
 			RHSeps2D( flowField , _localVelocity, _localMeshsize, _localK, _localeps, _localTurbulentViscosity, _parameters, _localfmu, i,  j, _parameters.timestep.dt, _parameters.turbulence.gamma);
 
-	/* obstacle cells */
-	} else if ((obstacle & OBSTACLE_SELF) == 1){
-	
-		flowField.getKineticEnergyNew().getScalar(i, j) = 0;
-	
-		/* if top cell is fluid */
-		if ((obstacle & OBSTACLE_TOP) == 0){
-			flowField.getDissipationRateNew().getScalar(i, j) = flowField.getDissipationRate().getScalar(i, j+1);
-		}
-		/* if bottom cell is fluid */
-		if ((obstacle & OBSTACLE_BOTTOM) == 0){
-			flowField.getDissipationRateNew().getScalar(i, j) = flowField.getDissipationRate().getScalar(i, j-1);
-		}
-		/* if right cell is fluid */
-		if ((obstacle & OBSTACLE_RIGHT) == 0){
-			flowField.getDissipationRateNew().getScalar(i, j) = flowField.getDissipationRate().getScalar(i+1, j);
-		}
-		/* if left cell is fluid */
-		if ((obstacle & OBSTACLE_LEFT) == 0){
-			flowField.getDissipationRateNew().getScalar(i, j) = flowField.getDissipationRate().getScalar(i-1, j);
-		}
-		/* if left cell is fluid */
-		if ((obstacle & OBSTACLE_TOP) == 0 && (obstacle & OBSTACLE_RIGHT) == 0){
-			flowField.getDissipationRateNew().getScalar(i, j) = (flowField.getDissipationRate().getScalar(i-1, j) + flowField.getDissipationRate().getScalar(i-1, j)) * 0.5;
-		}
-		
 	}
 
 }
@@ -77,6 +49,7 @@ void TurbulentKepsStencil::apply ( TurbulentFlowField & flowField, int i, int j,
 	
 		flowField.getDissipationRateNew().getScalar(i, j, k) =
 			RHSeps3D( flowField , _localVelocity, _localMeshsize, _localK, _localeps, _localTurbulentViscosity, _parameters, _localfmu, i,  j, k, _parameters.timestep.dt, _parameters.turbulence.gamma);
+
 	}
 }
 

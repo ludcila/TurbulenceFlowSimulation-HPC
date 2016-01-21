@@ -36,15 +36,17 @@ void TurbulentKepsSimulation::solveTimestep(){
 	_kepsBoundaryIterator.iterate();
 	_turbulentKepsIterator.iterate();
 	_turbulentFlowField.swapKeps();
+	
+	_kepsObstacleIterator.iterate();
 	_kepsBoundaryIterator.iterate();
 	
 	_parallelManagerTurbulent.communicateKineticEnergy();
 	_parallelManagerTurbulent.communicateDissipationRate();
 	
-	//_fmuIterator.iterate();
+	_fmuIterator.iterate();
 	_turbulentViscosityIterator.iterate();
+	_kepsObstacleIterator.iterate();
 	_kepsBoundaryIterator.iterate();
-	
 	
 	_parallelManagerTurbulent.communicateViscosity();
 	
@@ -57,12 +59,15 @@ void TurbulentKepsSimulation::solveTimestep(){
 	
 	// solve for pressure
 	_solver.solve();
-	
+
 	// communicate pressure values
 	_parallelManagerTurbulent.communicatePressure();
 	
 	// compute velocity
 	_velocityIterator.iterate();
+	
+	// set obstacle boundaries
+	_obstacleIterator.iterate();
 	
 	// communicate velocity values
 	_parallelManagerTurbulent.communicateVelocity();
@@ -70,8 +75,6 @@ void TurbulentKepsSimulation::solveTimestep(){
 	// Iterate for velocities on the boundary
 	_wallVelocityIterator.iterate();
 	
-	// set obstacle boundaries
-	_obstacleIterator.iterate();
 
 }
 
@@ -145,10 +148,13 @@ void TurbulentKepsSimulation::initializeFlowField() {
 		const int sizey = _flowField.getNy();
 		for (int i =1 ;i < sizex+3; i++) {
 			for (int j =1 ;j < sizey+3; j++) {
-				_turbulentFlowField.getDissipationRate().getScalar(i, j) = epsin;
-				_turbulentFlowField.getKineticEnergy().getScalar(i, j) = kin;
-				//_turbulentFlowField.getTurbulentViscosity().getScalar(i, j)=1;
-		_turbulentFlowField.getTurbulentViscosity().getScalar(i, j) = _parameters.turbulence.cmu*kin*kin/epsin*6;
+				const int obstacle = _turbulentFlowField.getFlags().getValue(i, j);
+				if ((obstacle & OBSTACLE_SELF) == 0){   // If the cell is fluid
+					_turbulentFlowField.getDissipationRate().getScalar(i, j) = epsin;
+					_turbulentFlowField.getKineticEnergy().getScalar(i, j) = kin;
+					//_turbulentFlowField.getTurbulentViscosity().getScalar(i, j)=1;
+					_turbulentFlowField.getTurbulentViscosity().getScalar(i, j) = _parameters.turbulence.cmu*kin*kin/epsin*6;
+				}
 			}
 		}
     } else {
@@ -159,8 +165,11 @@ void TurbulentKepsSimulation::initializeFlowField() {
 		for (int i =1 ;i < sizex+3; i++) {
 			for (int j =1 ;j < sizey+3; j++) {
 				for(int k=1; k<sizez+3; k++){
-					_turbulentFlowField.getDissipationRate().getScalar(i, j, k) = epsin;
-					_turbulentFlowField.getKineticEnergy().getScalar(i, j, k) = kin;
+					const int obstacle = _turbulentFlowField.getFlags().getValue(i, j, k);
+					if ((obstacle & OBSTACLE_SELF) == 0){   // If the cell is fluid
+						_turbulentFlowField.getDissipationRate().getScalar(i, j, k) = epsin;
+						_turbulentFlowField.getKineticEnergy().getScalar(i, j, k) = kin;
+					}
 				}
 			}
 		}
