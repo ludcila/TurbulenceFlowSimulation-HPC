@@ -14,7 +14,7 @@ void FmuStencil::apply ( TurbulentFlowField & flowField,  int i, int j ){
 		loadLocalMeshsize2D       ( _parameters, _localMeshsize   , i, j);
 		loadLocalKineticEnergy2D  ( flowField  ,  _localK         , i, j);
 		loadLocalDissipationRate2D( flowField  ,  _localeps       , i, j);
-    	flowField.getFmu().getScalar(i,j) = computefmu2D(flowField, _localK,_localeps,_parameters,i,j);
+    	flowField.getFmu().getScalar(i,j) = std::min(computefmu2D(flowField, _localK,_localeps,_parameters,i,j), 1.0);
 	}
 
 

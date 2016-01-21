@@ -28,6 +28,7 @@ void TurbulentViscosityKepsStencil::apply ( TurbulentFlowField & flowField, int 
 
 		flowField.getTurbulentViscosity().getScalar(i, j) = 
 			  _parameters.turbulence.cmu
+		  	 * flowField.getFmu().getScalar(i,j)
 		  	 * flowField.getKineticEnergy().getScalar(i,j)
 			 * flowField.getKineticEnergy().getScalar(i,j)
 			 / flowField.getDissipationRate().getScalar(i,j);
@@ -43,11 +44,12 @@ void TurbulentViscosityKepsStencil::apply ( TurbulentFlowField & flowField, int 
 	const int obstacle = flowField.getFlags().getValue(i, j, k);
 
 	if ((obstacle & OBSTACLE_SELF) == 0){   // If the cell is fluid
-	}
-flowField.getTurbulentViscosity().getScalar(i, j,k) = 
+		flowField.getTurbulentViscosity().getScalar(i, j, k) = 
 			  _parameters.turbulence.cmu
+		  	 * flowField.getFmu().getScalar(i,j, k)
 		  	 * flowField.getKineticEnergy().getScalar(i,j, k)
 			 * flowField.getKineticEnergy().getScalar(i,j, k)
 			 / flowField.getDissipationRate().getScalar(i,j, k);
+	}
 			 
 }
