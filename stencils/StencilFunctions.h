@@ -1753,8 +1753,8 @@ return
 - duepsdx(localeps,localVelocity,localMeshsize, gamma)
 - dvepsdy(localeps,localVelocity,localMeshsize, gamma)
 - dwepsdz(localeps,localVelocity,localMeshsize, gamma)
-+ 2*c1*f1*localK[mapd(0,0,0,0)]*computeSdotS3D( localVelocity,  localMeshsize)
-- c2*f2*localeps[mapd(0,0,0,0)]*localeps[mapd(0,0,0,0)]/localK[mapd(0,0,0,0)]));
++ 2*c1*localK[mapd(0,0,0,0)]*computeSdotS3D( localVelocity,  localMeshsize)
+- c2*localeps[mapd(0,0,0,0)]*localeps[mapd(0,0,0,0)]/localK[mapd(0,0,0,0)]));
 }
 
 

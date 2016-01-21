@@ -169,6 +169,7 @@ void TurbulentKepsSimulation::initializeFlowField() {
 					if ((obstacle & OBSTACLE_SELF) == 0){   // If the cell is fluid
 						_turbulentFlowField.getDissipationRate().getScalar(i, j, k) = epsin;
 						_turbulentFlowField.getKineticEnergy().getScalar(i, j, k) = kin;
+						_turbulentFlowField.getTurbulentViscosity().getScalar(i, j, k) = _parameters.turbulence.cmu*kin*kin/epsin*6;
 					}
 				}
 			}
