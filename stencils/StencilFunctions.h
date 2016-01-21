@@ -1732,8 +1732,8 @@ return
 + ceps/cmu* d2epsdy(localeps,localTurbulentViscosity,localfmu,localMeshsize)
 - duepsdx(localeps,localVelocity,localMeshsize, gamma)
 - dvepsdy(localeps,localVelocity,localMeshsize, gamma)
-+ 2*c1*f1*localK[mapd(0,0,0,0)]*computeSdotS2D(localVelocity, localMeshsize)
-- c2*f2*localeps[mapd(0,0,0,0)]*localeps[mapd(0,0,0,0)]/localK[mapd(0,0,0,0)]) );
++ 2*c1*localK[mapd(0,0,0,0)]*computeSdotS2D(localVelocity, localMeshsize)
+- c2*localeps[mapd(0,0,0,0)]*localeps[mapd(0,0,0,0)]/localK[mapd(0,0,0,0)]) );
 }
 
 inline FLOAT RHSeps3D(TurbulentFlowField & flowField , const FLOAT * const localVelocity, const FLOAT * const localMeshsize, const FLOAT * const localK,const FLOAT * const localeps, const FLOAT * const localTurbulentViscosity, const Parameters & parameters, const FLOAT * const localfmu, int i, int j, int k, FLOAT dt, FLOAT gamma){
